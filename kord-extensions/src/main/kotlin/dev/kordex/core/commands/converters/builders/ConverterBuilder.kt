@@ -15,14 +15,15 @@ import dev.kordex.core.commands.converters.AutoCompleteCallback
 import dev.kordex.core.commands.converters.Converter
 import dev.kordex.core.commands.converters.Mutator
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.i18n.types.Key
 
 /** Base abstract class for all converter builders. **/
 public abstract class ConverterBuilder<T> {
 	/** Converter display name. Required. **/
-	public open lateinit var name: String
+	public open lateinit var name: Key
 
 	/** Converter description. Required. **/
-	public open lateinit var description: String
+	public open lateinit var description: Key
 
 	/** Mutator, used to mutate the parsed value before it's presented. **/
 	public open var mutator: Mutator<T> = null

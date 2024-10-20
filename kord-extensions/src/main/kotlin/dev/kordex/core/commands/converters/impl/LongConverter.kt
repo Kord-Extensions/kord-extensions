@@ -11,15 +11,18 @@ package dev.kordex.core.commands.converters.impl
 import dev.kord.core.entity.interaction.IntegerOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntegerOptionBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 
 private const val DEFAULT_RADIX = 10
@@ -49,49 +52,50 @@ public class LongConverter(
 
 	override var validator: Validator<Long> = null,
 ) : SingleConverter<Long>() {
-	override val signatureTypeString: String = "converters.number.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Number.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
 		try {
 			this.parsed = arg.toLong(radix)
-		} catch (e: NumberFormatException) {
-			val errorString = if (radix == DEFAULT_RADIX) {
-				context.translate("converters.number.error.invalid.defaultBase", replacements = arrayOf(arg))
+		} catch (_: NumberFormatException) {
+			val errorKey = if (radix == DEFAULT_RADIX) {
+				CoreTranslations.Converters.Number.Error.Invalid.defaultBase
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			} else {
-				context.translate("converters.number.error.invalid.otherBase", replacements = arrayOf(arg, radix))
+				CoreTranslations.Converters.Number.Error.Invalid.otherBase
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, radix)
 			}
 
-			throw DiscordRelayedException(errorString)
+			throw DiscordRelayedException(errorKey)
 		}
 
 		if (minValue != null && this.parsed < minValue) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.number.error.invalid.tooSmall",
-					replacements = arrayOf(arg, minValue)
-				)
+				CoreTranslations.Converters.Number.Error.Invalid.tooSmall
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, minValue)
 			)
 		}
 
 		if (maxValue != null && this.parsed > maxValue) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.number.error.invalid.tooLarge",
-					replacements = arrayOf(arg, maxValue)
-				)
+				CoreTranslations.Converters.Number.Error.Invalid.tooLarge
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, maxValue)
 			)
 		}
 
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		IntegerOptionBuilder(arg.displayName, arg.description).apply {
-			this@apply.maxValue = this@LongConverter.maxValue
-			this@apply.minValue = this@LongConverter.minValue
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<IntegerOptionBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			this.maxValue = this@LongConverter.maxValue
+			this.minValue = this@LongConverter.minValue
 
 			required = true
 		}

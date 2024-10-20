@@ -17,9 +17,12 @@ import dev.kordex.core.components.ComponentContainer
 import dev.kordex.core.components.buttons.PublicInteractionButton
 import dev.kordex.core.components.publicButton
 import dev.kordex.core.components.types.emoji
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.capitalizeWords
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.pages.Pages
-import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.capitalizeWords
 import dev.kordex.core.utils.scheduling.Scheduler
 import dev.kordex.core.utils.scheduling.Task
@@ -39,9 +42,8 @@ public abstract class BaseButtonPaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: String? = null,
 	locale: Locale? = null,
-) : BasePaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BasePaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, locale) {
 	/** [ComponentContainer] instance managing the buttons for this paginator. **/
 	public open var components: ComponentContainer = ComponentContainer()
 
@@ -76,11 +78,11 @@ public abstract class BaseButtonPaginator(
 	public open var switchButton: PublicInteractionButton<*>? = null
 
 	/** Group-specific buttons, if any. **/
-	public open val groupButtons: MutableStringKeyedMap<PublicInteractionButton<*>> = mutableMapOf()
+	public open val groupButtons: MutableMap<Key, PublicInteractionButton<*>> = mutableMapOf()
 
 	/** Whether it's possible for us to have a row of group-switching buttons. **/
 	@Suppress("MagicNumber")
-	public val canUseSwitchingButtons: Boolean by lazy { allGroups.size in 3..5 && "" !in allGroups }
+	public val canUseSwitchingButtons: Boolean by lazy { allGroups.size in 3..5 && EMPTY_KEY !in allGroups }
 
 	/** A button-oriented check function that matches based on the [owner] property. **/
 	public val defaultCheck: CheckWithCache<ComponentInteractionCreateEvent> = {
@@ -200,12 +202,14 @@ public abstract class BaseButtonPaginator(
 					style = ButtonStyle.Primary
 					emoji(FINISH_EMOJI)
 
-					translate("paginator.button.done")
+					CoreTranslations.Paginator.Button.done
+						.withLocale(localeObj)
 				} else {
 					style = ButtonStyle.Danger
 					emoji(DELETE_EMOJI)
 
-					translate("paginator.button.delete")
+					CoreTranslations.Paginator.Button.delete
+						.withLocale(localeObj)
 				}
 
 				action {
@@ -221,7 +225,11 @@ public abstract class BaseButtonPaginator(
 				allGroups.forEach { group ->
 					groupButtons[group] = components.publicButton(secondRowNumber) {
 						deferredAck = true
-						label = translate(group).capitalizeWords(localeObj)
+
+						label = group
+							.withLocale(localeObj)
+							.capitalizeWords()
+
 						style = ButtonStyle.Secondary
 
 						check(defaultCheck)
@@ -243,9 +251,11 @@ public abstract class BaseButtonPaginator(
 					emoji(switchEmoji)
 
 					label = if (allGroups.size == 2) {
-						translate("paginator.button.more")
+						CoreTranslations.Paginator.Button.more
+							.withLocale(localeObj)
 					} else {
-						translate("paginator.button.group.switch")
+						CoreTranslations.Paginator.Button.Group.switch
+							.withLocale(localeObj)
 					}
 
 					action {
@@ -265,7 +275,7 @@ public abstract class BaseButtonPaginator(
 	/**
 	 * Convenience function to switch to a specific group.
 	 */
-	public suspend fun switchGroup(group: String) {
+	public suspend fun switchGroup(group: Key) {
 		if (group == currentGroup) {
 			return
 		}
@@ -332,9 +342,11 @@ public abstract class BaseButtonPaginator(
 
 		if (allGroups.size == 2) {
 			if (currentGroup == pages.defaultGroup) {
-				switchButton?.label = translate("paginator.button.more")
+				switchButton?.label = CoreTranslations.Paginator.Button.more
+					.withLocale(localeObj)
 			} else {
-				switchButton?.label = translate("paginator.button.less")
+				switchButton?.label = CoreTranslations.Paginator.Button.less
+					.withLocale(localeObj)
 			}
 		}
 

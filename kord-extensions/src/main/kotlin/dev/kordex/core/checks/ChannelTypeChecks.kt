@@ -6,12 +6,16 @@
  * Any redistribution must include the specific provision above.
  */
 
+@file:OptIn(NotTranslated::class)
+
 package dev.kordex.core.checks
 
 import dev.kord.common.entity.ChannelType
 import dev.kord.core.event.Event
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
-import dev.kordex.core.utils.translate
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.utils.toTranslationKey
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
@@ -45,10 +49,9 @@ public suspend fun CheckContext<*>.channelType(vararg channelTypes: ChannelType)
 			logger.failed("Types $type is not within $channelTypes")
 
 			fail(
-				translate(
-					"checks.channelType.failed",
-					replacements = arrayOf(type.translate(locale)),
-				)
+				CoreTranslations.Checks.ChannelType.failed
+					.withLocale(locale)
+					.withOrdinalPlaceholders(type.toTranslationKey())
 			)
 		}
 	}
@@ -81,10 +84,9 @@ public suspend fun CheckContext<*>.notChannelType(vararg channelTypes: ChannelTy
 			logger.failed("Types $type is within $channelTypes")
 
 			fail(
-				translate(
-					"checks.notChannelType.failed",
-					replacements = arrayOf(type.translate(locale)),
-				)
+				CoreTranslations.Checks.NotChannelType.failed
+					.withLocale(locale)
+					.withOrdinalPlaceholders(type.toTranslationKey())
 			)
 		} else {
 			logger.passed()

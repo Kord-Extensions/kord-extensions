@@ -9,14 +9,17 @@
 package dev.kordex.modules.func.mappings.utils
 
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.utils.FilterStrategy
 import dev.kordex.core.utils.suggestStringMap
+import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import me.shedaniel.linkie.Namespace
 import me.shedaniel.linkie.Namespaces
 import me.shedaniel.linkie.namespaces.MojangHashedNamespace
 import me.shedaniel.linkie.namespaces.QuiltMappingsNamespace
+import java.util.Locale
 
 @PublishedApi
 internal const val MAX_RESULTS = 25 // set by Discord's API
@@ -26,12 +29,12 @@ internal const val MAX_RESULTS = 25 // set by Discord's API
  * [versions] is a supplier of the list of strings to autocomplete from.
  */
 inline fun <reified T> ConverterBuilder<T>.autocompleteVersions(
-	crossinline versions: AutoCompleteInteraction.() -> List<String>,
+	crossinline versions: suspend AutoCompleteInteraction.(event: AutoCompleteInteractionCreateEvent) -> List<String>,
 ) {
-	autoComplete {
+	autoComplete { event ->
 		val partiallyTyped = focusedOption.value as? String
 
-		val map = versions()
+		val map = versions(event)
 			.filter { it.startsWith(partiallyTyped ?: "") }
 			.take(MAX_RESULTS)
 			.associateBy { it }
@@ -44,12 +47,16 @@ inline fun <reified T> ConverterBuilder<T>.autocompleteVersions(
  * Turn this [String] into a [Namespace].
  */
 @Suppress("TooGenericExceptionCaught") // sorry, but that's what Linkie throws
-fun String.toNamespace(): Namespace = when (this) {
+fun String.toNamespace(locale: Locale): Namespace = when (this) {
 	"hashed", "hashed_mojang", "hashed-mojang" -> MojangHashedNamespace
 	"quilt-mappings", "quilt" -> QuiltMappingsNamespace
 	else -> try {
 		Namespaces[this]
-	} catch (e: NullPointerException) {
-		throw DiscordRelayedException("Invalid namespace: $this")
+	} catch (_: NullPointerException) {
+		throw DiscordRelayedException(
+			MappingsTranslations.Response.Error.inputNamespace
+				.withLocale(locale)
+				.withNamedPlaceholders("namespace" to this)
+		)
 	}
 }

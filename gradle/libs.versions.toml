@@ -1,31 +1,31 @@
 [versions]
-detekt = "1.23.6"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
-dokkadokka = "1.9.20"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
-kotlin = "2.0.20"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
+detekt = "1.23.7"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
+dokka = "1.9.20"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
+kotlin = "2.0.21"  # Note: Must update plugin versions in buildSrc/build.gradle.kts
 
 commons-validator = "1.9.0"
 data-collector-api = "1.0.1-SNAPSHOT"
 groovy = "3.0.22"
 icu4j = "75.1"
 jansi = "2.4.1"
-jemoji = "1.5.1"
+jemoji = "1.5.2"
 jsoup = "1.18.1"
-junit = "5.11.0"
+junit = "5.11.2"
 kaml = "0.61.0"
-koin = "3.5.6"
+koin = "4.0.0"
 kord = "0.15.0-SNAPSHOT"
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.20-1.0.25"
 ktor = "3.0.0"
-kx-coro = "1.8.1"
-kx-ser = "1.7.2"
+kx-coro = "1.9.0"
+kx-ser = "1.7.3"
 linkie = "1.0.121"
-logback = "1.5.7"
+logback = "1.5.9"
 logback-groovy = "1.14.5"
 logging = "7.0.0"
-mongodb = "5.1.3"
-oshi = "6.6.3"
+mongodb = "5.2.0"
+oshi = "6.6.5"
 pf4j = "3.12.0"
-sentry = "7.14.0"
+sentry = "7.15.0"
 slf4j = "2.0.16"
 time4j-base = "5.9.4"
 time4j-tzdata = "5.0-2024a"
@@ -51,6 +51,7 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 kord = { module = "dev.kord:kord-core-voice", version.ref = "kord" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }

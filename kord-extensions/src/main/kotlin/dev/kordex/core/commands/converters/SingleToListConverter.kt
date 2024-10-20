@@ -9,11 +9,12 @@
 package dev.kordex.core.commands.converters
 
 import dev.kord.core.entity.interaction.OptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -24,7 +25,7 @@ import dev.kordex.parser.StringParser
  *
  * @param singleConverter The [SingleConverter] to wrap.
  *
- * @param newSignatureTypeString An optional signature type string to override the one set in [singleConverter].
+ * @param newSignatureType An optional signature type string to override the one set in [singleConverter].
  * @param newShowTypeInSignature An optional boolean to override the [showTypeInSignature] setting set in
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
@@ -33,15 +34,15 @@ public class SingleToListConverter<T : Any>(
 	required: Boolean = true,
 	public val singleConverter: SingleConverter<T>,
 
-	newSignatureTypeString: String? = null,
+	newSignatureType: Key? = null,
 	newShowTypeInSignature: Boolean? = null,
-	newErrorTypeString: String? = null,
+	newErrorType: Key? = null,
 
 	override var validator: Validator<List<T>> = null,
 ) : ListConverter<T>(required) {
-	override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
+	override val signatureType: Key = newSignatureType ?: singleConverter.signatureType
 	override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
-	override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
+	override val errorType: Key? = newErrorType ?: singleConverter.errorType
 
 	private val dummyArgs = Arguments()
 
@@ -64,7 +65,7 @@ public class SingleToListConverter<T : Any>(
 					values.add(value)
 
 					parser?.parseNext()  // Move the cursor ahead
-				} catch (e: DiscordRelayedException) {
+				} catch (_: DiscordRelayedException) {
 					break
 				}
 			}
@@ -80,7 +81,7 @@ public class SingleToListConverter<T : Any>(
 					val value = singleConverter.getValue(dummyArgs, singleConverter::parsed)
 
 					values.add(value)
-				} catch (e: DiscordRelayedException) {
+				} catch (_: DiscordRelayedException) {
 					break
 				}
 			}
@@ -91,7 +92,7 @@ public class SingleToListConverter<T : Any>(
 		return parsed.size
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<*> =
 		singleConverter.toSlashOption(arg)
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
@@ -107,5 +108,5 @@ public class SingleToListConverter<T : Any>(
 	override suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-	): String = singleConverter.handleError(t, context)
+	): Key = singleConverter.handleError(t, context)
 }

@@ -11,6 +11,7 @@ package dev.kordex.test.modules.dev.time4j
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatCommand
+import dev.kordex.core.i18n.toKey
 import dev.kordex.core.utils.respond
 import dev.kordex.modules.dev.time4j.coalescingT4JDuration
 import dev.kordex.modules.dev.time4j.toHuman
@@ -22,15 +23,15 @@ class TestExtension : Extension() {
 
 	class TestArgs : Arguments() {
 		val duration by coalescingT4JDuration {
-			name = "duration"
-			description = "Duration argument"
+			name = "duration".toKey()
+			description = "Duration argument".toKey()
 		}
 	}
 
 	override suspend fun setup() {
 		chatCommand(TestExtension::TestArgs) {
-			name = "format"
-			description = "Let's test formatting."
+			name = "format".toKey()
+			description = "Let's test formatting.".toKey()
 
 			action {
 				message.respond(

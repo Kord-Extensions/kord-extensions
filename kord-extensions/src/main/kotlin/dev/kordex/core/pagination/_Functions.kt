@@ -11,12 +11,14 @@ package dev.kordex.core.pagination
 import dev.kord.core.behavior.interaction.response.EphemeralMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import java.util.*
 
 /** Create a paginator that edits the original interaction. **/
 public inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
-	defaultGroup: String = "",
+	defaultGroup: Key = EMPTY_KEY,
 	locale: Locale? = null,
 	builder: (PaginatorBuilder).() -> Unit,
 ): PublicResponsePaginator {
@@ -29,7 +31,7 @@ public inline fun PublicMessageInteractionResponseBehavior.editingPaginator(
 
 /** Create a paginator that creates a follow-up message, and edits that. **/
 public inline fun FollowupPermittingInteractionResponseBehavior.respondingPaginator(
-	defaultGroup: String = "",
+	defaultGroup: Key = EMPTY_KEY,
 	locale: Locale? = null,
 	builder: (PaginatorBuilder).() -> Unit,
 ): PublicFollowUpPaginator {
@@ -45,7 +47,7 @@ public inline fun FollowupPermittingInteractionResponseBehavior.respondingPagina
  * it's impossible to edit an ephemeral follow-up.
  */
 public inline fun EphemeralMessageInteractionResponseBehavior.editingPaginator(
-	defaultGroup: String = "",
+	defaultGroup: Key = EMPTY_KEY,
 	locale: Locale? = null,
 	builder: (PaginatorBuilder).() -> Unit,
 ): EphemeralResponsePaginator {

@@ -18,7 +18,7 @@ import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.interactionFor
 import dev.kordex.core.checks.userFor
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.types.TranslatableContext
@@ -40,19 +40,13 @@ import java.util.*
 public abstract class CommandContext(
 	public open val command: Command,
 	public open val eventObj: Event,
-	public open val commandName: String,
+	public open val commandName: Key,
 	public open val cache: MutableStringKeyedMap<Any>,
 ) : KordExKoinComponent, TranslatableContext {
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by lazy { getTranslationProvider() }
-
 	/** Current Sentry context, containing breadcrumbs and other goodies. **/
 	public val sentry: SentryContext = SentryContext()
 
 	public override var resolvedLocale: Locale? = null
-
-	override val bundle: String?
-		get() = command.resolvedBundle
 
 	/** Called before processing, used to populate any extra variables from event data. **/
 	public abstract suspend fun populate()
@@ -92,35 +86,5 @@ public abstract class CommandContext(
 		resolvedLocale = locale ?: command.extension.bot.settings.i18nBuilder.defaultLocale
 
 		return resolvedLocale!!
-	}
-
-	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
-		replacements: Array<Any?>,
-	): String {
-		val locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
-	}
-
-	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
-		replacements: Map<String, Any?>,
-	): String {
-		val locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
 	}
 }

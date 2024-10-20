@@ -6,16 +6,21 @@
  * Any redistribution must include the specific provision above.
  */
 
+@file:OptIn(NotTranslated::class)
+
 package dev.kordex.core.checks
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.core.entity.channel.GuildChannel
 import dev.kord.core.event.Event
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.utils.hasPermission
 import dev.kordex.core.utils.hasPermissions
 import dev.kordex.core.utils.permissionsForMember
+import dev.kordex.core.utils.toTranslationKey
 import dev.kordex.core.utils.translate
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -63,10 +68,9 @@ public suspend fun CheckContext<*>.hasPermission(perm: Permission) {
 			logger.failed("Member $member does not have permission $perm")
 
 			fail(
-				translate(
-					"checks.hasPermission.failed",
-					replacements = arrayOf(perm.translate(locale))
-				)
+				CoreTranslations.Checks.HasPermission.failed
+					.withLocale(locale)
+					.withOrdinalPlaceholders(perm.toTranslationKey())
 			)
 		}
 	}
@@ -113,10 +117,9 @@ public suspend fun CheckContext<*>.notHasPermission(perm: Permission) {
 			logger.failed("Member $member has permission $perm")
 
 			fail(
-				translate(
-					"checks.notHasPermission.failed",
-					replacements = arrayOf(perm.translate(locale)),
-				)
+				CoreTranslations.Checks.NotHasPermission.failed
+					.withLocale(locale)
+					.withOrdinalPlaceholders(perm.toTranslationKey())
 			)
 		} else {
 			logger.passed()
@@ -170,10 +173,11 @@ public suspend fun CheckContext<*>.hasPermissions(perms: Permissions) {
 			logger.failed("Member $member does not have permissions $perms")
 
 			fail(
-				translate(
-					"checks.hasPermissions.failed",
-					replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
-				)
+				CoreTranslations.Checks.HasPermissions.failed
+					.withLocale(locale)
+					.withOrdinalPlaceholders(
+						perms.values.joinToString(", ") { it.translate(locale) }
+					)
 			)
 		}
 	}
@@ -220,10 +224,11 @@ public suspend fun CheckContext<*>.notHasPermissions(perms: Permissions) {
 			logger.failed("Member $member has permissions $perms")
 
 			fail(
-				translate(
-					"checks.notHasPermissions.failed",
-					replacements = arrayOf(perms.values.joinToString(", ") { it.translate(locale) })
-				)
+				CoreTranslations.Checks.NotHasPermissions.failed
+					.withLocale(locale)
+					.withOrdinalPlaceholders(
+						perms.values.joinToString(", ") { it.translate(locale) }
+					)
 			)
 		} else {
 			logger.passed()

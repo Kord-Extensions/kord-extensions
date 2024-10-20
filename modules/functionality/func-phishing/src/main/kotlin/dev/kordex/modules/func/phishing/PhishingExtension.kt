@@ -10,6 +10,7 @@
 
 package dev.kordex.modules.func.phishing
 
+import dev.kord.common.asJavaLocale
 import dev.kord.core.behavior.ban
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.entity.Message
@@ -27,9 +28,12 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.ephemeralMessageCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.event
+import dev.kordex.core.i18n.generated.CoreTranslations.Extensions.Help.Paginator.Title.arguments
 import dev.kordex.core.utils.dm
 import dev.kordex.core.utils.getJumpUrl
 import dev.kordex.core.utils.kordExUserAgent
+import dev.kordex.modules.func.phishing.i18n.generated.PhishingTranslations
+import dev.kordex.modules.func.phishing.i18n.generated.PhishingTranslations.Actions.logMessage
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.*
 import io.ktor.client.plugins.*
@@ -41,6 +45,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
+import java.util.Locale
 
 /** The maximum number of redirects to attempt to follow for a URL. **/
 const val MAX_REDIRECTS = 5
@@ -83,7 +88,7 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			}
 
 			action {
-				handleMessage(event.message.asMessageOrNull())
+				handleMessage(event.message.asMessageOrNull(), getLocale())
 			}
 		}
 
@@ -98,12 +103,12 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			}
 
 			action {
-				handleMessage(event.message.asMessageOrNull())
+				handleMessage(event.message.asMessageOrNull(), getLocale())
 			}
 		}
 
 		ephemeralMessageCommand {
-			name = "URL Safety Check"
+			name = PhishingTranslations.Commands.Message.name
 
 			if (this@PhishingExtension.settings.requiredCommandPermission != null) {
 				check { hasPermission(this@PhishingExtension.settings.requiredCommandPermission!!) }
@@ -112,14 +117,28 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			action {
 				for (message in targetMessages) {
 					val matches = parseDomains(message.content)
+					val locale = getLocale()
 
 					respond {
 						content = if (matches.isNotEmpty()) {
-							"⚠️ [Message ${message.id.value}](${message.getJumpUrl()}) " +
-								"**contains ${matches.size} known unsafe link/s**."
+							PhishingTranslations.Response.Message.unsafe
+								.translateNamedLocale(
+									locale,
+
+									"emoji" to locale.unsafeEmoji(),
+									"id" to message.id.value,
+									"url" to message.getJumpUrl(),
+									"matches" to matches.size
+								)
 						} else {
-							"✅ [Message ${message.id.value}](${message.getJumpUrl()}) " +
-								"**does not contain any known unsafe links**."
+							PhishingTranslations.Response.Message.safe
+								.translateNamedLocale(
+									locale,
+
+									"emoji" to locale.safeEmoji(),
+									"id" to message.id.value,
+									"url" to message.getJumpUrl(),
+								)
 						}
 					}
 				}
@@ -127,26 +146,40 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		}
 
 		ephemeralSlashCommand(::DomainArgs) {
-			name = "url-safety-check"
-			description = "Check whether a given domain is a known unsafe domain."
+			name = PhishingTranslations.Commands.Slash.name
+			description = PhishingTranslations.Commands.Slash.description
 
 			if (this@PhishingExtension.settings.requiredCommandPermission != null) {
 				check { hasPermission(this@PhishingExtension.settings.requiredCommandPermission!!) }
 			}
 
 			action {
+				val locale = getLocale()
+
 				respond {
 					content = if (domainCache.contains(arguments.domain.lowercase())) {
-						"⚠️ `${arguments.domain}` is a known unsafe domain."
+						PhishingTranslations.Response.Domain.unsafe
+							.translateNamedLocale(
+								locale,
+
+								"emoji" to locale.unsafeEmoji(),
+								"domain" to arguments.domain,
+							)
 					} else {
-						"✅ `${arguments.domain}` is not a known unsafe domain."
+						PhishingTranslations.Response.Domain.safe
+							.translateNamedLocale(
+								locale,
+
+								"emoji" to locale.unsafeEmoji(),
+								"domain" to arguments.domain,
+							)
 					}
 				}
 			}
 		}
 	}
 
-	private suspend fun handleMessage(message: Message?) {
+	private suspend fun handleMessage(message: Message?, locale: Locale) {
 		if (message == null) {
 			return
 		}
@@ -159,53 +192,62 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			if (settings.notifyUser) {
 				message.kord.launch {
 					message.author!!.dm {
-						content = "We've detected that the following message contains an unsafe domain. For this " +
-							"reason, **${settings.detectionAction.message}**."
+						content = PhishingTranslations.Notice.Message.unsafe
+							.translateNamedLocale(
+								locale,
+
+								"action" to settings.detectionAction.message.translateLocale(locale)
+							)
 
 						embed {
-							title = "Unsafe domain detected"
+							title = PhishingTranslations.Embed.Logging.Unsafe.title.translateLocale(locale)
 							description = message.content
 							color = DISCORD_RED
 
 							field {
 								inline = true
 
-								name = "Channel"
+								name = PhishingTranslations.Fields.channel.translateLocale(locale)
 								value = message.channel.mention
 							}
 
 							field {
 								inline = true
 
-								name = "Message ID"
+								name = PhishingTranslations.Fields.messageId.translateLocale(locale)
 								value = "`${message.id.value}`"
 							}
 
 							field {
 								inline = true
 
-								name = "Server"
-								value = message.getGuildOrNull()?.name ?: "Unable to get guild"
+								name = PhishingTranslations.Fields.Server.name.translateLocale(locale)
+								value = message.getGuildOrNull()?.name
+									?: PhishingTranslations.Fields.Server.unknown.translateLocale(locale)
 							}
 						}
 					}
 				}
 			}
 
+			val translatedLogMessage = PhishingTranslations.Actions.logMessage
+				.withLocale(message.getGuildOrNull()?.preferredLocale?.asJavaLocale())
+				.translate()
+
 			when (settings.detectionAction) {
 				DetectionAction.Ban -> {
 					message.getAuthorAsMemberOrNull()!!.ban {
-						reason = "Message linked to an unsafe domain"
+						reason = translatedLogMessage
 					}
 
-					message.delete("Message linked to an unsafe domain")
+					message.delete(translatedLogMessage)
 				}
 
-				DetectionAction.Delete -> message.delete("Message linked to an unsafe domain")
+				DetectionAction.Delete -> message.delete(translatedLogMessage)
 
 				DetectionAction.Kick -> {
-					message.getAuthorAsMemberOrNull()!!.kick("Message linked to an unsafe domain")
-					message.delete("Message linked to an unsafe domain")
+					message.getAuthorAsMemberOrNull()!!.kick(translatedLogMessage)
+					message.delete(translatedLogMessage)
 				}
 
 				DetectionAction.LogOnly -> {
@@ -213,11 +255,11 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 				}
 			}
 
-			logDeletion(message, matches)
+			logDeletion(message, locale, matches)
 		}
 	}
 
-	private suspend fun logDeletion(message: Message, matches: Set<String>) {
+	private suspend fun logDeletion(message: Message, locale: Locale, matches: Set<String>) {
 		val guild = message.getGuild()
 
 		val channel = message
@@ -235,25 +277,28 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 			return
 		}
 
-		val matchList = "# Unsafe Domain Matches\n\n" +
-			"**Total:** ${matches.size}\n\n" +
-			matches.joinToString("\n") { "* `$it`" }
+		val matchList = PhishingTranslations.Response.Matches.header
+			.translateNamedLocale(
+				locale,
+
+				"matches" to matches.size
+			) + "\n\n" + matches.joinToString("\n") { "* `$it`" }
 
 		channel.createMessage {
 			addFile(
-				"matches.md",
+				PhishingTranslations.Response.Matches.filename.translateLocale(locale),
 				ChannelProvider { matchList.byteInputStream().toByteReadChannel() }
 			)
 
 			embed {
-				title = "Unsafe domain detected"
+				title = PhishingTranslations.Embed.Logging.Unsafe.title.translateLocale(locale)
 				description = message.content
 				color = DISCORD_RED
 
 				field {
 					inline = true
 
-					name = "Author"
+					name = PhishingTranslations.Fields.author.translateLocale(locale)
 					value = "${message.author!!.mention} (" +
 						"`${message.author!!.tag}` / " +
 						"`${message.author!!.id.value}`" +
@@ -263,21 +308,21 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 				field {
 					inline = true
 
-					name = "Channel"
+					name = PhishingTranslations.Fields.channel.translateLocale(locale)
 					value = "${message.channel.mention} (`${message.channelId.value}`)"
 				}
 
 				field {
 					inline = true
 
-					name = "Message"
+					name = PhishingTranslations.Fields.message.translateLocale(locale)
 					value = "[`${message.id.value}`](${message.getJumpUrl()})"
 				}
 
 				field {
 					inline = true
 
-					name = "Total Matches"
+					name = PhishingTranslations.Fields.totalMatches.translateLocale(locale)
 					value = matches.size.toString()
 				}
 			}
@@ -403,6 +448,12 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 		websocket.stop()
 	}
 
+	suspend fun Locale.safeEmoji() =
+		PhishingTranslations.Response.Emoji.safe.translateLocale(this)
+
+	suspend fun Locale.unsafeEmoji() =
+		PhishingTranslations.Response.Emoji.unsafe.translateLocale(this)
+
 	private fun handleChange(change: DomainChange) {
 		when (change.type) {
 			DomainChangeType.Add -> domainCache.addAll(change.domains)
@@ -414,11 +465,11 @@ class PhishingExtension(private val settings: ExtPhishingBuilder) : Extension() 
 	inner class DomainArgs : Arguments() {
 		/** Targeted domain string. **/
 		val domain by string {
-			name = "domain"
-			description = "Domain to check"
+			name = PhishingTranslations.Args.Domain.name
+			description = PhishingTranslations.Args.Domain.description
 
 			validate {
-				failIf("Please provide the domain name only, without the protocol or a path.") { "/" in value }
+				failIf(PhishingTranslations.Args.Domain.validationError) { "/" in value }
 			}
 		}
 	}

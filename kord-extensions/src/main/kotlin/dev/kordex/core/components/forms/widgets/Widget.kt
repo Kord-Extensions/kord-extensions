@@ -29,7 +29,7 @@ public abstract class Widget<T : Any?> {
 		"${this::class.simpleName}@${hashCode()} ($width x $height)"
 
 	/** Function called to apply this widget to a Discord action row. **/
-	public abstract suspend fun apply(builder: ActionRowBuilder, locale: Locale, bundle: String?)
+	public abstract suspend fun apply(builder: ActionRowBuilder, locale: Locale)
 
 	/** Function called to ensure that this widget was set up correctly. **/
 	public abstract fun validate()

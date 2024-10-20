@@ -13,16 +13,19 @@ import dev.kord.core.entity.Emoji
 import dev.kord.core.entity.StandardEmoji
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.mapNotNull
@@ -52,15 +55,16 @@ import net.fellbaum.jemoji.EmojiManager
 public class EmojiConverter(
 	override var validator: Validator<Emoji> = null,
 ) : SingleConverter<Emoji>() {
-	override val signatureTypeString: String = "converters.emoji.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Emoji.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
 
 		val emoji: Emoji = findEmoji(arg, context)
 			?: throw DiscordRelayedException(
-				context.translate("converters.emoji.error.missing", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Emoji.Error.missing
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			)
 
 		parsed = emoji
@@ -80,9 +84,11 @@ public class EmojiConverter(
 				kord.guilds.mapNotNull {
 					it.getEmojiOrNull(snowflake)
 				}.firstOrNull()
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate("converters.emoji.error.invalid", replacements = arrayOf(id))
+					CoreTranslations.Converters.Emoji.Error.invalid
+						.withContext(context)
+						.withOrdinalPlaceholders(id)
 				)
 			}
 		} else { // ID or name
@@ -98,7 +104,7 @@ public class EmojiConverter(
 				kord.guilds.mapNotNull {
 					it.getEmojiOrNull(snowflake)
 				}.firstOrNull()
-			} catch (e: NumberFormatException) {  // Not an ID, let's check names
+			} catch (_: NumberFormatException) {  // Not an ID, let's check names
 				val currentResult = kord.guilds.mapNotNull {
 					it.emojis.firstOrNull { emojiObj -> emojiObj.name?.lowercase().equals(name, true) }
 				}.firstOrNull()
@@ -109,15 +115,19 @@ public class EmojiConverter(
 			}
 		}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
 		val emoji: Emoji = findEmoji(optionValue, context)
 			?: throw DiscordRelayedException(
-				context.translate("converters.emoji.error.missing", replacements = arrayOf(optionValue))
+				CoreTranslations.Converters.Emoji.Error.missing
+					.withContext(context)
+					.withOrdinalPlaceholders(optionValue)
 			)
 
 		parsed = emoji

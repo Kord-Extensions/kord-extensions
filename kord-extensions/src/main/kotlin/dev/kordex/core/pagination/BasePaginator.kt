@@ -16,7 +16,7 @@ import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.ExtensibleBot
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.pagination.builders.PageTransitionCallback
 import dev.kordex.core.pagination.pages.Page
@@ -62,7 +62,6 @@ public val EXPAND_EMOJI: ReactionEmoji.Unicode = ReactionEmoji.Unicode("\u2139\u
  * @param keepEmbed Set this to `false` to remove the paginator's message when it's destroyed
  * @param switchEmoji The `ReactionEmoji` to use for group switching
  * @param locale A Locale object for this pagination context, which defaults to the bot's default locale
- * @param bundle Translation bundle to use for this paginator
  */
 public abstract class BasePaginator(
 	public open val pages: Pages,
@@ -72,7 +71,6 @@ public abstract class BasePaginator(
 	public open val keepEmbed: Boolean = true,
 	public open val switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	public open val mutator: PageTransitionCallback? = null,
-	public open val bundle: String? = null,
 
 	locale: Locale? = null,
 ) : KordExKoinComponent {
@@ -84,9 +82,6 @@ public abstract class BasePaginator(
 	/** Kord instance, backing the ExtensibleBot. **/
 	public val kord: Kord by inject()
 
-	/** Current translations provider. **/
-	public val translations: TranslationsProvider by inject()
-
 	/** Locale to use for translations. **/
 	public open val localeObj: Locale = locale ?: bot.settings.i18nBuilder.defaultLocale
 
@@ -97,13 +92,13 @@ public abstract class BasePaginator(
 	public var currentPageNum: Int = 0
 
 	/** Currently-displayed page group. **/
-	public var currentGroup: String = pages.defaultGroup
+	public var currentGroup: Key = pages.defaultGroup
 
 	/** Whether this paginator is currently active and processing events. **/
 	public open var active: Boolean = true
 
 	/** Set of all page groups. **/
-	public open var allGroups: List<String> = pages.groups.map { it.key }
+	public open var allGroups: List<Key> = pages.groups.map { it.key }
 
 	init {
 		if (pages.groups.filterValues { it.isNotEmpty() }.isEmpty()) {
@@ -123,9 +118,9 @@ public abstract class BasePaginator(
 				val page = pages.get(currentGroup, pageNum)
 
 				result.add(page)
-			} catch (e: NoSuchElementException) {
+			} catch (_: NoSuchElementException) {
 				break
-			} catch (e: IndexOutOfBoundsException) {
+			} catch (_: IndexOutOfBoundsException) {
 				break
 			}
 		}
@@ -146,13 +141,13 @@ public abstract class BasePaginator(
 				logger.debug { "Building page: $it" }
 
 				it.build(
-					localeObj,
-					currentPageNum,
-					chunkedPages,
-					pages.groups[currentGroup]!!.size,
-					groupEmoji,
-					allGroups.indexOf(currentGroup),
-					allGroups.size,
+					locale = localeObj,
+					pageNum = currentPageNum,
+					chunkSize = chunkedPages,
+					pages = pages.groups[currentGroup]!!.size,
+					group = groupEmoji,
+					groupIndex = allGroups.indexOf(currentGroup),
+					groups = allGroups.size,
 					shouldMutateFooter = chunkedPages == 1,
 					mutator = mutator?.pageMutator
 				)()
@@ -164,7 +159,7 @@ public abstract class BasePaginator(
 
 			logger.debug { "Building footer page" }
 
-			Page(bundle) {
+			Page {
 				color = DISCORD_BLURPLE
 			}.build(
 				localeObj,
@@ -243,8 +238,4 @@ public abstract class BasePaginator(
 			}
 		}
 	}
-
-	/** Quick access to translations, using the paginator's locale and bundle. **/
-	public fun translate(key: String, replacements: Array<Any?> = arrayOf()): String =
-		translations.translate(key = key, bundleName = bundle, locale = localeObj, replacements = replacements)
 }

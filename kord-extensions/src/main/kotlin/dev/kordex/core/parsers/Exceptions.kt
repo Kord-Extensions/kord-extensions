@@ -9,6 +9,8 @@
 package dev.kordex.core.parsers
 
 import dev.kordex.core.KordExException
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 
 /**
  * A base exception class for parsers.
@@ -20,9 +22,10 @@ public open class BaseParserException : KordExException()
  *
  * @param error Human-readable error text.
  */
-public open class DurationParserException(public open var error: String) : BaseParserException() {
-	override val message: String? = error
-	override fun toString(): String = error
+public open class DurationParserException(public open var error: Key) : BaseParserException() {
+	override val message: String? = toString()
+
+	override fun toString(): String = error.toString()
 }
 
 /**
@@ -30,4 +33,6 @@ public open class DurationParserException(public open var error: String) : BaseP
  *
  * @param unit Invalid unit.
  */
-public class InvalidTimeUnitException(public val unit: String) : DurationParserException(unit)
+public class InvalidTimeUnitException(public val unit: String) : DurationParserException(
+	CoreTranslations.Converters.Duration.Error.invalidUnit.withOrdinalPlaceholders(unit)
+)

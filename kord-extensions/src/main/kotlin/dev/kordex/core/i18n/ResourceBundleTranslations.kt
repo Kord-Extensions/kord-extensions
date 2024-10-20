@@ -10,6 +10,7 @@ package dev.kordex.core.i18n
 
 import com.ibm.icu.text.MessageFormat
 import dev.kordex.core.builders.ExtensibleBotBuilder
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.plugins.PluginManager
 import io.github.oshai.kotlinlogging.KLogger
@@ -40,14 +41,16 @@ public open class ResourceBundleTranslations(
 	private val bundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 	private val overrideBundles: MutableMap<Pair<String, Locale>, ResourceBundle> = mutableMapOf()
 
-	public override fun hasKey(key: String, bundleName: String?, locale: Locale): Boolean {
-		return try {
-			val (bundle, _) = getBundles(bundleName, locale)
+	public override fun hasKey(key: Key): Boolean {
+		val (key, bundle, locale) = key
 
-			// Overrides aren't for adding keys, so we don't check them
+		return try {
+			val (bundle, _) = getBundles(bundle?.name, locale)
+
+			// Overrides aren't for adding keys, so we don't check them.
 			bundle.keys.toList().contains(key)
 		} catch (e: MissingResourceException) {
-			logger.trace(e) { "Failed to get bundle $bundleName for locale $locale" }
+			logger.trace(e) { "Failed to get $bundle for locale $locale" }
 
 			false
 		}
@@ -153,60 +156,67 @@ public open class ResourceBundleTranslations(
 	}
 
 	@Throws(MissingResourceException::class)
-	public override fun get(key: String, bundleName: String?, locale: Locale?): String {
-		val (bundle, overrideBundle) = getBundles(bundleName, locale)
-		val result = overrideBundle?.getStringOrNull(key) ?: bundle.getString(key)
+	public override fun get(key: Key): String {
+		val (key, bundle, locale) = key
+
+		val (baseBundle, overrideBundle) = getBundles(bundle?.name, locale)
+		val result = overrideBundle?.getStringOrNull(key) ?: baseBundle.getString(key)
 
 		logger.trace { "Result: $key -> $result" }
 
 		return result
 	}
 
-	/**
-	 * Retrieve a translated string from a [key] in a given [bundleName].
-	 *
-	 * The string's parameters are not replaced.
-	 */
-	protected fun getTranslatedString(key: String, locale: Locale?, bundleName: String?): String {
-		var string = try {
-			get(key, bundleName, locale)
+	/** Retrieve an unformatted, translated string from a translation [key]. **/
+	protected fun getTranslatedString(key: Key): String {
+		val bundle = key.bundle
+
+		var string: String = try {
+			get(key)
 		} catch (_: MissingResourceException) {
-			key
+			key.key
 		}
 
 		return try {
-			if (string == key && bundleName != null) {
+			if (string == key.key && bundle != null) {
 				// Fall through to the default bundle if the key isn't found
-				logger.trace { "'$key' not found in bundle '$bundleName' - falling through to '$KORDEX_KEY'" }
+				logger.trace { "$key not found - falling through to $KORDEX_BUNDLE" }
 
-				string = get(key, KORDEX_KEY, locale)
+				string = get(key.withBundle(KORDEX_BUNDLE))
 			}
 
 			string
 		} catch (e: MissingResourceException) {
 			logger.trace(e) {
-				if (bundleName == null) {
-					"Unable to find translation for key '$key' in bundle '$KORDEX_KEY'"
+				if (bundle == null) {
+					"Unable to find translation for $key"
 				} else {
-					"Unable to find translation for key '$key' in bundles: '$bundleName', '$KORDEX_KEY'"
+					"Unable to find translation for ${key.withoutBundle()} in $bundle or $KORDEX_BUNDLE"
 				}
 			}
 
-			key
+			key.key
 		}
 	}
 
-	override fun translate(key: String, bundleName: String?, locale: Locale?, replacements: Array<Any?>): String {
-		val string = getTranslatedString(key, locale, bundleName)
+	override fun translate(
+		key: Key,
+		replacements: Array<Any?>,
+	): String {
+		val locale = key.locale
 
+		val string = getTranslatedString(key)
 		val formatter = MessageFormat(string, locale)
 
 		return formatter.format(replacements)
 	}
 
-	override fun translate(key: String, bundleName: String?, locale: Locale?, replacements: Map<String, Any?>): String {
-		val string = getTranslatedString(key, locale, bundleName)
-
+	override fun translateNamed(
+		key: Key,
+		replacements: Map<String, Any?>,
+	): String {
+		val locale = key.locale
+		val string = getTranslatedString(key)
 		val formatter = MessageFormat(string, locale)
 
 		return formatter.format(replacements)

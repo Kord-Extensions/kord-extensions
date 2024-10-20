@@ -13,6 +13,13 @@ metadata {
 	description = "KordEx extra module that provides a set of commands for storing and retrieving tagged text snippets"
 }
 
+getTranslations(
+	"func-tags",
+	"dev.kordex.modules.func.tags.i18n",
+	"kordex.func-tags",
+	"TagsTranslations"
+)
+
 repositories {
 	maven {
 		name = "Sonatype Snapshots"

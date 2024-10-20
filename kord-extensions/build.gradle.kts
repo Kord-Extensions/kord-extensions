@@ -14,7 +14,7 @@ plugins {
 	`ksp-module`
 }
 
-getTranslations("core")
+getTranslations("core", "dev.kordex.core.i18n", "kordex.strings", "CoreTranslations")
 
 metadata {
 	name = "KordEx Core"

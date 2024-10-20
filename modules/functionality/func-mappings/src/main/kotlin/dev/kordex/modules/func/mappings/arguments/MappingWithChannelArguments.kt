@@ -8,11 +8,11 @@
 
 package dev.kordex.modules.func.mappings.arguments
 
-import dev.kordex.core.commands.application.slash.converters.ChoiceEnum
+import dev.kordex.modules.func.mappings.enums.Channels
 import me.shedaniel.linkie.Namespace
 
 /** An argument base which provides an argument for a mapping channel. **/
 @Suppress("UndocumentedPublicProperty")
 abstract class MappingWithChannelArguments(namespace: Namespace) : MappingArguments(namespace) {
-	abstract val channel: ChoiceEnum?
+	abstract val channel: Channels?
 }

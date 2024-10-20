@@ -21,10 +21,14 @@ import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
 import dev.kordex.core.commands.converters.*
+import dev.kordex.core.commands.converters.types.MultiNamedInputConverter
+import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.MutableStringKeyedMap
+import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.koin.core.component.inject
 import java.util.*
@@ -49,8 +53,344 @@ public open class ChatCommandParser : KordExKoinComponent {
 	/** Current instance of the bot. **/
 	public open val bot: ExtensibleBot by inject()
 
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
+	public open suspend fun doParse(
+		arguments: Arguments,
+		argument: Argument<*>,
+		parser: StringParser,
+		context: ChatCommandContext<*>,
+		kwArgs: MutableList<String>?,
+	): Any {
+		if (kwArgs != null && kwArgs.size != 1) {
+			throw ArgumentParsingException(
+				reason = CoreTranslations.ArgumentParser.Error.requiresOneValue
+					.withContext(context)
+					.withOrdinalPlaceholders(argument.displayName, kwArgs.size),
+
+				argument = argument,
+				arguments = arguments,
+				parser = parser
+			)
+		}
+
+		return try {
+			when (val c = argument.converter) {
+				is SingleNamedInputConverter<*, *, *> -> c.parse(parser, context, kwArgs?.first())
+				is MultiNamedInputConverter<*, *, *> -> c.parse(parser, context, kwArgs)
+
+				else -> {
+					logger.error {
+						"Converter $c doesn't implement SingleNamedInputConverter or MultiNamedInputConverter"
+					}
+
+					throw ArgumentParsingException(
+						CoreTranslations.ArgumentParser.Error.errorInArgument
+							.withContext(context)
+							.withOrdinalPlaceholders(
+								argument.displayName,
+
+								CoreTranslations.ArgumentParser.Error.unknownConverterType
+									.withOrdinalPlaceholders(c)
+							),
+
+						argument,
+						arguments,
+						parser
+					)
+				}
+			}
+		} catch (e: Exception) {
+			e
+		}
+	}
+
+	public open suspend fun handleThrowable(
+		arguments: Arguments,
+		argument: Argument<*>,
+		parser: StringParser,
+		context: ChatCommandContext<*>,
+		kwArgs: MutableList<String>?,
+		throwable: Throwable,
+	) {
+		val hasKwargs = kwArgs != null
+
+		val doRelay = when (val c = argument.converter) {
+			is SingleConverter<*> -> c.required || hasKwargs
+
+			is DefaultingConverter<*> -> (c.required || c.outputError || hasKwargs) &&
+				throwable is DiscordRelayedException
+
+			is OptionalConverter<*> -> if (throwable is DiscordRelayedException) {
+				c.required || c.outputError || hasKwargs
+			} else {
+				c.required || hasKwargs
+			}
+
+			is ListConverter<*> -> c.required
+			is CoalescingConverter<*> -> c.required
+			is OptionalCoalescingConverter<*> -> c.required || c.outputError || hasKwargs
+
+			is DefaultingCoalescingConverter<*> -> if (throwable is DiscordRelayedException) {
+				c.required || c.outputError || hasKwargs
+			} else {
+				c.required || hasKwargs
+			}
+
+			else -> {
+				logger.error { "Converter with unknown base type: $c" }
+
+				throw ArgumentParsingException(
+					CoreTranslations.ArgumentParser.Error.errorInArgument
+						.withContext(context)
+						.withOrdinalPlaceholders(
+							argument.displayName,
+
+							CoreTranslations.ArgumentParser.Error.unknownConverterType
+								.withOrdinalPlaceholders(c)
+						),
+
+					argument,
+					arguments,
+					parser
+				)
+			}
+		}
+
+		if (!doRelay) {
+			return
+		}
+
+		when (val t = throwable) {
+			is ArgumentParsingException -> throw t
+
+			is DiscordRelayedException -> throw ArgumentParsingException(
+					CoreTranslations.ArgumentParser.Error.errorInArgument
+						.withContext(context)
+						.withOrdinalPlaceholders(
+							argument.displayName,
+							argument.converter.handleError(t, context)
+						),
+
+					argument,
+					arguments,
+					parser
+				)
+
+			else -> {
+				logger.warn(t) { "Exception thrown by argument: ${argument.displayName.key}" }
+
+				throw t
+			}
+		}
+	}
+
+	public suspend fun throwInvalidValue(
+		arguments: Arguments,
+		argument: Argument<*>,
+		parser: StringParser,
+		context: ChatCommandContext<*>,
+	): Nothing {
+		val c = argument.converter
+
+		throw ArgumentParsingException(
+			CoreTranslations.ArgumentParser.Error.invalidValue
+				.withContext(context)
+				.withOrdinalPlaceholders(
+					argument.displayName,
+
+					c.getErrorKey()
+				),
+
+			argument,
+			arguments,
+			parser
+		)
+	}
+
+	public suspend fun throwNotAllValid(
+		arguments: Arguments,
+		argument: Argument<*>,
+		parser: StringParser,
+		context: ChatCommandContext<*>,
+		numArgs: Int,
+		numParsed: Int,
+	): Nothing {
+		val c = argument.converter
+
+		throw ArgumentParsingException(
+			CoreTranslations.ArgumentParser.Error.notAllValid
+				.withContext(context)
+				.withOrdinalPlaceholders(
+					argument.displayName,
+
+					numArgs,
+					numParsed,
+					c.signatureType
+				),
+
+			argument,
+			arguments,
+			parser
+		)
+	}
+
+	public open suspend fun checkResult(
+		arguments: Arguments,
+		argument: Argument<*>,
+		parser: StringParser,
+		context: ChatCommandContext<*>,
+		kwArgs: MutableList<String>?,
+		result: Any,
+	) {
+		val hasKwargs = kwArgs != null
+
+		when (val c = argument.converter) {
+			is SingleConverter<*> ->  {
+				result as Boolean
+
+				if ((c.required || hasKwargs) && !result) {
+					throwInvalidValue(arguments, argument, parser, context)
+				}
+
+				if (result) {
+					logger.trace { "Argument ${argument.displayName} successfully filled." }
+
+					c.parseSuccess = true
+
+					c.validate(context)
+				}
+			}
+
+			is DefaultingConverter<*> -> {
+				result as Boolean
+
+				if (result) {
+					logger.trace { "Successfully filled argument: ${argument.displayName.key}" }
+
+					c.parseSuccess = true
+				}
+
+				c.validate(context)
+			}
+
+			is OptionalConverter<*> -> {
+				result as Boolean
+
+				if (result) {
+					logger.trace { "Successfully filled argument: ${argument.displayName.key}" }
+
+					c.parseSuccess = true
+				}
+
+				c.validate(context)
+			}
+
+			is ListConverter<*> -> {
+				result as Int
+
+				if ((c.required || hasKwargs) && result < 1) {
+					throwInvalidValue(arguments, argument, parser, context)
+				}
+
+				if (hasKwargs) {
+					if (result < kwArgs.size) {
+						throwNotAllValid(arguments, argument, parser, context, kwArgs.size, result)
+					}
+
+					c.parseSuccess = true
+				} else if (result > 0) {
+					logger.trace { "Successfully filled argument: ${argument.displayName.key}" }
+
+					c.parseSuccess = true
+				}
+
+				c.validate(context)
+			}
+
+			is CoalescingConverter<*> -> {
+				result as Int
+
+				if ((c.required || hasKwargs) && result < 1) {
+					throwInvalidValue(arguments, argument, parser, context)
+				}
+
+				if (hasKwargs) {
+					if (result < kwArgs.size) {
+						throwNotAllValid(arguments, argument, parser, context, kwArgs.size, result)
+					}
+
+					c.parseSuccess = true
+					c.validate(context)
+				} else if (result > 0) {
+					logger.trace { "Successfully filled argument: ${argument.displayName.key}" }
+
+					c.parseSuccess = true
+					c.validate(context)
+				}
+			}
+
+			is OptionalCoalescingConverter<*> -> {
+				result as Int
+
+				if ((c.required || hasKwargs) && result < 1) {
+					throwInvalidValue(arguments, argument, parser, context)
+				}
+
+				if (hasKwargs) {
+					if (result < kwArgs.size) {
+						throwNotAllValid(arguments, argument, parser, context, kwArgs.size, result)
+					}
+
+					c.parseSuccess = true
+				} else if (result > 0) {
+					logger.trace { "Successfully filled argument: ${argument.displayName.key}" }
+
+					c.parseSuccess = true
+				}
+
+				c.validate(context)
+			}
+
+			is DefaultingCoalescingConverter<*> -> {
+				result as Int
+
+				if ((c.required || hasKwargs) && result < 1) {
+					throwInvalidValue(arguments, argument, parser, context)
+				}
+
+				if (hasKwargs) {
+					if (result < kwArgs.size) {
+						throwNotAllValid(arguments, argument, parser, context, kwArgs.size, result)
+					}
+
+					c.parseSuccess = true
+				} else if (result > 0) {
+					logger.trace { "Successfully filled argument: ${argument.displayName.key}" }
+
+					c.parseSuccess = true
+				}
+
+				c.validate(context)
+			}
+
+			else -> {
+				logger.error { "Converter with unknown base type: $c" }
+
+				throw ArgumentParsingException(
+					CoreTranslations.ArgumentParser.Error.errorInArgument
+						.withContext(context)
+						.withOrdinalPlaceholders(
+							argument.displayName,
+
+							CoreTranslations.ArgumentParser.Error.unknownConverterType
+						),
+
+					argument,
+					arguments,
+					parser
+				)
+			}
+		}
+	}
 
 	/**
 	 * Given a builder returning an [Arguments] subclass and [CommandContext], parse the command's arguments into
@@ -76,14 +416,14 @@ public open class ChatCommandParser : KordExKoinComponent {
 	 */
 	public open suspend fun <T : Arguments> parse(builder: () -> T, context: ChatCommandContext<*>): T {
 		val argumentsObj = builder.invoke()
-		argumentsObj.validate()
+		argumentsObj.validate(context.getLocale())
 
 		val parser = context.parser
 
 		logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
 		val args = argumentsObj.args.toMutableList()
-		val argsMap = args.associateBy { it.displayName.lowercase() }
+		val argsMap = args.associateBy { it.displayName.key.lowercase() }
 		val keywordArgs: MutableStringKeyedMap<MutableList<String>> = mutableMapOf()
 
 		if (context.chatCommand.allowKeywordArguments) {
@@ -110,7 +450,7 @@ public open class ChatCommandParser : KordExKoinComponent {
 
 			val kwValue = keywordArgs[
 				currentArg
-					.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)
+					.getDefaultTranslatedDisplayName()
 					.lowercase(context.getLocale())
 			]
 
@@ -123,680 +463,13 @@ public open class ChatCommandParser : KordExKoinComponent {
 				continue
 			}
 
-			when (val converter = currentArg.converter) {
-				is SingleConverter<*> -> try {
-					val parsed = if (hasKwargs) {
-						if (kwValue!!.size != 1) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.requiresOneValue",
-									replacements = arrayOf(currentArg.displayName, kwValue.size)
-								),
+			val parsed = doParse(argumentsObj, currentArg, parser, context, kwValue)
 
-								"argumentParser.error.requiresOneValue",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parse(parser, context, kwValue.first())
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if ((converter.required || hasKwargs) && !parsed) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.getErrorString(context),
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-
-					if (parsed) {
-						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
-
-						converter.parseSuccess = true
-
-						converter.validate(context)
-					}
-				} catch (e: DiscordRelayedException) {
-					if (converter.required || hasKwargs) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-
-					if (converter.required || hasKwargs) {
-						throw t
-					}
-				}
-
-				is DefaultingConverter<*> -> try {
-					val parsed = if (hasKwargs) {
-						if (kwValue!!.size != 1) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.requiresOneValue",
-									replacements = arrayOf(currentArg.displayName, kwValue.size)
-								),
-
-								"argumentParser.error.requiresOneValue",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parse(parser, context, kwValue.first())
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if (parsed) {
-						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
-
-						converter.parseSuccess = true
-					}
-
-					converter.validate(context)
-				} catch (e: DiscordRelayedException) {
-					if (converter.required || converter.outputError || hasKwargs) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-				}
-
-				is OptionalConverter<*> -> try {
-					val parsed = if (hasKwargs) {
-						if (kwValue!!.size != 1) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.requiresOneValue",
-									replacements = arrayOf(currentArg.displayName, kwValue.size)
-								),
-
-								"argumentParser.error.requiresOneValue",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parse(parser, context, kwValue.first())
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if (parsed) {
-						logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
-
-						converter.parseSuccess = true
-					}
-
-					converter.validate(context)
-				} catch (e: DiscordRelayedException) {
-					if (converter.required || converter.outputError || hasKwargs) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-
-					if (converter.required || hasKwargs) {
-						throw t
-					}
-				}
-
-				is ListConverter<*> -> try {
-					val parsedCount = if (hasKwargs) {
-						converter.parse(parser, context, kwValue!!)
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if ((converter.required || hasKwargs) && parsedCount <= 0) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.getErrorString(context)
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-
-					if (hasKwargs) {
-						if (parsedCount < kwValue!!.size) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.notAllValid",
-
-									replacements = arrayOf(
-										context.translate(
-											currentArg.displayName,
-											bundleName = converter.bundle
-										),
-
-										kwValue.size,
-										parsedCount,
-										context.translate(converter.signatureTypeString, bundleName = converter.bundle)
-									)
-								),
-
-								"argumentParser.error.notAllValid",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parseSuccess = true
-					} else {
-						if (parsedCount > 0) {
-							logger.trace { "Argument ${currentArg!!.displayName} successfully filled." }
-
-							converter.parseSuccess = true
-						}
-					}
-
-					converter.validate(context)
-				} catch (e: DiscordRelayedException) {
-					if (converter.required) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-
-					if (converter.required) {
-						throw t
-					}
-				}
-
-				is CoalescingConverter<*> -> try {
-					val parsedCount = if (hasKwargs) {
-						converter.parse(parser, context, kwValue!!)
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if ((converter.required || hasKwargs) && parsedCount <= 0) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.getErrorString(context),
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-
-					if (hasKwargs) {
-						if (parsedCount < kwValue!!.size) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.notAllValid",
-
-									replacements = arrayOf(
-										context.translate(
-											currentArg.displayName,
-											bundleName = converter.bundle
-										),
-
-										kwValue.size,
-										parsedCount,
-										context.translate(converter.signatureTypeString, bundleName = converter.bundle)
-									)
-								),
-
-								"argumentParser.error.notAllValid",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parseSuccess = true
-
-						converter.validate(context)
-					} else {
-						if (parsedCount > 0) {
-							logger.trace { "Argument '${currentArg!!.displayName}' successfully filled." }
-
-							converter.parseSuccess = true
-
-							converter.validate(context)
-						}
-					}
-				} catch (e: DiscordRelayedException) {
-					if (converter.required) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-
-					if (converter.required) {
-						throw t
-					}
-				}
-
-				is OptionalCoalescingConverter<*> -> try {
-					val parsedCount = if (hasKwargs) {
-						converter.parse(parser, context, kwValue!!)
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if ((converter.required || hasKwargs) && parsedCount <= 0) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.getErrorString(context),
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-
-					if (hasKwargs) {
-						if (parsedCount < kwValue!!.size) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.notAllValid",
-
-									replacements = arrayOf(
-										context.translate(
-											currentArg.displayName,
-											bundleName = converter.bundle
-										),
-
-										kwValue.size,
-										parsedCount,
-										context.translate(converter.signatureTypeString, bundleName = converter.bundle)
-									)
-								),
-
-								"argumentParser.error.notAllValid",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parseSuccess = true
-					} else {
-						if (parsedCount > 0) {
-							logger.trace { "Argument '${currentArg!!.displayName}' successfully filled." }
-
-							converter.parseSuccess = true
-						}
-					}
-
-					converter.validate(context)
-				} catch (e: DiscordRelayedException) {
-					if (converter.required || converter.outputError || hasKwargs) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-
-					if (converter.required || converter.outputError || hasKwargs) {
-						throw t
-					}
-				}
-
-				is DefaultingCoalescingConverter<*> -> try {
-					val parsedCount = if (hasKwargs) {
-						converter.parse(parser, context, kwValue!!)
-					} else {
-						converter.parse(parser, context)
-					}
-
-					if ((converter.required || hasKwargs) && parsedCount <= 0) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.getErrorString(context),
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-
-					if (hasKwargs) {
-						if (parsedCount < kwValue!!.size) {
-							throw ArgumentParsingException(
-								context.translate(
-									"argumentParser.error.notAllValid",
-
-									replacements = arrayOf(
-										context.translate(
-											currentArg.displayName,
-											bundleName = context.command.resolvedBundle ?: converter.bundle
-										),
-
-										kwValue.size,
-										parsedCount,
-										context.translate(converter.signatureTypeString, bundleName = converter.bundle)
-									)
-								),
-
-								"argumentParser.error.notAllValid",
-
-								context.getLocale(),
-								context.command.resolvedBundle ?: converter.bundle,
-
-								currentArg,
-								argumentsObj,
-								parser
-							)
-						}
-
-						converter.parseSuccess = true
-					} else {
-						if (parsedCount > 0) {
-							logger.trace { "Argument '${currentArg!!.displayName}' successfully filled." }
-
-							converter.parseSuccess = true
-						}
-					}
-
-					converter.validate(context)
-				} catch (e: DiscordRelayedException) {
-					if (converter.required || converter.outputError || hasKwargs) {
-						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.errorInArgument",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
-
-									converter.handleError(e, context)
-								)
-							),
-
-							"argumentParser.error.errorInArgument",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
-
-							currentArg,
-							argumentsObj,
-							parser
-						)
-					}
-				} catch (t: Throwable) {
-					logger.debug { "Argument ${currentArg!!.displayName} threw: $t" }
-
-					if (converter.required || converter.outputError) {
-						throw t
-					}
-				}
-
-				else -> throw ArgumentParsingException(
-					context.translate(
-						"argumentParser.error.errorInArgument",
-
-						replacements = arrayOf(
-							context.translate(
-								currentArg.displayName,
-								bundleName = context.command.resolvedBundle ?: converter.bundle
-							),
-
-							context.translate(
-								"argumentParser.error.unknownConverterType",
-								replacements = arrayOf(currentArg.converter)
-							)
-						)
-					),
-
-					"argumentParser.error.errorInArgument",
-
-					context.getLocale(),
-					context.command.resolvedBundle ?: converter.bundle,
-
-					currentArg,
-					argumentsObj,
-					parser
-				)
+			if (parsed is Exception) {
+				handleThrowable(argumentsObj, currentArg, parser, context, kwValue, parsed)
 			}
+
+			checkResult(argumentsObj, currentArg, parser, context, kwValue, parsed)
 		}
 
 		val allRequiredArgs = argsMap.count { it.value.converter.required }
@@ -807,18 +480,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 		if (filledRequiredArgs < allRequiredArgs) {
 			if (filledRequiredArgs < 1) {
 				throw ArgumentParsingException(
-					context.translate(
-						"argumentParser.error.noFilledArguments",
-
-						replacements = arrayOf(
-							allRequiredArgs
-						)
-					),
-
-					"argumentParser.error.noFilledArguments",
-
-					context.getLocale(),
-					context.command.resolvedBundle,
+					CoreTranslations.ArgumentParser.Error.noFilledArguments
+						.withContext(context)
+						.withOrdinalPlaceholders(allRequiredArgs),
 
 					null,
 					argumentsObj,
@@ -826,19 +490,9 @@ public open class ChatCommandParser : KordExKoinComponent {
 				)
 			} else {
 				throw ArgumentParsingException(
-					context.translate(
-						"argumentParser.error.someFilledArguments",
-
-						replacements = arrayOf(
-							allRequiredArgs,
-							filledRequiredArgs
-						)
-					),
-
-					"argumentParser.error.someFilledArguments",
-
-					context.getLocale(),
-					context.command.resolvedBundle,
+					CoreTranslations.ArgumentParser.Error.someFilledArguments
+						.withContext(context)
+						.withOrdinalPlaceholders(allRequiredArgs, filledRequiredArgs),
 
 					null,
 					argumentsObj,
@@ -868,17 +522,19 @@ public open class ChatCommandParser : KordExKoinComponent {
 					append("[")
 				}
 
-				append(it.displayName)
+				append(
+					it.displayName
+						.withLocale(locale)
+						.translate()
+				)
 
 				if (it.converter.showTypeInSignature) {
 					append(": ")
 
 					append(
-						translationsProvider.translate(
-							key = it.converter.signatureTypeString,
-							bundleName = it.converter.bundle,
-							locale = locale
-						)
+						it.converter.signatureType
+							.withLocale(locale)
+							.translate()
 					)
 
 					if (it.converter is DefaultingConverter<*>) {

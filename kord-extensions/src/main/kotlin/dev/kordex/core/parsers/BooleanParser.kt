@@ -9,7 +9,7 @@
 package dev.kordex.core.parsers
 
 import dev.kordex.core.builders.ExtensibleBotBuilder
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.koin.KordExKoinComponent
 import org.koin.core.component.inject
 import java.util.*
@@ -26,7 +26,6 @@ import java.util.*
  * Translations may be split using commas, in which case any of the given values will be suitable.
  */
 public object BooleanParser : KordExKoinComponent {
-	private val translations: TranslationsProvider by inject()
 	private val settings: ExtensibleBotBuilder by inject()
 
 	private val valueCache: MutableMap<Locale, Pair<List<String>, List<String>>> = mutableMapOf()
@@ -37,11 +36,15 @@ public object BooleanParser : KordExKoinComponent {
 	 */
 	public fun parse(input: String, locale: Locale): Boolean? {
 		if (valueCache[locale] == null) {
-			val trueValues = translations.translate("utils.string.true", locale)
+			val trueValues = CoreTranslations.Utils.String.`true`
+				.withLocale(locale)
+				.translate()
 				.split(',')
 				.map { it.trim() }
 
-			val falseValues = translations.translate("utils.string.false", locale)
+			val falseValues = CoreTranslations.Utils.String.`false`
+				.withLocale(locale)
+				.translate()
 				.split(',')
 				.map { it.trim() }
 

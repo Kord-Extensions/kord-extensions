@@ -14,6 +14,7 @@ import dev.kord.common.entity.TeamMemberRole
 import dev.kord.core.behavior.channel.threads.ThreadChannelBehavior
 import dev.kord.core.event.Event
 import dev.kordex.core.checks.types.CheckContext
+import dev.kordex.core.i18n.generated.CoreTranslations
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 /**
@@ -48,9 +49,7 @@ public suspend fun CheckContext<*>.isBotOwner() {
 	} else {
 		logger.failed("User does not own this bot.")
 
-		fail(
-			translate("checks.isBotOwner.failed")
-		)
+		fail(CoreTranslations.Checks.IsBotOwner.failed)
 	}
 }
 
@@ -82,9 +81,7 @@ public suspend fun CheckContext<*>.isNotBotOwner() {
 	} else if (user.id == owner) {
 		logger.failed("User owns this bot.")
 
-		fail(
-			translate("checks.isNotBotOwner.failed")
-		)
+		fail(CoreTranslations.Checks.IsNotBotOwner.failed)
 	} else {
 		logger.failed("User does not own this bot.")
 
@@ -127,9 +124,7 @@ public suspend fun CheckContext<*>.isBotAdmin() {
 	} else {
 		logger.failed("User does not administrate this bot.")
 
-		fail(
-			translate("checks.isBotAdmin.failed")
-		)
+		fail(CoreTranslations.Checks.IsBotAdmin.failed)
 	}
 }
 
@@ -164,9 +159,7 @@ public suspend fun CheckContext<*>.isNotBotAdmin() {
 	} else if (user.id in admins) {
 		logger.failed("User administrates this bot.")
 
-		fail(
-			translate("checks.isNotBotAdmin.failed")
-		)
+		fail(CoreTranslations.Checks.IsNotBotAdmin.failed)
 	} else {
 		logger.passed("User does not administrate this bot.")
 
@@ -196,9 +189,7 @@ public suspend fun CheckContext<*>.isBot() {
 	} else {
 		logger.failed("User is not a bot.")
 
-		fail(
-			translate("checks.isBot.failed")
-		)
+		fail(CoreTranslations.Checks.IsBot.failed)
 	}
 }
 
@@ -224,9 +215,7 @@ public suspend fun CheckContext<*>.isNotBot() {
 	} else {
 		logger.failed("User is a bot.")
 
-		fail(
-			translate("checks.isNotBot.failed")
-		)
+		fail(CoreTranslations.Checks.IsNotBot.failed)
 	}
 }
 
@@ -256,9 +245,7 @@ public suspend fun CheckContext<*>.isInThread() {
 		else -> {
 			logger.failed("Channel is not a thread.")
 
-			fail(
-				translate("checks.isInThread.failed")
-			)
+			fail(CoreTranslations.Checks.IsInThread.failed)
 		}
 	}
 }
@@ -290,9 +277,7 @@ public suspend fun CheckContext<*>.isNotInThread() {
 		else -> {
 			logger.failed("Channel is a thread.")
 
-			fail(
-				translate("checks.isNotInThread.failed")
-			)
+			fail(CoreTranslations.Checks.IsNotInThread.failed)
 		}
 	}
 }

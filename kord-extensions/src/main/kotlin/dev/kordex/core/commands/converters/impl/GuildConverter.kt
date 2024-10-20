@@ -12,16 +12,19 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -44,8 +47,7 @@ import kotlinx.coroutines.flow.firstOrNull
 public class GuildConverter(
 	override var validator: Validator<Guild> = null,
 ) : SingleConverter<Guild>() {
-	override val signatureTypeString: String = "converters.guild.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Guild.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -62,7 +64,9 @@ public class GuildConverter(
 
 		this.parsed = findGuild(arg)
 			?: throw DiscordRelayedException(
-				context.translate("converters.guild.error.missing", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Guild.Error.missing
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			)
 
 		return true
@@ -73,19 +77,23 @@ public class GuildConverter(
 			val id = Snowflake(arg)
 
 			kord.getGuildOrNull(id)
-		} catch (e: NumberFormatException) { // It's not an ID, let's try the name
+		} catch (_: NumberFormatException) { // It's not an ID, let's try the name
 			kord.guilds.firstOrNull { it.name.equals(arg, true) }
 		}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false
 
 		this.parsed = findGuild(optionValue)
 			?: throw DiscordRelayedException(
-				context.translate("converters.guild.error.missing", replacements = arrayOf(optionValue))
+				CoreTranslations.Converters.Guild.Error.missing
+					.withContext(context)
+					.withOrdinalPlaceholders(optionValue)
 			)
 
 		return true

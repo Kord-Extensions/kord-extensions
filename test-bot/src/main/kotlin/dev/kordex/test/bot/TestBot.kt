@@ -18,6 +18,7 @@ import dev.kord.rest.builder.message.embed
 import dev.kordex.core.DISCORD_BLURPLE
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.KORDEX_VERSION
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.checks.isNotBot
 import dev.kordex.core.utils.env
@@ -33,7 +34,7 @@ import org.koin.core.logger.Level
 
 public val TEST_SERVER_ID: Snowflake = Snowflake(env("TEST_SERVER"))
 
-@OptIn(PrivilegedIntent::class)
+@OptIn(PrivilegedIntent::class, NotTranslated::class)
 public suspend fun main() {
 	LogLevel.enabledLevel = LogLevel.fromString(envOrNull("LOG_LEVEL") ?: "INFO") ?: LogLevel.INFO
 

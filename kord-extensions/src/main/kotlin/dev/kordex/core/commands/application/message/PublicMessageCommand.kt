@@ -25,6 +25,9 @@ import dev.kordex.core.commands.events.PublicMessageCommandInvocationEvent
 import dev.kordex.core.commands.events.PublicMessageCommandSucceededEvent
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -66,7 +69,9 @@ public class PublicMessageCommand<M : ModalForm>(
 					PublicMessageCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 
@@ -74,7 +79,11 @@ public class PublicMessageCommand<M : ModalForm>(
 			}
 		} catch (e: DiscordRelayedException) {
 			event.interaction.respondEphemeral {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(PublicMessageCommandFailedChecksEvent(this, event, e.reason))
@@ -92,10 +101,10 @@ public class PublicMessageCommand<M : ModalForm>(
 			val locale = event.getLocale()
 
 			event.interaction.modal(
-				modalObj.translateTitle(locale, resolvedBundle),
+				modalObj.translateTitle(locale),
 				modalObj.id
 			) {
-				modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+				modalObj.applyToBuilder(this, event.getLocale())
 			}
 
 			modalObj.awaitCompletion {
@@ -116,7 +125,12 @@ public class PublicMessageCommand<M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			respondText(
+				context,
+				e.reason.withContext(context),
+				FailureReason.OwnPermissionsCheckFailure(e)
+			)
+
 			emitEventAsync(PublicMessageCommandFailedChecksEvent(this, event, e.reason))
 
 			return
@@ -128,7 +142,11 @@ public class PublicMessageCommand<M : ModalForm>(
 			emitEventAsync(PublicMessageCommandFailedWithExceptionEvent(this, event, t))
 
 			if (t is DiscordRelayedException) {
-				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+				respondText(
+					context,
+					t.reason.withContext(context),
+					FailureReason.RelayedFailure(t)
+				)
 
 				return
 			}
@@ -143,7 +161,7 @@ public class PublicMessageCommand<M : ModalForm>(
 
 	override suspend fun respondText(
 		context: PublicMessageCommandContext<M>,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		context.respond { settings.failureResponseBuilder(this, message, failureType) }

@@ -21,6 +21,8 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.events.CommandEvent
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryAdapter
 import dev.kordex.core.types.Lockable
@@ -44,20 +46,10 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 	/**
 	 * The name of this command, for invocation and help commands.
 	 */
-	public open lateinit var name: String
+	public open lateinit var name: Key
 
 	/** Set this to `true` to lock command execution with a Mutex. **/
 	public override var locking: Boolean = false
-
-	/** Translation bundle to use, if not the one provided by the extension. **/
-	public var bundle: String? = null
-
-	/**
-	 * @suppress Bundle getter that exists because the extension bundle may have changed by the time the command is
-	 * registered.
-	 */
-	public val resolvedBundle: String?
-		get() = bundle ?: extension.bundle
 
 	override var mutex: Mutex? = null
 
@@ -86,7 +78,7 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 	 */
 	@Throws(InvalidCommandException::class)
 	public open fun validate() {
-		if (!::name.isInitialized || name.isEmpty()) {
+		if (!::name.isInitialized || name.key.isEmpty()) {
 			throw InvalidCommandException(null, "No command name given.")
 		}
 
@@ -119,16 +111,13 @@ public abstract class Command(public val extension: Extension) : Lockable, KordE
 
 			if (missingPerms.isNotEmpty()) {
 				throw DiscordRelayedException(
-					context.translate(
-						"commands.error.missingBotPermissions",
-						null,
-
-						replacements = arrayOf(
+					CoreTranslations.Commands.Error.missingBotPermissions
+						.withLocale(context.getLocale())
+						.withOrdinalPlaceholders(
 							missingPerms
 								.map { it.translate(context.getLocale()) }
 								.joinToString()
 						)
-					)
 				)
 			}
 		}

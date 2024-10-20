@@ -12,8 +12,6 @@ import dev.kord.common.asJavaLocale
 import dev.kord.common.kLocale
 import dev.kord.core.entity.interaction.Interaction
 import dev.kordex.core.annotations.BotBuilderDSL
-import dev.kordex.core.annotations.tooling.Translatable
-import dev.kordex.core.annotations.tooling.TranslatableType
 import dev.kordex.core.i18n.ResourceBundleTranslations
 import dev.kordex.core.i18n.SupportedLocales
 import dev.kordex.core.i18n.TranslationsProvider
@@ -23,8 +21,7 @@ import dev.kord.common.Locale as KLocale
 /** Builder used to configure i18n options. **/
 @BotBuilderDSL
 public class I18nBuilder {
-	/** Locale that should be used by default. **/
-	@Translatable(TranslatableType.LOCALE)
+
 	public var defaultLocale: Locale = SupportedLocales.ENGLISH
 
 	/**
@@ -59,7 +56,6 @@ public class I18nBuilder {
 	 */
 	@JvmName("applicationCommandLocale_v1")
 	public fun applicationCommandLocale(
-		@Translatable(TranslatableType.LOCALE)
 		vararg locales: KLocale,
 	) {
 		applicationCommandLocales.addAll(locales.toList())
@@ -72,7 +68,6 @@ public class I18nBuilder {
 	 */
 	@JvmName("applicationCommandLocale_v2")
 	public fun applicationCommandLocale(
-		@Translatable(TranslatableType.LOCALE)
 		vararg locales: Locale,
 	) {
 		applicationCommandLocales.addAll(locales.map { it.kLocale })
@@ -85,7 +80,6 @@ public class I18nBuilder {
 	 */
 	@JvmName("applicationCommandLocale_c1")
 	public fun applicationCommandLocale(
-		@Translatable(TranslatableType.LOCALE)
 		locales: Collection<KLocale>,
 	) {
 		applicationCommandLocales.addAll(locales)
@@ -98,7 +92,6 @@ public class I18nBuilder {
 	 */
 	@JvmName("applicationCommandLocale_c2")
 	public fun applicationCommandLocale(
-		@Translatable(TranslatableType.LOCALE)
 		locales: Collection<Locale>,
 	) {
 		applicationCommandLocales.addAll(locales.map { it.kLocale })

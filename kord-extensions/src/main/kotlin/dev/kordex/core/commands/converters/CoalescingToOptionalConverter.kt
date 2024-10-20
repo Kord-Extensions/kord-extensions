@@ -9,10 +9,11 @@
 package dev.kordex.core.commands.converters
 
 import dev.kord.core.entity.interaction.OptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -31,16 +32,16 @@ import dev.kordex.parser.StringParser
 public class CoalescingToOptionalConverter<T : Any>(
 	public val coalescingConverter: CoalescingConverter<T>,
 
-	newSignatureTypeString: String? = null,
+	newSignatureType: Key? = null,
 	newShowTypeInSignature: Boolean? = null,
-	newErrorTypeString: String? = null,
+	newErrorType: Key? = null,
 	outputError: Boolean = false,
 
 	override var validator: Validator<T?> = null,
 ) : OptionalCoalescingConverter<T>(outputError) {
-	override val signatureTypeString: String = newSignatureTypeString ?: coalescingConverter.signatureTypeString
+	override val signatureType: Key = newSignatureType ?: coalescingConverter.signatureType
 	override val showTypeInSignature: Boolean = newShowTypeInSignature ?: coalescingConverter.showTypeInSignature
-	override val errorTypeString: String? = newErrorTypeString ?: coalescingConverter.errorTypeString
+	override val errorType: Key? = newErrorType ?: coalescingConverter.errorType
 
 	private val dummyArgs = Arguments()
 
@@ -57,11 +58,14 @@ public class CoalescingToOptionalConverter<T : Any>(
 	override suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-	): String = coalescingConverter.handleError(t, context)
+	): Key = coalescingConverter.handleError(t, context)
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<*> {
 		val option = coalescingConverter.toSlashOption(arg)
-		option.required = false
+
+		option.modify {
+			required = false
+		}
 
 		return option
 	}

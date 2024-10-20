@@ -15,6 +15,7 @@ import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.annotations.ExtensionDSL
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.components.forms.ModalForm
+import dev.kordex.core.i18n.types.Key
 
 private const val SUBCOMMAND_AND_GROUP_LIMIT: Int = 25
 
@@ -30,7 +31,7 @@ private const val SUBCOMMAND_AND_GROUP_LIMIT: Int = 25
  * @param body Lambda used to build the [SlashGroup] object.
  */
 @ExtensionDSL
-public suspend fun SlashCommand<*, *, *>.group(name: String, body: suspend SlashGroup.() -> Unit): SlashGroup {
+public suspend fun SlashCommand<*, *, *>.group(name: Key, body: suspend SlashGroup.() -> Unit): SlashGroup {
 	if (parentCommand != null) {
 		error("Command groups may not be nested inside subcommands.")
 	}

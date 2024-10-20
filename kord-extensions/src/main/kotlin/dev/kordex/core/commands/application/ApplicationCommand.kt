@@ -22,6 +22,8 @@ import dev.kordex.core.checks.types.CheckWithCache
 import dev.kordex.core.commands.Command
 import dev.kordex.core.commands.application.slash.SlashCommand
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations.NsfwLevel.default
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -117,14 +119,12 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 	 * @param lowerCase Provide `true` to lower-case all the translations. Discord requires this for some fields.
 	 */
 	public fun localize(
-		key: String,
+		key: Key,
 		lowerCase: Boolean = false,
 	): Localized<String> {
-		var default = translationsProvider.translate(
-			key = key,
-			bundleName = this.resolvedBundle,
-			locale = translationsProvider.defaultLocale
-		)
+		var default = key
+			.withLocale(translationsProvider.defaultLocale)
+			.translate()
 
 		if (lowerCase) {
 			default = default.lowercase(translationsProvider.defaultLocale)
@@ -132,11 +132,9 @@ public abstract class ApplicationCommand<E : InteractionCreateEvent>(
 
 		val translations = bot.settings.i18nBuilder.applicationCommandLocales
 			.associateWith { locale ->
-				val result = translationsProvider.translate(
-					key = key,
-					bundleName = this.resolvedBundle,
-					locale = locale.asJavaLocale()
-				)
+				val result = key
+					.withLocale(locale.asJavaLocale())
+					.translate()
 
 				if (lowerCase) {
 					result.lowercase(locale.asJavaLocale())

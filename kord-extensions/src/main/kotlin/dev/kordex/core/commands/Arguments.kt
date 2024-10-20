@@ -10,6 +10,8 @@ package dev.kordex.core.commands
 
 import dev.kordex.core.annotations.UnexpectedFunctionBehaviour
 import dev.kordex.core.commands.converters.*
+import dev.kordex.core.i18n.types.Key
+import java.util.Locale
 
 /**
  * Abstract base class for a class containing a set of command arguments.
@@ -47,8 +49,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: SingleConverter<R>,
 	): SingleConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -69,8 +71,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: DefaultingConverter<R>,
 	): DefaultingConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -91,8 +93,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: OptionalConverter<R>,
 	): OptionalConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -113,8 +115,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: ListConverter<R>,
 	): ListConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -135,8 +137,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: CoalescingConverter<R>,
 	): CoalescingConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -157,8 +159,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: DefaultingCoalescingConverter<R>,
 	): DefaultingCoalescingConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -179,8 +181,8 @@ public open class Arguments {
 	 */
 	@UnexpectedFunctionBehaviour
 	public open fun <R : Any> arg(
-		displayName: String,
-		description: String,
+		displayName: Key,
+		description: Key,
 		converter: OptionalCoalescingConverter<R>,
 	): OptionalCoalescingConverter<R> {
 		args.add(Argument(displayName, description, converter))
@@ -189,14 +191,14 @@ public open class Arguments {
 	}
 
 	/** Validation function that will throw an error if there's a problem with this Arguments class/subclass. **/
-	public open fun validate() {
+	public open fun validate(locale: Locale) {
 		val names: MutableSet<String> = mutableSetOf()
 
 		args.forEach {
-			val name = it.displayName.lowercase()
+			val name = it.displayName.translateLocale(locale).lowercase()
 
 			if (name in names) {
-				error("Duplicate argument name: ${it.displayName}")
+				error("Duplicate argument name/key: ${it.displayName}")
 			}
 
 			names.add(name)

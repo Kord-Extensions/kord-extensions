@@ -8,6 +8,8 @@
 
 package dev.kordex.core.i18n
 
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import java.util.*
 
@@ -26,39 +28,45 @@ public abstract class TranslationsProvider(
 	 */
 	public open val defaultLocale: Locale by lazy { defaultLocaleBuilder() }
 
-	/** Check whether a translation key exists in the given bundle and locale. **/
-	public abstract fun hasKey(key: String, bundleName: String?, locale: Locale): Boolean
+	/** Check whether a translation key exists. **/
+	public abstract fun hasKey(key: Key): Boolean
 
-	/** Get a translation by key from the given locale and bundle name (`kordex.strings` by default). **/
-	public abstract fun get(key: String, bundleName: String? = null, locale: Locale? = null): String
+	/** Get a translation by key. **/
+	public abstract fun get(key: Key): String
 
 	/** Get a formatted translation using the provided arguments. **/
-	public abstract fun translate(
+	@Deprecated(
+		"Manual translation API access is unsupported. Create [Key] objects and use them instead.",
+		level = DeprecationLevel.WARNING,
+	)
+	public fun translate(
 		key: String,
 		bundleName: String? = null,
 		locale: Locale? = null,
 		replacements: Array<Any?> = arrayOf(),
-	): String
+	): String = translate(Key(key, bundleName?.let { Bundle(it) }, locale), replacements)
 
 	/** Get a formatted translation using the provided arguments. **/
-	public abstract fun translate(
+	@Deprecated(
+		"Manual translation API access is unsupported. Create [Key] objects and use them instead.",
+		level = DeprecationLevel.WARNING,
+	)
+	public fun translate(
 		key: String,
 		bundleName: String? = null,
 		locale: Locale? = null,
 		replacements: Map<String, Any?>,
+	): String = translateNamed(Key(key, bundleName?.let { Bundle(it) }, locale), replacements)
+
+	/** Get a formatted translation using the provided arguments. **/
+	public abstract fun translate(
+		key: Key,
+		replacements: Array<Any?> = arrayOf(),
 	): String
 
 	/** Get a formatted translation using the provided arguments. **/
-	public open fun translate(
-		key: String,
-		locale: Locale? = null,
-		replacements: Array<Any?> = arrayOf(),
-	): String = translate(key = key, bundleName = null, locale = locale, replacements = replacements)
-
-	/** Get a formatted translation using the provided arguments. **/
-	public open fun translate(
-		key: String,
-		locale: Locale? = null,
+	public abstract fun translateNamed(
+		key: Key,
 		replacements: Map<String, Any?>,
-	): String = translate(key = key, bundleName = null, locale = locale, replacements = replacements)
+	): String
 }

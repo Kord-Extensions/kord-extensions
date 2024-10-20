@@ -22,6 +22,10 @@ import dev.kordex.core.commands.events.*
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
 import dev.kordex.core.i18n.EMPTY_VALUE_STRING
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -29,6 +33,7 @@ import dev.kordex.core.utils.getLocale
 import dev.kordex.core.utils.respond
 import dev.kordex.parser.StringParser
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import java.util.*
 
@@ -63,7 +68,7 @@ public open class ChatCommand<T : Arguments>(
 	 *
 	 * This is intended to be made use of by help commands.
 	 */
-	public open var description: String = "commands.defaultDescription"
+	public open var description: Key = CoreTranslations.Commands.defaultDescription
 
 	/**
 	 * Whether this command is enabled and can be invoked.
@@ -92,20 +97,9 @@ public open class ChatCommand<T : Arguments>(
 	public open var localeFallback: Boolean = false
 
 	/**
-	 * Alternative names that can be used to invoke your command.
-	 *
-	 * There's no limit on the number of aliases a command may have, but in the event of an alias matching
-	 * the [name] of a registered command, the command with the [name] takes priority.
-	 */
-	public open var aliases: Array<String> = arrayOf()
-
-	/**
 	 * Translation key referencing a comma-separated list of command aliases.
-	 *
-	 * If this is set, the [aliases] list is ignored. This is also slightly more efficient during the first
-	 * translation pass, as only one key will ever need to be translated.
 	 */
-	public open var aliasKey: String? = null
+	public open var aliasKey: Key? = null
 
 	/**
 	 * @suppress
@@ -116,7 +110,7 @@ public open class ChatCommand<T : Arguments>(
 	public open val aliasTranslationCache: MutableMap<Locale, Set<String>> = mutableMapOf()
 
 	/** Provide a translation key here to replace the auto-generated signature string. **/
-	public open var signature: String? = null
+	public open var signature: Key? = null
 
 	/** Locale-based cache of generated signature strings. **/
 	public open var signatureCache: MutableMap<Locale, String> = mutableMapOf()
@@ -136,11 +130,9 @@ public open class ChatCommand<T : Arguments>(
 
 		if (!signatureCache.containsKey(locale)) {
 			if (signature != null) {
-				signatureCache[locale] = translationsProvider.translate(
-					key = signature!!,
-					bundleName = resolvedBundle,
-					locale = locale
-				)
+				signatureCache[locale] = signature!!
+					.withLocale(locale)
+					.translate()
 			} else {
 				signatureCache[locale] = registry.parser.signature(arguments!!, locale)
 			}
@@ -152,11 +144,9 @@ public open class ChatCommand<T : Arguments>(
 	/** Return this command's name translated for the given locale, cached as required. **/
 	public open fun getTranslatedName(locale: Locale): String {
 		if (!nameTranslationCache.containsKey(locale)) {
-			nameTranslationCache[locale] = translationsProvider.translate(
-				key = this.name,
-				bundleName = this.resolvedBundle,
-				locale = locale
-			).lowercase()
+			nameTranslationCache[locale] = name
+				.withLocale(locale)
+				.translate()
 		}
 
 		return nameTranslationCache[locale]!!
@@ -165,20 +155,20 @@ public open class ChatCommand<T : Arguments>(
 	/** Return this command's aliases translated for the given locale, cached as required. **/
 	public open fun getTranslatedAliases(locale: Locale): Set<String> {
 		if (!aliasTranslationCache.containsKey(locale)) {
-			val translations = if (aliasKey != null) {
-				translationsProvider.translate(key = aliasKey!!, bundleName = resolvedBundle, locale = locale)
+			if (aliasKey != null) {
+				val translations = aliasKey!!
+					.withLocale(locale)
+					.translate()
 					.lowercase()
 					.split(",")
 					.map { it.trim() }
 					.filter { it != EMPTY_VALUE_STRING }
 					.toSortedSet()
-			} else {
-				this.aliases.map {
-					translationsProvider.translate(key = it, bundleName = resolvedBundle, locale = locale).lowercase()
-				}.toSortedSet()
-			}
 
-			aliasTranslationCache[locale] = translations
+				aliasTranslationCache[locale] = translations
+			} else {
+				aliasTranslationCache[locale] = setOf()
+			}
 		}
 
 		return aliasTranslationCache[locale]!!
@@ -250,7 +240,7 @@ public open class ChatCommand<T : Arguments>(
 			check(context)
 
 			if (!context.passed) {
-				val message = context.getTranslatedMessage()
+				val message = context.getMessageKey()
 
 				if (message != null && sendMessage) {
 					event.message.respond {
@@ -259,7 +249,9 @@ public open class ChatCommand<T : Arguments>(
 							message,
 
 							FailureReason.ProvidedCheckFailure(
-								DiscordRelayedException(message, context.errorResponseKey)
+								DiscordRelayedException(
+									message,
+								)
 							)
 						)
 					}
@@ -276,7 +268,7 @@ public open class ChatCommand<T : Arguments>(
 			check(context)
 
 			if (!context.passed) {
-				val message = context.message
+				val message = context.getMessageKey()
 
 				if (message != null && sendMessage) {
 					event.message.respond {
@@ -285,7 +277,7 @@ public open class ChatCommand<T : Arguments>(
 							message,
 
 							FailureReason.ProvidedCheckFailure(
-								DiscordRelayedException(message, context.errorResponseKey)
+								DiscordRelayedException(message)
 							)
 						)
 					}
@@ -301,7 +293,7 @@ public open class ChatCommand<T : Arguments>(
 			check(context)
 
 			if (!context.passed) {
-				val message = context.message
+				val message = context.getMessageKey()
 
 				if (message != null && sendMessage) {
 					event.message.respond {
@@ -310,7 +302,7 @@ public open class ChatCommand<T : Arguments>(
 							message,
 
 							FailureReason.ProvidedCheckFailure(
-								DiscordRelayedException(message, context.errorResponseKey)
+								DiscordRelayedException(message)
 							)
 						)
 					}
@@ -355,7 +347,9 @@ public open class ChatCommand<T : Arguments>(
 					ChatCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 
@@ -365,13 +359,17 @@ public open class ChatCommand<T : Arguments>(
 			emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
 
 			event.message.respond {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			return@withLock
 		}
 
-		val context = ChatCommandContext(this, event, commandName, parser, argString, cache)
+		val context = ChatCommandContext(this, event, commandName.toKey(event.getLocale()), parser, argString, cache)
 
 		context.populate()
 
@@ -411,7 +409,11 @@ public open class ChatCommand<T : Arguments>(
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
 			event.message.respond {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(context.getLocale()),
+					FailureReason.OwnPermissionsCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(ChatCommandFailedChecksEvent(this, event, e.reason))
@@ -425,7 +427,11 @@ public open class ChatCommand<T : Arguments>(
 				context.populateArgs(parsedArgs)
 			} catch (e: ArgumentParsingException) {
 				event.message.respond {
-					settings.failureResponseBuilder(this, e.reason, FailureReason.ArgumentParsingFailure(e))
+					settings.failureResponseBuilder(
+						this,
+						e.reason.withLocale(context.getLocale()),
+						FailureReason.ArgumentParsingFailure(e)
+					)
 				}
 
 				emitEventAsync(ChatCommandFailedParsingEvent(this, event, e))
@@ -441,7 +447,11 @@ public open class ChatCommand<T : Arguments>(
 
 			if (t is DiscordRelayedException) {
 				event.message.respond {
-					settings.failureResponseBuilder(this, t.reason, FailureReason.RelayedFailure(t))
+					settings.failureResponseBuilder(
+						this,
+						t.reason.withLocale(context.getLocale()),
+						FailureReason.RelayedFailure(t)
+					)
 				}
 
 				return@withLock
@@ -470,14 +480,11 @@ public open class ChatCommand<T : Arguments>(
 						settings.failureResponseBuilder(
 							this,
 
-							context.translate(
-								"commands.error.user.sentry.message",
-								null,
-								replacements = arrayOf(
-									prefix,
-									sentryId
-								)
-							),
+							CoreTranslations.Commands.Error.User.Sentry.message
+								.withContext(context)
+								.withOrdinalPlaceholders(
+									prefix, sentryId
+								),
 
 							FailureReason.ExecutionError(t)
 						)
@@ -486,7 +493,10 @@ public open class ChatCommand<T : Arguments>(
 					event.message.respond {
 						settings.failureResponseBuilder(
 							this,
-							context.translate("commands.error.user", null),
+
+							CoreTranslations.Commands.Error.user
+								.withContext(context),
+
 							FailureReason.ExecutionError(t)
 						)
 					}
@@ -497,7 +507,10 @@ public open class ChatCommand<T : Arguments>(
 				event.message.respond {
 					settings.failureResponseBuilder(
 						this,
-						context.translate("commands.error.user", null),
+
+						CoreTranslations.Commands.Error.user
+							.withLocale(context.getLocale()),
+
 						FailureReason.ExecutionError(t)
 					)
 				}

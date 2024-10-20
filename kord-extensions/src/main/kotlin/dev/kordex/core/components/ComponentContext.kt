@@ -23,12 +23,12 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.userFor
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.sentry.captures.SentryBreadcrumbCapture
 import dev.kordex.core.types.TranslatableContext
 import dev.kordex.core.utils.MutableStringKeyedMap
+import jdk.internal.net.http.common.Log.channel
 import org.koin.core.component.inject
 import java.util.*
 
@@ -45,12 +45,6 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 	public open val event: E,
 	public open val cache: MutableStringKeyedMap<Any>,
 ) : KordExKoinComponent, TranslatableContext {
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
-
-	override val bundle: String?
-		get() = component.bundle
-
 	/** Configured bot settings object. **/
 	public val settings: ExtensibleBotBuilder by inject()
 
@@ -134,44 +128,6 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 		resolvedLocale = locale ?: settings.i18nBuilder.defaultLocale
 
 		return resolvedLocale!!
-	}
-
-	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
-	 * locale resolvers.
-	 */
-	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
-		replacements: Array<Any?>,
-	): String {
-		val locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
-	}
-
-	/**
-	 * Given a translation key and bundle name, return the translation for the locale provided by the bot's configured
-	 * locale resolvers.
-	 */
-	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
-		replacements: Map<String, Any?>,
-	): String {
-		val locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
 	}
 
 	/**

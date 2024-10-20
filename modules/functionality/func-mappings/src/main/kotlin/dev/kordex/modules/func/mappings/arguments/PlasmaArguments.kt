@@ -9,14 +9,15 @@
 package dev.kordex.modules.func.mappings.arguments
 
 import dev.kordex.core.commands.converters.impl.defaultingBoolean
+import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import me.shedaniel.linkie.namespaces.PlasmaNamespace
 
 /** Arguments for Plasma mappings lookup commands. **/
 @Suppress("UndocumentedPublicProperty")
 class PlasmaArguments : MappingArguments(PlasmaNamespace), IntermediaryMappable {
 	override val mapDescriptors by defaultingBoolean {
-		name = "map-descriptor"
-		description = "Whether to map field/method descriptors to named instead of intermediary/hashed"
+		name = MappingsTranslations.Argument.MapDescriptor.name
+		description = MappingsTranslations.Argument.MapDescriptor.description
 		defaultValue = true
 	}
 }

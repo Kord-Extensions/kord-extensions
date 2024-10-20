@@ -17,6 +17,8 @@ import dev.kord.rest.builder.message.create.FollowupMessageCreateBuilder
 import dev.kord.rest.builder.message.modify.InteractionResponseModifyBuilder
 import dev.kordex.core.annotations.AlwaysPublicResponse
 import dev.kordex.core.annotations.UnexpectedFunctionBehaviour
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.BaseButtonPaginator
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import java.util.*
@@ -48,7 +50,7 @@ public interface InteractionContext<
 
 	/** Create a paginator that edits the original interaction response. **/
 	public fun editingPaginator(
-		defaultGroup: String = "",
+		defaultGroup: Key = EMPTY_KEY,
 		locale: Locale? = null,
 		builder: (PaginatorBuilder).() -> Unit,
 	): BaseButtonPaginator
@@ -60,7 +62,7 @@ public interface InteractionContext<
 	 */
 	@AlwaysPublicResponse
 	public suspend fun respondingPaginator(
-		defaultGroup: String = "",
+		defaultGroup: Key = EMPTY_KEY,
 		locale: Locale? = null,
 		builder: suspend (PaginatorBuilder).() -> Unit,
 	): BaseButtonPaginator

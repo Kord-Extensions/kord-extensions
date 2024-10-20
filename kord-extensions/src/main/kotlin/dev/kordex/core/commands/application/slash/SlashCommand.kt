@@ -25,6 +25,9 @@ import dev.kordex.core.components.ComponentRegistry
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.impl.SENTRY_EXTENSION_NAME
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.sentry.BreadcrumbType
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
@@ -56,7 +59,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 	public val componentRegistry: ComponentRegistry by inject()
 
 	/** Command description, as displayed on Discord. **/
-	public open lateinit var description: String
+	public open lateinit var description: Key
 
 	/** Command body, to be called when the command is executed. **/
 	public lateinit var body: suspend C.(M?) -> Unit
@@ -185,7 +188,7 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 	)
 
 	/** Override this to implement a way to respond to the user, regardless of whatever happens. **/
-	public abstract suspend fun respondText(context: C, message: String, failureType: FailureReason<*>)
+	public abstract suspend fun respondText(context: C, message: Key, failureType: FailureReason<*>)
 
 	/**
 	 * Override this to implement the final calling logic, including creating the command context and running with it.
@@ -318,23 +321,30 @@ public abstract class SlashCommand<C : SlashCommandContext<*, A, M>, A : Argumen
 				user = context.user.asUserOrNull()
 			}
 
-			val errorMessage = if (sentryId != null) {
+			val errorKey = if (sentryId != null) {
 				kxLogger.info { "Error submitted to Sentry: $sentryId" }
 
 				if (extension.bot.extensions.containsKey(SENTRY_EXTENSION_NAME)) {
-					context.translate("commands.error.user.sentry.slash", null, replacements = arrayOf(sentryId))
+					CoreTranslations.Commands.Error.User.Sentry.slash
+						.withContext(context)
+						.withOrdinalPlaceholders(sentryId)
 				} else {
-					context.translate("commands.error.user", null)
+					CoreTranslations.Commands.Error.user
+						.withContext(context)
 				}
 			} else {
-				context.translate("commands.error.user", null)
+				CoreTranslations.Commands.Error.user
+					.withContext(context)
 			}
 
-			respondText(context, errorMessage, FailureReason.ExecutionError(t))
+			respondText(context, errorKey, FailureReason.ExecutionError(t))
 		} else {
 			respondText(
 				context,
-				context.translate("commands.error.user", null),
+
+				CoreTranslations.Commands.Error.user
+					.withContext(context),
+
 				FailureReason.ExecutionError(t)
 			)
 		}

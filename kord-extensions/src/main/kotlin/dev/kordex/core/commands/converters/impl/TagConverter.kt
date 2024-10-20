@@ -16,21 +16,22 @@ import dev.kord.core.entity.channel.thread.ThreadChannel
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.getLocale
 import dev.kordex.parser.StringParser
-import org.koin.core.component.inject
 
 /**
  * Argument converter for [ForumTag] arguments.
@@ -67,8 +68,7 @@ public class TagConverter(
 
 	override var validator: Validator<ForumTag> = null,
 ) : SingleConverter<ForumTag>() {
-	public override val signatureTypeString: String = "converters.tag.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	public override val signatureType: Key = CoreTranslations.Converters.Tag.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val input: String = named ?: parser?.parseNext()?.data ?: return false
@@ -93,17 +93,18 @@ public class TagConverter(
 		} ?: tags.firstOrNull {
 			it.name.contains(input, true)
 		} ?: throw DiscordRelayedException(
-			context.translate(
-				"converters.tag.error.unknownTag",
-				replacements = arrayOf(input)
-			)
+			CoreTranslations.Converters.Tag.Error.unknownTag
+				.withContext(context)
+				.withOrdinalPlaceholders(input)
 		)
 
 		return tag
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue: String = (option as? StringOptionValue)?.value ?: return false
@@ -114,9 +115,6 @@ public class TagConverter(
 	}
 
 	public companion object : KordExKoinComponent {
-		/** Translations provider, for retrieving translations. **/
-		private val translationsProvider: TranslationsProvider by inject()
-
 		public suspend fun getTags(
 			context: CommandContext,
 			getter: (suspend () -> ForumChannel?)? = null,
@@ -130,14 +128,14 @@ public class TagConverter(
 			}
 
 			if (channel == null) {
+				val key = if (getter == null) {
+					CoreTranslations.Converters.Tag.Error.wrongChannelType
+				} else {
+					CoreTranslations.Converters.Tag.Error.wrongChannelTypeWithGetter
+				}
+
 				throw DiscordRelayedException(
-					context.translate(
-						if (getter == null) {
-							"converters.tag.error.wrongChannelType"
-						} else {
-							"converters.tag.error.wrongChannelTypeWithGetter"
-						}
-					)
+					key.withContext(context)
 				)
 			}
 
@@ -158,16 +156,12 @@ public class TagConverter(
 
 			if (channel == null) {
 				throw DiscordRelayedException(
-					translationsProvider.translate(
-						key = if (getter == null) {
-							"converters.tag.error.wrongChannelType"
-						} else {
-							"converters.tag.error.wrongChannelTypeWithGetter"
-						},
-
-						bundleName = DEFAULT_KORDEX_BUNDLE,
-						locale = event.getLocale(),
-					)
+					if (getter == null) {
+						CoreTranslations.Converters.Tag.Error.wrongChannelType
+					} else {
+						CoreTranslations.Converters.Tag.Error.wrongChannelTypeWithGetter
+					}
+						.withLocale(event.getLocale())
 				)
 			}
 

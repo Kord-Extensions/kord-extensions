@@ -30,11 +30,10 @@ public class PublicResponsePaginator(
 	keepEmbed: Boolean = true,
 	switchEmoji: ReactionEmoji = if (pages.groups.size == 2) EXPAND_EMOJI else SWITCH_EMOJI,
 	mutator: PageTransitionCallback? = null,
-	bundle: String? = null,
 	locale: Locale? = null,
 
 	public val interaction: PublicMessageInteractionResponseBehavior,
-) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, bundle, locale) {
+) : BaseButtonPaginator(pages, chunkedPages, owner, timeoutSeconds, keepEmbed, switchEmoji, mutator, locale) {
 	/** Whether this paginator has been set up for the first time. **/
 	public var isSetup: Boolean = false
 
@@ -85,7 +84,6 @@ public fun PublicResponsePaginator(
 	timeoutSeconds = builder.timeoutSeconds,
 	keepEmbed = builder.keepEmbed,
 	mutator = builder.mutator,
-	bundle = builder.bundle,
 	locale = builder.locale,
 	interaction = interaction,
 

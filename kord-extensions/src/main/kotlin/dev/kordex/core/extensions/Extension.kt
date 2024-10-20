@@ -12,8 +12,6 @@ import dev.kord.core.Kord
 import dev.kord.core.event.Event
 import dev.kord.gateway.Intent
 import dev.kordex.core.ExtensibleBot
-import dev.kordex.core.annotations.tooling.Translatable
-import dev.kordex.core.annotations.tooling.TranslatableType
 import dev.kordex.core.checks.types.ChatCommandCheck
 import dev.kordex.core.checks.types.MessageCommandCheck
 import dev.kordex.core.checks.types.SlashCommandCheck
@@ -144,10 +142,6 @@ public abstract class Extension : KordExKoinComponent {
 	 * These checks will be checked against all user commands in this extension.
 	 */
 	public val userCommandChecks: MutableList<UserCommandCheck> = mutableListOf()
-
-	/** String representing the bundle to get translations from for command names/descriptions. **/
-	@Translatable(TranslatableType.BUNDLE)
-	public open val bundle: String? = null
 
 	/** Set of intents required by this extension's event handlers and commands. **/
 	public open val intents: MutableSet<Intent> = mutableSetOf()

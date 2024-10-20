@@ -23,6 +23,8 @@ import dev.kordex.core.InvalidCommandException
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.commands.application.user.UserCommand
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -65,7 +67,9 @@ public class UnsafeUserCommand<M : UnsafeModalForm>(
 					UnsafeUserCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 
@@ -101,10 +105,10 @@ public class UnsafeUserCommand<M : UnsafeModalForm>(
 				val locale = event.getLocale()
 
 				event.interaction.modal(
-					modalObj.translateTitle(locale, bundle),
+					modalObj.translateTitle(locale),
 					modalObj.id
 				) {
-					modalObj.applyToBuilder(this, event.getLocale(), bundle)
+					modalObj.applyToBuilder(this, event.getLocale())
 				}
 
 				modalObj.awaitCompletion {
@@ -150,7 +154,7 @@ public class UnsafeUserCommand<M : UnsafeModalForm>(
 
 	override suspend fun respondText(
         context: UnsafeCommandUserCommandContext<M>,
-        message: String,
+        message: Key,
         failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {

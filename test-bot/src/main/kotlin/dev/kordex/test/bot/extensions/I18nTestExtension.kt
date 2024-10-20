@@ -13,6 +13,7 @@ package dev.kordex.test.bot.extensions
 import dev.kord.common.asJavaLocale
 import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.checks.types.CheckContextWithCache
 import dev.kordex.core.checks.userFor
 import dev.kordex.core.commands.Arguments
@@ -23,15 +24,18 @@ import dev.kordex.core.commands.converters.impl.string
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Bundle
+import dev.kordex.test.bot.Translations
 
+@OptIn(NotTranslated::class)
 public class I18nTestExtension : Extension() {
 	override val name: String = "kordex.test-i18n"
-	override val bundle: String = "test"
 
 	override suspend fun setup() {
 		publicSlashCommand {
-			name = "command.banana-flat"
-			description = "Translated banana"
+			name = Translations.Command.bananaFlat
+			description = "Translated banana".toKey()
 
 			action {
 				val commandLocale = getLocale()
@@ -41,17 +45,19 @@ public class I18nTestExtension : Extension() {
 					"Command locale (`$commandLocale`) does not match interaction locale (`$interactionLocale`)"
 				}
 
-				respond { content = "Text: ${translate("command.banana")}" }
+				respond {
+					content = "Text: ${Translations.Command.banana.translateLocale(getLocale())}"
+				}
 			}
 		}
 
 		publicSlashCommand {
-			name = "command.banana-sub"
-			description = "Translated banana subcommand"
+			name = Translations.Command.bananaSub
+			description = "Translated banana subcommand".toKey()
 
 			publicSubCommand {
-				name = "command.banana"
-				description = "Translated banana"
+				name = Translations.Command.banana
+				description = "Translated banana".toKey()
 
 				action {
 					val commandLocale = getLocale()
@@ -61,21 +67,23 @@ public class I18nTestExtension : Extension() {
 						"Command locale (`$commandLocale`) does not match interaction locale (`$interactionLocale`)"
 					}
 
-					respond { content = "Text: ${translate("command.banana")}" }
+					respond {
+						content = "Text: ${Translations.Command.banana.translateLocale(getLocale())}"
+					}
 				}
 			}
 		}
 
 		publicSlashCommand {
-			name = "command.banana-group"
-			description = "Translated banana group"
+			name = Translations.Command.bananaGroup
+			description = "Translated banana group".toKey()
 
-			group("command.banana") {
-				description = "Translated banana group"
+			group(Translations.Command.banana) {
+				description = "Translated banana group".toKey()
 
 				publicSubCommand {
-					name = "command.banana"
-					description = "Translated banana"
+					name = Translations.Command.banana
+					description = "Translated banana".toKey()
 
 					action {
 						val commandLocale = getLocale()
@@ -85,44 +93,46 @@ public class I18nTestExtension : Extension() {
 							"Command locale (`$commandLocale`) does not match interaction locale (`$interactionLocale`)"
 						}
 
-						respond { content = "Text: ${translate("command.banana")}" }
+						respond {
+							content = "Text: ${Translations.Command.banana.translateLocale(getLocale())}"
+						}
 					}
 				}
 			}
 		}
 
 		publicSlashCommand(::I18nTestArguments) {
-			name = "command.fruit"
-			description = "command.fruit"
+			name = Translations.Command.fruit
+			description = Translations.Command.fruit
 
 			action {
 				respond {
-					content = translate("command.fruit.response", arrayOf(arguments.fruit))
+					content = Translations.Command.Fruit.response
+						.withLocale(getLocale())
+						.translate(arguments.fruit)
 				}
 			}
 		}
 
 		publicSlashCommand(::I18nTestNamedArguments) {
-			name = "command.apple"
-			description = "command.apple"
+			name = Translations.Command.apple
+			description = Translations.Command.apple
 
 			action {
 				respond {
-					content = translate(
-						"command.apple.response",
-
-						mapOf(
+					content = Translations.Command.Apple.response
+						.withLocale(getLocale())
+						.translateNamed(
 							"name" to arguments.name,
 							"appleCount" to arguments.count
 						)
-					)
 				}
 			}
 		}
 
 		ephemeralSlashCommand {
-			name = "test-translated-checks"
-			description = "Command that always fails, to check CheckContext translations."
+			name = "test-translated-checks".toKey()
+			description = "Command that always fails, to check CheckContext translations.".toKey()
 
 			check {
 				translatedChecks()
@@ -137,8 +147,8 @@ public class I18nTestExtension : Extension() {
 		}
 
 		ephemeralSlashCommand(::I18nTestValidations) {
-			name = "test-translated-validations"
-			description = "Command with arguments that always fail validations."
+			name = "test-translated-validations".toKey()
+			description = "Command with arguments that always fail validations.".toKey()
 
 			action {
 				// This command is expected to always fail, in order to test argument validations.
@@ -151,51 +161,116 @@ public class I18nTestExtension : Extension() {
 
 	private suspend fun CheckContextWithCache<ChatInputCommandInteractionCreateEvent>.translatedChecks() {
 		val user = userFor(event)
-		this.defaultBundle = bundle
 
 		if (user == null) {
-			fail("Could not get user.")
+			fail("Could not get user.".toKey())
 			return
 		}
 
 		fail(
 			buildList {
 				// Translate, with default bundle
-				add(translate("check.simple"))
+				add(
+					Translations.Check.simple
+						.withLocale(locale)
+						.translate()
+				)
+
 				// Translate with a different bundle
-				add(translate("check.simple", "custom"))
+				add(
+					Translations.Check.simple
+						.withBundle(Bundle("custom"))
+						.withLocale(locale)
+						.translate()
+				)
+
 				// Translate with default bundle, and positional parameters
-				add(translate("check.positionalParameters", arrayOf(user.mention, user.id)))
+				add(
+					Translations.Check.positionalParameters
+						.withLocale(locale)
+						.translate(user.mention, user.id)
+				)
+
 				// Translate with a different bundle, and positional parameters
-				add(translate("check.positionalParameters", "custom", arrayOf(user.mention, user.id)))
+				add(
+					Translations.Check.positionalParameters
+						.withBundle(Bundle("custom"))
+						.withLocale(locale)
+						.translate(user.mention, user.id)
+				)
+
 				// Translate with default bundle, named parameters
-				add(translate("check.namedParameters", replacements = mapOf("user" to user.mention, "id" to user.id)))
+				add(
+					Translations.Check.namedParameters
+						.withLocale(locale)
+						.translateNamed("user" to user.mention, "id" to user.id)
+				)
+
 				// Translate with a different bundle, and named parameters
-				add(translate("check.namedParameters", "custom", mapOf("user" to user.mention, "id" to user.id)))
+				add(
+					Translations.Check.namedParameters
+						.withBundle(Bundle("custom"))
+						.withLocale(locale)
+						.translateNamed("user" to user.mention, "id" to user.id)
+				)
 			}.joinToString("\n")
 		)
 	}
 
 	private inner class I18nTestValidations : Arguments() {
 		val name by string {
-			name = "name"
-			description = "Will always fail to validate."
+			name = "name".toKey()
+			description = "Will always fail to validate.".toKey()
+
 			validate {
-				defaultBundle = bundle
+				val locale = context.getLocale()
+
 				fail(
 					buildList {
 						// Translate, with default bundle
-						add(translate("validation.simple"))
+						add(
+							Translations.Validation.simple
+								.withLocale(locale)
+								.translate()
+						)
+
 						// Translate with a different bundle
-						add(translate("validation.simple", "custom"))
+						add(
+							Translations.Validation.simple
+								.withBundle(Bundle("custom"))
+								.withLocale(locale)
+								.translate()
+						)
+
 						// Translate with default bundle, and positional parameters
-						add(translate("validation.positionalParameters", arrayOf(value)))
+						add(
+							Translations.Validation.positionalParameters
+								.withLocale(locale)
+								.translate(value)
+						)
+
 						// Translate with a different bundle, and positional parameters
-						add(translate("validation.positionalParameters", "custom", arrayOf(value)))
+						add(
+							Translations.Validation.positionalParameters
+								.withBundle(Bundle("custom"))
+								.withLocale(locale)
+								.translate(value)
+						)
+
 						// Translate with default bundle, named parameters
-						add(translate("validation.namedParameters", mapOf("value" to value)))
+						add(
+							Translations.Validation.namedParameters
+								.withLocale(locale)
+								.translateNamed("value" to value)
+						)
+
 						// Translate with a different bundle, and named parameters
-						add(translate("validation.namedParameters", "custom", mapOf("value" to value)))
+						add(
+							Translations.Validation.namedParameters
+								.withBundle(Bundle("custom"))
+								.withLocale(locale)
+								.translateNamed("value" to value)
+						)
 					}.joinToString("\n")
 				)
 			}
@@ -205,8 +280,8 @@ public class I18nTestExtension : Extension() {
 
 internal class I18nTestArguments : Arguments() {
 	val fruit by string {
-		name = "command.fruit"
-		description = "command.fruit"
+		name = Translations.Command.fruit
+		description = Translations.Command.fruit
 
 		autoComplete {
 			suggestString {
@@ -218,12 +293,12 @@ internal class I18nTestArguments : Arguments() {
 
 internal class I18nTestNamedArguments : Arguments() {
 	val name by string {
-		name = "command.apple.argument.name"
-		description = "command.apple.argument.name"
+		name = Translations.Command.Apple.Argument.name
+		description = Translations.Command.Apple.Argument.name
 	}
 
 	val count by int {
-		name = "command.apple.argument.count"
-		description = "command.apple.argument.count"
+		name = Translations.Command.Apple.Argument.count
+		description = Translations.Command.Apple.Argument.count
 	}
 }

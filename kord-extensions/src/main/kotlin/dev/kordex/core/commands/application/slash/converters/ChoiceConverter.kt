@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.application.slash.converters
 
 import dev.kordex.core.commands.converters.SingleConverter
+import dev.kordex.core.i18n.types.Key
 
 private const val CHOICE_LIMIT = 25  // Discord doesn't allow more choices than this
 
@@ -19,7 +20,7 @@ private const val CHOICE_LIMIT = 25  // Discord doesn't allow more choices than 
  */
 
 public abstract class ChoiceConverter<T : Any>(
-	public open val choices: Map<String, T>,
+	public open val choices: Map<Key, T>,
 ) : SingleConverter<T>() {
 	init {
 		if (choices.size > CHOICE_LIMIT) {

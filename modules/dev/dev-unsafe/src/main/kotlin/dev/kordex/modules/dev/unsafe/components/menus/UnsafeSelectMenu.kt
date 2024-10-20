@@ -19,6 +19,7 @@ import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.InternalAPI
 import dev.kordex.core.components.menus.SelectMenu
 import dev.kordex.core.components.menus.SelectMenuContext
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -81,10 +82,10 @@ public abstract class UnsafeSelectMenu<C, M : UnsafeModalForm>(
 				val locale = event.getLocale()
 
 				event.interaction.modal(
-					modalObj.translateTitle(locale, bundle),
+					modalObj.translateTitle(locale),
 					modalObj.id
 				) {
-					modalObj.applyToBuilder(this, event.getLocale(), bundle)
+					modalObj.applyToBuilder(this, event.getLocale())
 				}
 
 				modalObj.awaitCompletion {
@@ -122,7 +123,7 @@ public abstract class UnsafeSelectMenu<C, M : UnsafeModalForm>(
 
 	override suspend fun respondText(
 		context: C,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		when (context.interactionResponse) {

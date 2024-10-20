@@ -9,6 +9,7 @@
 package dev.kordex.core.commands.converters
 
 import dev.kordex.core.commands.converters.builders.DefaultingConverterBuilder
+import dev.kordex.core.commands.converters.types.SingleNamedInputConverter
 
 /**
  * Abstract base class for a defaulting converter.
@@ -25,7 +26,7 @@ public abstract class DefaultingConverter<T : Any>(
 	defaultValue: T,
 	public val outputError: Boolean = false,
 	override var validator: Validator<T> = null,
-) : Converter<T, T, String, Boolean>(false), SlashCommandConverter {
+) : SingleNamedInputConverter<T, T, Boolean>(false), SlashCommandConverter {
 	/**
 	 * The parsed value.
 	 *

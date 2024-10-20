@@ -14,6 +14,7 @@ import dev.kordex.core.commands.chat.ChatCommand
 import dev.kordex.core.commands.converters.builders.ConverterBuilder
 import dev.kordex.core.events.EventHandler
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 import java.util.*
 import kotlin.reflect.KClass
@@ -90,7 +91,7 @@ public class EventHandlerRegistrationException(public val reason: String) : Kord
  * @param name The command name
  * @param reason Why this command is considered invalid.
  */
-public class InvalidCommandException(public val name: String?, public val reason: String) : KordExException() {
+public class InvalidCommandException(public val name: Key?, public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String {
@@ -108,7 +109,7 @@ public class InvalidCommandException(public val name: String?, public val reason
  * @param name The [ChatCommand] name
  * @param reason Why this [ChatCommand] could not be registered.
  */
-public class CommandRegistrationException(public val name: String, public val reason: String) : KordExException() {
+public class CommandRegistrationException(public val name: Key, public val reason: String) : KordExException() {
 	override val message: String = toString()
 
 	override fun toString(): String = "Failed to register command $name: $reason"
@@ -123,14 +124,13 @@ public class CommandRegistrationException(public val name: String, public val re
  * @param translationKey Translation key used to create the [reason] string, if any.
  */
 public open class DiscordRelayedException(
-	public open val reason: String,
-	public open val translationKey: String? = null,
+	public open val reason: Key,
 ) : KordExException() {
 	override val message: String by lazy { toString() }
 
 	public constructor(other: DiscordRelayedException) : this(other.reason)
 
-	override fun toString(): String = reason
+	override fun toString(): String = reason.toString()
 }
 
 /**
@@ -143,23 +143,19 @@ public open class DiscordRelayedException(
  * @param parser Tokenizing string parser used for this parse attempt, if this was a chat command.
  */
 public open class ArgumentParsingException(
-	public override val reason: String,
-	public override val translationKey: String?,
-	public val locale: Locale,
-	public val bundle: String?,
+	public override val reason: Key,
 	public val argument: Argument<*>?,
 	public val arguments: Arguments,
 	public val parser: StringParser?,
-) : DiscordRelayedException(reason, translationKey) {
+) : DiscordRelayedException(reason) {
 	override val message: String by lazy { toString() }
 
 	public constructor(other: ArgumentParsingException) :
 		this(
 			other.reason,
-			other.translationKey, other.locale, other.bundle,
 			other.argument, other.arguments,
 			other.parser
 		)
 
-	override fun toString(): String = reason
+	override fun toString(): String = reason.toString()
 }

@@ -20,7 +20,7 @@ import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.chatGroupCommand
 import dev.kordex.core.extensions.ephemeralSlashCommand
 import dev.kordex.core.extensions.publicSlashCommand
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.pagination.builders.PaginatorBuilder
 import org.koin.core.component.inject
 import java.util.Locale
@@ -29,19 +29,18 @@ import java.util.Locale
 public class AboutExtension : Extension() {
 	override val name: String = "kordex.about"
 
-	private val translations: TranslationsProvider by inject()
 	private val settings: ExtensibleBotBuilder by inject()
 
 	override suspend fun setup() {
 		val ephemeral = settings.aboutBuilder.ephemeral
 
 		chatGroupCommand {
-			name = "extensions.about.commandName"
-			description = "extensions.about.commandDescription"
+			name = CoreTranslations.Extensions.About.commandName
+			description = CoreTranslations.Extensions.About.commandDescription
 
 			chatCommand {
-				name = "extensions.about.copyright.commandName"
-				description = "extensions.about.copyright.commandDescription"
+				name = CoreTranslations.Extensions.About.Copyright.commandName
+				description = CoreTranslations.Extensions.About.Copyright.commandDescription
 
 				action {
 					paginator {
@@ -54,7 +53,6 @@ public class AboutExtension : Extension() {
 				this.chatCommand {
 					this.name = section.name
 					description = section.description
-					bundle = section.translationBundle
 
 					action {
 						message.reply {
@@ -67,12 +65,12 @@ public class AboutExtension : Extension() {
 
 		if (ephemeral) {
 			ephemeralSlashCommand {
-				name = "extensions.about.commandName"
-				description = "extensions.about.commandDescription"
+				name = CoreTranslations.Extensions.About.commandName
+				description = CoreTranslations.Extensions.About.commandDescription
 
 				ephemeralSubCommand {
-					name = "extensions.about.copyright.commandName"
-					description = "extensions.about.copyright.commandDescription"
+					name = CoreTranslations.Extensions.About.Copyright.commandName
+					description = CoreTranslations.Extensions.About.Copyright.commandDescription
 
 					action {
 						val locale = getLocale()
@@ -88,7 +86,6 @@ public class AboutExtension : Extension() {
 						ephemeralSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -100,7 +97,6 @@ public class AboutExtension : Extension() {
 						publicSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -113,12 +109,12 @@ public class AboutExtension : Extension() {
 			}
 		} else {
 			publicSlashCommand {
-				name = "extensions.about.commandName"
-				description = "extensions.about.commandDescription"
+				name = CoreTranslations.Extensions.About.commandName
+				description = CoreTranslations.Extensions.About.commandDescription
 
 				publicSubCommand {
-					name = "extensions.about.copyright.commandName"
-					description = "extensions.about.copyright.commandDescription"
+					name = CoreTranslations.Extensions.About.Copyright.commandName
+					description = CoreTranslations.Extensions.About.Copyright.commandDescription
 
 					action {
 						val locale = getLocale()
@@ -134,7 +130,6 @@ public class AboutExtension : Extension() {
 						ephemeralSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -146,7 +141,6 @@ public class AboutExtension : Extension() {
 						publicSubCommand {
 							name = section.name
 							description = section.description
-							bundle = section.translationBundle
 
 							action {
 								respond {
@@ -177,23 +171,17 @@ public class AboutExtension : Extension() {
 			color = DISCORD_BLURPLE
 			title = "Copyright Information"
 
-			description = buildString {
-				appendLine(
-					translations.translate(
-						"extensions.about.copyright.intro",
-						locale,
-						replacements = arrayOf(
-							"[Kord Extensions](https://kordex.dev)",
-							"EUPL",
-							"1.2"
-						)
-					)
+			description = CoreTranslations.Extensions.About.Copyright.intro
+				.withLocale(locale)
+				.translate(
+					"[Kord Extensions](https://kordex.dev)",
+					"EUPL",
+					"1.2"
 				)
-			}
 		}
 
 		copyright
-			.groupBy { translations.translate(it.type.key, locale) }
+			.groupBy { it.type.key.withLocale(locale).translate() }
 			.toSortedMap { left, right -> left.compareTo(right) }
 			.forEach { (type, items) ->
 				items

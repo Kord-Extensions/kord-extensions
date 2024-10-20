@@ -13,7 +13,6 @@ import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.interactionFor
 import dev.kordex.core.checks.userFor
-import dev.kordex.core.i18n.TranslationsProvider
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.types.TranslatableContext
@@ -34,54 +33,10 @@ public open class EventContext<T : Event>(
 	public open val event: T,
 	public open val cache: MutableStringKeyedMap<Any>,
 ) : KordExKoinComponent, TranslatableContext {
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by lazy { getTranslationProvider() }
-
 	/** Current Sentry context, containing breadcrumbs and other goodies. **/
 	public val sentry: SentryContext = SentryContext()
 
 	override var resolvedLocale: Locale? = null
-
-	override val bundle: String?
-		get() = eventHandler.extension.bundle
-
-	/**
-	 * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
-	 * configured locale resolvers.
-	 */
-	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
-		replacements: Array<Any?>,
-	): String {
-		val locale: Locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
-	}
-
-	/**
-	 * Given a translation key and optional bundle name, return the translation for the locale provided by the bot's
-	 * configured locale resolvers.
-	 */
-	public override suspend fun translate(
-		key: String,
-		bundleName: String?,
-		replacements: Map<String, Any?>,
-	): String {
-		val locale: Locale = getLocale()
-
-		return translationsProvider.translate(
-			key = key,
-			bundleName = bundleName,
-			locale = locale,
-			replacements = replacements
-		)
-	}
 
 	override suspend fun getLocale(): Locale {
 		var locale = resolvedLocale

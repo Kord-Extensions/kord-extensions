@@ -24,6 +24,8 @@ import dev.kordex.core.commands.events.EphemeralUserCommandInvocationEvent
 import dev.kordex.core.commands.events.EphemeralUserCommandSucceededEvent
 import dev.kordex.core.components.forms.ModalForm
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.types.FailureReason
 import dev.kordex.core.utils.MutableStringKeyedMap
 import dev.kordex.core.utils.getLocale
@@ -65,7 +67,9 @@ public class EphemeralUserCommand<M : ModalForm>(
 					EphemeralUserCommandFailedChecksEvent(
 						this,
 						event,
-						"Checks failed without a message."
+
+						CoreTranslations.Checks.failedWithoutMessage
+							.withLocale(event.getLocale())
 					)
 				)
 
@@ -73,7 +77,11 @@ public class EphemeralUserCommand<M : ModalForm>(
 			}
 		} catch (e: DiscordRelayedException) {
 			event.interaction.respondEphemeral {
-				settings.failureResponseBuilder(this, e.reason, FailureReason.ProvidedCheckFailure(e))
+				settings.failureResponseBuilder(
+					this,
+					e.reason.withLocale(event.getLocale()),
+					FailureReason.ProvidedCheckFailure(e)
+				)
 			}
 
 			emitEventAsync(EphemeralUserCommandFailedChecksEvent(this, event, e.reason))
@@ -91,10 +99,10 @@ public class EphemeralUserCommand<M : ModalForm>(
 			val locale = event.getLocale()
 
 			event.interaction.modal(
-				modalObj.translateTitle(locale, resolvedBundle),
+				modalObj.translateTitle(locale),
 				modalObj.id
 			) {
-				modalObj.applyToBuilder(this, event.getLocale(), resolvedBundle)
+				modalObj.applyToBuilder(this, event.getLocale())
 			}
 
 			modalObj.awaitCompletion {
@@ -115,7 +123,12 @@ public class EphemeralUserCommand<M : ModalForm>(
 		try {
 			checkBotPerms(context)
 		} catch (e: DiscordRelayedException) {
-			respondText(context, e.reason, FailureReason.OwnPermissionsCheckFailure(e))
+			respondText(
+				context,
+				e.reason.withLocale(context.getLocale()),
+				FailureReason.OwnPermissionsCheckFailure(e)
+			)
+
 			emitEventAsync(EphemeralUserCommandFailedChecksEvent(this, event, e.reason))
 
 			return
@@ -127,7 +140,11 @@ public class EphemeralUserCommand<M : ModalForm>(
 			emitEventAsync(EphemeralUserCommandFailedWithExceptionEvent(this, event, t))
 
 			if (t is DiscordRelayedException) {
-				respondText(context, t.reason, FailureReason.RelayedFailure(t))
+				respondText(
+					context,
+					t.reason.withLocale(context.getLocale()),
+					FailureReason.RelayedFailure(t)
+				)
 
 				return
 			}
@@ -140,7 +157,7 @@ public class EphemeralUserCommand<M : ModalForm>(
 
 	override suspend fun respondText(
 		context: EphemeralUserCommandContext<M>,
-		message: String,
+		message: Key,
 		failureType: FailureReason<*>,
 	) {
 		context.respond { settings.failureResponseBuilder(this, message, failureType) }

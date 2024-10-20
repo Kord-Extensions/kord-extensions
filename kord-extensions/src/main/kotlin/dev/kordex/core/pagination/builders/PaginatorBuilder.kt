@@ -11,6 +11,8 @@ package dev.kordex.core.pagination.builders
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.entity.ReactionEmoji
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.pagination.pages.Page
 import dev.kordex.core.pagination.pages.Pages
 import java.util.*
@@ -23,7 +25,7 @@ import java.util.*
  */
 public class PaginatorBuilder(
 	public var locale: Locale? = null,
-	public val defaultGroup: String = "",
+	public val defaultGroup: Key = EMPTY_KEY,
 ) {
 	/** Pages container object. **/
 	public val pages: Pages = Pages(defaultGroup)
@@ -43,9 +45,6 @@ public class PaginatorBuilder(
 	/** Alternative switch button emoji, if needed. **/
 	public var switchEmoji: ReactionEmoji? = null
 
-	/** Translations bundle to use for page groups, if any. **/
-	public var bundle: String? = null
-
 	/** Object containing paginator mutation functions. **/
 	public var mutator: PageTransitionCallback? = null
 
@@ -53,22 +52,20 @@ public class PaginatorBuilder(
 	public fun page(page: Page): Unit = pages.addPage(page)
 
 	/** Add a page to [pages], using the given group. **/
-	public fun page(group: String, page: Page): Unit = pages.addPage(group, page)
+	public fun page(group: Key, page: Page): Unit = pages.addPage(group, page)
 
 	/** Add a page to [pages], using the default group. **/
 	public fun page(
-		bundle: String? = null,
 		builder: suspend EmbedBuilder.() -> Unit,
 	): Unit =
-		page(Page(builder = builder, bundle = bundle))
+		page(Page(builder = builder))
 
 	/** Add a page to [pages], using the given group. **/
 	public fun page(
-		group: String,
-		bundle: String? = null,
+		group: Key,
 		builder: suspend EmbedBuilder.() -> Unit,
 	): Unit =
-		page(group, Page(builder = builder, bundle = bundle))
+		page(group, Page(builder = builder))
 
 	/**
 	 * Mutate the paginator and pages, as pages are generated and sent.

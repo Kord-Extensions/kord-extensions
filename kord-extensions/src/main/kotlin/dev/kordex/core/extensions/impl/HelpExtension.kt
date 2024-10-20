@@ -17,7 +17,9 @@ import dev.kordex.core.commands.converters.impl.stringList
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.base.HelpProvider
 import dev.kordex.core.extensions.chatCommand
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.EMPTY_KEY
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.toKey
 import dev.kordex.core.pagination.BasePaginator
 import dev.kordex.core.pagination.MessageButtonPaginator
 import dev.kordex.core.pagination.pages.Page
@@ -33,8 +35,8 @@ private val logger = KotlinLogging.logger {}
 /** Number of commands to show per page. */
 public const val HELP_PER_PAGE: Int = 4
 
-private const val COMMANDS_GROUP = ""
-private const val ARGUMENTS_GROUP = "Arguments"
+private val COMMANDS_GROUP = EMPTY_KEY
+private val ARGUMENTS_GROUP = "Arguments".toKey()  // TODO: This needs translating
 
 /**
  * Help command extension.
@@ -45,9 +47,6 @@ private const val ARGUMENTS_GROUP = "Arguments"
 @Suppress("StringLiteralDuplication")
 public class HelpExtension : HelpProvider, Extension() {
 	override val name: String = "kordex.help"
-
-	/** Translations provider, for retrieving translations. **/
-	public val translationsProvider: TranslationsProvider by inject()
 
 	/** Message command registry. **/
 	public val messageCommandsRegistry: ChatCommandRegistry by inject()
@@ -61,9 +60,9 @@ public class HelpExtension : HelpProvider, Extension() {
 
 	override suspend fun setup() {
 		chatCommand(::HelpArguments) {
-			name = "extensions.help.commandName"
-			aliasKey = "extensions.help.commandAliases"
-			description = "extensions.help.commandDescription"
+			name = CoreTranslations.Extensions.Help.commandName
+			aliasKey = CoreTranslations.Extensions.Help.commandAliases
+			description = CoreTranslations.Extensions.Help.commandDescription
 
 			localeFallback = true
 
@@ -100,14 +99,13 @@ public class HelpExtension : HelpProvider, Extension() {
 
 				Page {
 					description = page.joinToString("\n\n") { "${it.first}\n${it.second}" }
-					title = translationsProvider.translate("extensions.help.paginator.title.commands", locale)
+
+					title = CoreTranslations.Extensions.Help.Paginator.Title.commands
+						.translateLocale(locale)
 
 					footer {
-						text = translationsProvider.translate(
-							"extensions.help.paginator.footer",
-							locale,
-							replacements = arrayOf(totalCommands)
-						)
+						text = CoreTranslations.Extensions.Help.Paginator.footer
+							.translateLocale(locale, totalCommands)
 					}
 
 					color = settings.colourGetter(event)
@@ -119,14 +117,12 @@ public class HelpExtension : HelpProvider, Extension() {
 
 				Page {
 					description = page.joinToString("\n\n") { "${it.first}\n${it.third}" }
-					title = translationsProvider.translate("extensions.help.paginator.title.arguments", locale)
+					title = CoreTranslations.Extensions.Help.Paginator.Title.arguments
+						.translateLocale(locale)
 
 					footer {
-						text = translationsProvider.translate(
-							"extensions.help.paginator.footer",
-							locale,
-							replacements = arrayOf(totalCommands)
-						)
+						text = CoreTranslations.Extensions.Help.Paginator.footer
+							.translateLocale(locale, totalCommands)
 					}
 
 					color = settings.colourGetter(event)
@@ -140,16 +136,17 @@ public class HelpExtension : HelpProvider, Extension() {
 			pages.addPage(
 				COMMANDS_GROUP,
 				Page {
-					description = translationsProvider.translate("extensions.help.paginator.noCommands", locale)
-					title = translationsProvider.translate("extensions.help.paginator.noCommands", locale)
-					footer {
-						text = translationsProvider.translate(
-							"extensions.help.paginator.footer",
-							locale,
-							replacements = arrayOf(0)
-						)
-					}
 					color = settings.colourGetter(event)
+					description = CoreTranslations.Extensions.Help.Paginator.noCommands
+						.translateLocale(locale)
+
+					title = CoreTranslations.Extensions.Help.Paginator.noCommands
+						.translateLocale(locale)
+
+					footer {
+						text = CoreTranslations.Extensions.Help.Paginator.footer
+							.translateLocale(locale, totalCommands)
+					}
 				}
 			)
 		}
@@ -201,15 +198,11 @@ public class HelpExtension : HelpProvider, Extension() {
 				Page {
 					color = settings.colourGetter(event)
 
-					description = translationsProvider.translate(
-						"extensions.help.error.missingCommandDescription",
-						locale
-					)
+					description = CoreTranslations.Extensions.Help.Error.missingCommandDescription
+						.translateLocale(locale)
 
-					title = translationsProvider.translate(
-						"extensions.help.error.missingCommandTitle",
-						locale
-					)
+					title = CoreTranslations.Extensions.Help.Error.missingCommandTitle
+						.translateLocale(locale)
 				}
 			)
 		} else {
@@ -228,11 +221,8 @@ public class HelpExtension : HelpProvider, Extension() {
 					color = settings.colourGetter(event)
 					description = "$openingLine\n$desc\n\n$arguments"
 
-					title = translationsProvider.translate(
-						"extensions.help.paginator.title.command",
-						locale,
-						replacements = arrayOf(commandName)
-					)
+					title = CoreTranslations.Extensions.Help.Paginator.Title.command
+						.translateLocale(locale, commandName)
 				}
 			)
 		}
@@ -257,10 +247,13 @@ public class HelpExtension : HelpProvider, Extension() {
 		}
 	}
 
-	override suspend fun gatherCommands(event: MessageCreateEvent): List<ChatCommand<out Arguments>> =
-		messageCommandsRegistry.commands
+	override suspend fun gatherCommands(event: MessageCreateEvent): List<ChatCommand<out Arguments>> {
+		val locale = event.getLocale()
+
+		return messageCommandsRegistry.commands
 			.filter { !it.hidden && it.enabled && it.runChecks(event, false, mutableMapOf()) }
-			.sortedBy { it.name }
+			.sortedBy { it.name.translateLocale(locale).lowercase(locale) }
+	}
 
 	override suspend fun formatCommandHelp(
 		prefix: String,
@@ -282,19 +275,13 @@ public class HelpExtension : HelpProvider, Extension() {
 		val description = buildString {
 			if (longDescription) {
 				append(
-					translationsProvider.translate(
-						key = command.description,
-						bundleName = command.extension.bundle,
-						locale = locale
-					)
+					command.description
+						.translateLocale(locale)
 				)
 			} else {
 				append(
-					translationsProvider.translate(
-						key = command.description,
-						bundleName = command.extension.bundle,
-						locale = locale
-					)
+					command.description
+						.translateLocale(locale)
 						.trim()
 						.takeWhile { it != '\n' }
 				)
@@ -317,10 +304,8 @@ public class HelpExtension : HelpProvider, Extension() {
 				append("\n")
 
 				append(
-					translationsProvider.translate(
-						"extensions.help.commandDescription.aliases",
-						locale
-					)
+					CoreTranslations.Extensions.Help.CommandDescription.aliases
+						.translateLocale(locale)
 				)
 
 				append(" ")
@@ -338,10 +323,8 @@ public class HelpExtension : HelpProvider, Extension() {
 					append("\n")
 
 					append(
-						translationsProvider.translate(
-							"extensions.help.commandDescription.subCommands",
-							locale
-						)
+						CoreTranslations.Extensions.Help.CommandDescription.subCommands
+							.translateLocale(locale)
 					)
 
 					append(" ")
@@ -357,10 +340,8 @@ public class HelpExtension : HelpProvider, Extension() {
 				append("\n")
 
 				append(
-					translationsProvider.translate(
-						"extensions.help.commandDescription.requiredBotPermissions",
-						locale
-					)
+					CoreTranslations.Extensions.Help.CommandDescription.requiredBotPermissions
+						.translateLocale(locale)
 				)
 
 				append(" ")
@@ -373,10 +354,8 @@ public class HelpExtension : HelpProvider, Extension() {
 
 			if (command.arguments == null) {
 				append(
-					translationsProvider.translate(
-						"extensions.help.commandDescription.noArguments",
-						locale
-					)
+					CoreTranslations.Extensions.Help.CommandDescription.noArguments
+						.translateLocale(locale)
 				)
 			} else {
 				@Suppress("TooGenericExceptionCaught")  // Hard to say really
@@ -392,11 +371,8 @@ public class HelpExtension : HelpProvider, Extension() {
 									append(" (")
 
 									append(
-										translationsProvider.translate(
-											key = it.converter.signatureTypeString,
-											bundleName = it.converter.bundle,
-											locale = locale
-										)
+										it.converter.signatureType
+											.translateLocale(locale)
 									)
 
 									append(")")
@@ -404,11 +380,8 @@ public class HelpExtension : HelpProvider, Extension() {
 
 								append("`: ")
 								append(
-									translationsProvider.translate(
-										key = it.description,
-										bundleName = command.extension.bundle,
-										locale = locale
-									)
+									it.description
+										.translateLocale(locale)
 								)
 							}
 						}
@@ -417,10 +390,8 @@ public class HelpExtension : HelpProvider, Extension() {
 					logger.error(t) { "Failed to retrieve argument list for command: $name" }
 
 					append(
-						translationsProvider.translate(
-							"extensions.help.commandDescription.error.argumentList",
-							locale
-						)
+						CoreTranslations.Extensions.Help.CommandDescription.Error.argumentList
+							.translateLocale(locale)
 					)
 				}
 			}
@@ -442,10 +413,8 @@ public class HelpExtension : HelpProvider, Extension() {
 
 		args.drop(1).forEach {
 			if (command is ChatGroupCommand<out Arguments>) {
-				val gc = command as ChatGroupCommand<out Arguments>
-
-				command = if (gc.runChecks(event, false, mutableMapOf())) {
-					gc.getCommand(it, event)
+				command = if (command.runChecks(event, false, mutableMapOf())) {
+					command.getCommand(it, event)
 				} else {
 					null
 				}
@@ -459,8 +428,8 @@ public class HelpExtension : HelpProvider, Extension() {
 	public class HelpArguments : Arguments() {
 		/** Command to get help for. **/
 		public val command: List<String> by stringList {
-			name = "command"
-			description = "extensions.help.commandArguments.command"
+			name = "command".toKey()  // TODO: This needs translating
+			description = CoreTranslations.Extensions.Help.CommandArguments.command
 		}
 	}
 }

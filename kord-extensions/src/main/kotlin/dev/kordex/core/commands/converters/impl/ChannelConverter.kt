@@ -20,15 +20,18 @@ import dev.kord.core.entity.interaction.ChannelOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.rest.builder.interaction.ChannelBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.translate
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,8 +78,7 @@ public class ChannelConverter(
 	private val requiredChannelTypes: Set<ChannelType> = setOf(),
 	override var validator: Validator<Channel> = null,
 ) : SingleConverter<Channel>() {
-	override val signatureTypeString: String = "converters.channel.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Channel.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -92,9 +94,9 @@ public class ChannelConverter(
 		}
 
 		val channel: Channel = findChannel(arg, context) ?: throw DiscordRelayedException(
-			context.translate(
-				"converters.channel.error.missing", replacements = arrayOf(arg)
-			)
+			CoreTranslations.Converters.Channel.Error.missing
+				.withContext(context)
+				.withOrdinalPlaceholders(arg)
 		)
 
 		parsed = channel
@@ -107,11 +109,11 @@ public class ChannelConverter(
 
 			try {
 				kord.getChannel(Snowflake(id.toLong()))
-			} catch (e: NumberFormatException) {
+			} catch (_: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate(
-						"converters.channel.error.invalid", replacements = arrayOf(id)
-					)
+					CoreTranslations.Converters.Channel.Error.invalid
+						.withContext(context)
+						.withOrdinalPlaceholders(id)
 				)
 			}
 		} else {
@@ -119,7 +121,7 @@ public class ChannelConverter(
 
 			try {
 				kord.getChannel(Snowflake(string.toLong()))
-			} catch (e: NumberFormatException) { // It's not a numeric ID, so let's try a channel name
+			} catch (_: NumberFormatException) { // It's not a numeric ID, so let's try a channel name
 				kord.guilds
 					.flatMapConcat { it.channels }
 					.filter { it.name.equals(string, true) }
@@ -155,21 +157,20 @@ public class ChannelConverter(
 			val locale = context.getLocale()
 
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.channel.error.wrongType",
-					replacements = arrayOf(
+				CoreTranslations.Converters.Channel.Error.wrongType
+					.withContext(context)
+					.withOrdinalPlaceholders(
 						channel.type,
 						requiredChannelTypes.joinToString { "**${it.translate(locale)}**" }
 					)
-				)
 			)
 		}
 
 		return channel
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		ChannelBuilder(arg.displayName, arg.description).apply {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<ChannelBuilder> =
+		wrapOption(arg.displayName, arg.description) {
 			channelTypes = requiredChannelTypes.toList()
 
 			required = true

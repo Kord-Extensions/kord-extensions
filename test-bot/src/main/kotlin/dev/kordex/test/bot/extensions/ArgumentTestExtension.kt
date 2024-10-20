@@ -22,6 +22,7 @@ import dev.kordex.core.commands.application.slash.converters.impl.stringChoice
 import dev.kordex.core.commands.converters.impl.*
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 import dev.kordex.core.utils.suggestStringCollection
 import dev.kordex.core.utils.suggestStringMap
 
@@ -30,8 +31,8 @@ public class ArgumentTestExtension : Extension() {
 
 	override suspend fun setup() {
 		publicSlashCommand(::TagArgs) {
-			name = "test-tag"
-			description = "Test the tags converter"
+			name = "test-tag".toKey()
+			description = "Test the tags converter".toKey()
 
 			action {
 				respond {
@@ -42,8 +43,8 @@ public class ArgumentTestExtension : Extension() {
 		}
 
 		publicSlashCommand(::EmojiArguments) {
-			name = "test-emoji"
-			description = "Test the emoji converter"
+			name = "test-emoji".toKey()
+			description = "Test the emoji converter".toKey()
 
 			action {
 				respond {
@@ -59,8 +60,8 @@ public class ArgumentTestExtension : Extension() {
 		}
 
 		publicSlashCommand(::OptionalArgs) {
-			name = "optional-autocomplete"
-			description = "Check whether autocomplete works with an optional converter."
+			name = "optional-autocomplete".toKey()
+			description = "Check whether autocomplete works with an optional converter.".toKey()
 
 			action {
 				respond {
@@ -70,8 +71,8 @@ public class ArgumentTestExtension : Extension() {
 		}
 
 		publicSlashCommand(::LengthConstrainedArgs) {
-			name = "length-constrained"
-			description = "Check if length limits work"
+			name = "length-constrained".toKey()
+			description = "Check if length limits work".toKey()
 
 			action {
 				respond {
@@ -86,8 +87,8 @@ public class ArgumentTestExtension : Extension() {
 		}
 
 		publicSlashCommand(::AttachmentArguments) {
-			name = "attachment"
-			description = "Check attachment command options."
+			name = "attachment".toKey()
+			description = "Check attachment command options.".toKey()
 
 			action {
 				respond {
@@ -103,8 +104,8 @@ public class ArgumentTestExtension : Extension() {
 		}
 
 		publicSlashCommand(::ChannelArguments) {
-			name = "channel"
-			description = "Check channel command options."
+			name = "channel".toKey()
+			description = "Check channel command options.".toKey()
 
 			action {
 				respond {
@@ -116,8 +117,8 @@ public class ArgumentTestExtension : Extension() {
 		}
 
 		publicSlashCommand(::AutocompleteArguments) {
-			name = "autocomplete"
-			description = "Test auto-completion events"
+			name = "autocomplete".toKey()
+			description = "Test auto-completion events".toKey()
 
 			action {
 				respond {
@@ -134,15 +135,15 @@ public class ArgumentTestExtension : Extension() {
 		override val parseForAutocomplete: Boolean = true
 
 		public val channel: Channel? by optionalChannel {
-			name = "channel"
-			description = "Channel to select a tag from"
+			name = "channel".toKey()
+			description = "Channel to select a tag from".toKey()
 
 			requireChannelType(ChannelType.GuildForum)
 		}
 
 		public val tag: ForumTag? by optionalTag {
-			name = "tag"
-			description = "Tag to use"
+			name = "tag".toKey()
+			description = "Tag to use".toKey()
 
 			channelGetter = {
 				channel?.asChannelOfOrNull()
@@ -152,8 +153,8 @@ public class ArgumentTestExtension : Extension() {
 
 	public inner class OptionalArgs : Arguments() {
 		public val response: String? by optionalString {
-			name = "response"
-			description = "Text to receive"
+			name = "response".toKey()
+			description = "Text to receive".toKey()
 
 			autoComplete {
 				suggestStringMap(
@@ -169,15 +170,15 @@ public class ArgumentTestExtension : Extension() {
 
 	public inner class LengthConstrainedArgs : Arguments() {
 		public val name: String by string {
-			name = "name"
-			description = "The user's name."
+			name = "name".toKey()
+			description = "The user's name.".toKey()
 			minLength = 3
 			maxLength = 10
 		}
 
 		public val lastName: String? by optionalString {
-			name = "last_name"
-			description = "The user's last name."
+			name = "last-name".toKey()
+			description = "The user's last name.".toKey()
 			minLength = 4
 			maxLength = 15
 		}
@@ -185,20 +186,20 @@ public class ArgumentTestExtension : Extension() {
 
 	public inner class AttachmentArguments : Arguments() {
 		public val file: Attachment by attachment {
-			name = "file"
-			description = "An attached file."
+			name = "file".toKey()
+			description = "An attached file.".toKey()
 		}
 
 		public val optionalFile: Attachment? by optionalAttachment {
-			name = "optional_file"
-			description = "An optional file."
+			name = "optional-file".toKey()
+			description = "An optional file.".toKey()
 		}
 	}
 
 	public inner class ChannelArguments : Arguments() {
 		public val channel: Channel by channel {
-			name = "channel"
-			description = "A text channel"
+			name = "channel".toKey()
+			description = "A text channel".toKey()
 
 			requireChannelType(ChannelType.GuildText)
 		}
@@ -206,8 +207,8 @@ public class ArgumentTestExtension : Extension() {
 
 	public inner class EmojiArguments : Arguments() {
 		public val emoji: Emoji by emoji {
-			name = "emoji"
-			description = "A custom or Unicode emoji"
+			name = "emoji".toKey()
+			description = "A custom or Unicode emoji".toKey()
 		}
 	}
 
@@ -215,17 +216,17 @@ public class ArgumentTestExtension : Extension() {
 		override val parseForAutocomplete: Boolean = true
 
 		public val one: String by stringChoice {
-			name = "one"
-			description = "Choice argument"
+			name = "one".toKey()
+			description = "Choice argument".toKey()
 
-			choice("O", "o")
-			choice("T", "t")
-			choice("F", "f")
+			choice("O".toKey(), "o")
+			choice("T".toKey(), "t")
+			choice("F".toKey(), "f")
 		}
 
 		public val two: String by string {
-			name = "two"
-			description = "Autocomplete argument"
+			name = "two".toKey()
+			description = "Autocomplete argument".toKey()
 
 			autoComplete {
 				suggestStringCollection(

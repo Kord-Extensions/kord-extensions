@@ -26,7 +26,7 @@ public open class LinkInteractionButton : InteractionButton() {
 	override fun apply(builder: ActionRowBuilder) {
 		builder.linkButton(url) {
 			emoji = partialEmoji
-			label = this@LinkInteractionButton.label
+			label = this@LinkInteractionButton.label?.translate()
 		}
 	}
 }

@@ -19,6 +19,8 @@ import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.converters.*
 import dev.kordex.core.commands.getDefaultTranslatedDisplayName
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.withContext
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -41,7 +43,7 @@ public open class SlashCommandParser {
 		context: SlashCommandContext<*, *, *>,
 	): T {
 		val argumentsObj = builder.invoke()
-		argumentsObj.validate()
+		argumentsObj.validate(context.getLocale())
 
 		logger.trace { "Arguments object: $argumentsObj (${argumentsObj.args.size} args)" }
 
@@ -54,7 +56,7 @@ public open class SlashCommandParser {
 			} else {
 				it.value
 			}
-		} as Map<String, OptionValue<*>>
+		}
 
 		var currentValue: OptionValue<*>?
 
@@ -66,7 +68,7 @@ public open class SlashCommandParser {
 			logger.trace { "Current argument: ${currentArg.displayName}" }
 
 			currentValue =
-				values[currentArg.getDefaultTranslatedDisplayName(context.translationsProvider, context.command)]
+				values[currentArg.getDefaultTranslatedDisplayName()]
 
 			logger.trace { "Current value: $currentValue" }
 
@@ -84,24 +86,16 @@ public open class SlashCommandParser {
 
 					if (converter.required && !parsed) {
 						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
+							CoreTranslations.ArgumentParser.Error.invalidValue
+								.withContext(context)
+								.withOrdinalPlaceholders(
+									currentArg.displayName
+										.withContext(context)
+										.translate(),
 
 									converter.getErrorString(context),
 									currentValue
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
+								),
 
 							currentArg,
 							argumentsObj,
@@ -121,10 +115,6 @@ public open class SlashCommandParser {
 					if (converter.required) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -148,23 +138,16 @@ public open class SlashCommandParser {
 
 					if (converter.required && !parsed) {
 						throw ArgumentParsingException(
-							context.translate(
-								"argumentParser.error.invalidValue",
-								replacements = arrayOf(
-									context.translate(
-										currentArg.displayName,
-										bundleName = context.command.resolvedBundle ?: converter.bundle
-									),
+							CoreTranslations.ArgumentParser.Error.invalidValue
+								.withContext(context)
+								.withOrdinalPlaceholders(
+									currentArg.displayName
+										.withContext(context)
+										.translate(),
 
 									converter.getErrorString(context),
 									currentValue
-								)
-							),
-
-							"argumentParser.error.invalidValue",
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
+								),
 
 							currentArg,
 							argumentsObj,
@@ -184,10 +167,6 @@ public open class SlashCommandParser {
 					if (converter.required) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -221,10 +200,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -258,10 +233,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -295,10 +266,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,
@@ -332,10 +299,6 @@ public open class SlashCommandParser {
 					if (converter.required || converter.outputError) {
 						throw ArgumentParsingException(
 							converter.handleError(e, context),
-							null,
-
-							context.getLocale(),
-							context.command.resolvedBundle ?: converter.bundle,
 
 							currentArg,
 							argumentsObj,

@@ -13,6 +13,13 @@ metadata {
 	description = "KordEx extra module that provides anti-phishing functionality for bots"
 }
 
+getTranslations(
+	"func-phishing",
+	"dev.kordex.modules.func.phishing.i18n",
+	"kordex.func-phishing",
+	"PhishingTranslations"
+)
+
 repositories {
 	maven {
 		name = "Sonatype Snapshots"

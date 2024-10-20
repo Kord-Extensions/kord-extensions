@@ -9,10 +9,11 @@
 package dev.kordex.core.commands.converters
 
 import dev.kord.core.entity.interaction.OptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -23,7 +24,7 @@ import dev.kordex.parser.StringParser
  *
  * @param singleConverter The [SingleConverter] to wrap.
  *
- * @param newSignatureTypeString An optional signature type string to override the one set in [singleConverter].
+ * @param newSignatureType An optional signature type string to override the one set in [singleConverter].
  * @param newShowTypeInSignature An optional boolean to override the [showTypeInSignature] setting set in
  * [singleConverter].
  * @param newErrorTypeString An optional error type string to override the one set in [singleConverter].
@@ -31,16 +32,16 @@ import dev.kordex.parser.StringParser
 public class SingleToOptionalConverter<T : Any>(
 	public val singleConverter: SingleConverter<T>,
 
-	newSignatureTypeString: String? = null,
+	newSignatureType: Key? = null,
 	newShowTypeInSignature: Boolean? = null,
-	newErrorTypeString: String? = null,
+	newErrorType: Key? = null,
 	outputError: Boolean = false,
 
 	override var validator: Validator<T?> = null,
 ) : OptionalConverter<T>(outputError) {
-	override val signatureTypeString: String = newSignatureTypeString ?: singleConverter.signatureTypeString
+	override val signatureType: Key = newSignatureType ?: singleConverter.signatureType
 	override val showTypeInSignature: Boolean = newShowTypeInSignature ?: singleConverter.showTypeInSignature
-	override val errorTypeString: String? = newErrorTypeString ?: singleConverter.errorTypeString
+	override val errorType: Key? = newErrorType ?: singleConverter.errorType
 
 	private val dummyArgs = Arguments()
 
@@ -62,11 +63,14 @@ public class SingleToOptionalConverter<T : Any>(
 	override suspend fun handleError(
 		t: Throwable,
 		context: CommandContext,
-	): String = singleConverter.handleError(t, context)
+	): Key = singleConverter.handleError(t, context)
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<*> {
 		val option = singleConverter.toSlashOption(arg)
-		option.required = false
+
+		option.modify {
+			required = false
+		}
 
 		return option
 	}

@@ -10,6 +10,7 @@ package dev.kordex.core.utils
 
 import dev.kord.common.annotation.KordPreview
 import dev.kord.core.event.Event
+import dev.kordex.core.i18n.types.Key
 import java.util.*
 
 /** Type alias representing a string keyed map. **/
@@ -90,6 +91,18 @@ public inline fun <reified V : Any, reified T : V> MutableStringKeyedMap<V>.getO
 /** For string-keyed maps, attempt to retrieve a value using a case-insensitive key. **/
 public fun <V : Any> Map<String, V>.getIgnoringCase(key: String, locale: Locale? = null): V? {
 	val lowerCase = entries.associate { it.key.lowercase() to it.value }
+
+	return if (locale != null) {
+		lowerCase[key.lowercase(locale)]
+	} else {
+		lowerCase[key.lowercase()]
+	}
+}
+
+/** For Key-keyed maps, attempt to retrieve a value using a case-insensitive key. **/
+@JvmName("getIgnoringCaseKeyed")
+public fun <V : Any> Map<Key, V>.getIgnoringCase(key: String, locale: Locale? = null): V? {
+	val lowerCase = entries.associate { it.key.withLocale(locale).translate().lowercase() to it.value }
 
 	return if (locale != null) {
 		lowerCase[key.lowercase(locale)]

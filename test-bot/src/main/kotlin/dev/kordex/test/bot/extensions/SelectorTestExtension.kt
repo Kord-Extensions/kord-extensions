@@ -16,25 +16,26 @@ import dev.kordex.core.commands.application.slash.publicSubCommand
 import dev.kordex.core.components.*
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.publicSlashCommand
+import dev.kordex.core.i18n.toKey
 
 public class SelectorTestExtension : Extension() {
 	override val name: String = "kordex.test-selectors"
 
 	override suspend fun setup() {
 		publicSlashCommand {
-			name = "selector"
-			description = "Test selectors."
+			name = "selector".toKey()
+			description = "Test selectors.".toKey()
 
 			publicSubCommand {
-				name = "public"
-				description = "Test public selectors."
+				name = "public".toKey()
+				description = "Test public selectors.".toKey()
 
 				action {
 					respond {
 						components {
 							publicStringSelectMenu {
-								option("hi", "1")
-								option("hi hi", "2")
+								option("hi".toKey(), "1")
+								option("hi hi".toKey(), "2")
 								maximumChoices = null
 
 								action {
@@ -88,8 +89,8 @@ public class SelectorTestExtension : Extension() {
 			}
 
 			ephemeralSubCommand {
-				name = "mentionable"
-				description = "Test mentionable selectors."
+				name = "mentionable".toKey()
+				description = "Test mentionable selectors.".toKey()
 
 				action {
 					respond {
@@ -133,15 +134,15 @@ public class SelectorTestExtension : Extension() {
 			}
 
 			ephemeralSubCommand {
-				name = "ephemeral"
-				description = "Test ephemeral selectors."
+				name = "ephemeral".toKey()
+				description = "Test ephemeral selectors.".toKey()
 
 				action {
 					respond {
 						components {
 							ephemeralStringSelectMenu {
-								option("hi", "1")
-								option("hi hi", "2")
+								option("hi".toKey(), "1")
+								option("hi hi".toKey(), "2")
 								maximumChoices = null
 
 								action {

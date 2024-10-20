@@ -10,15 +10,19 @@ package dev.kordex.core.commands.application.slash.converters.impl
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.commands.wrapStringOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.getIgnoringCase
 import dev.kordex.parser.StringParser
 
@@ -31,10 +35,10 @@ import dev.kordex.parser.StringParser
 	types = [ConverterType.CHOICE, ConverterType.DEFAULTING, ConverterType.OPTIONAL, ConverterType.SINGLE]
 )
 public class StringChoiceConverter(
-	choices: Map<String, String>,
+	choices: Map<Key, String>,
 	override var validator: Validator<String> = null,
 ) : ChoiceConverter<String>(choices) {
-	override val signatureTypeString: String = "converters.string.signatureType"
+	override val signatureType: Key = CoreTranslations.Converters.String.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -48,14 +52,12 @@ public class StringChoiceConverter(
 
 		if (arg.lowercase(context.getLocale()) !in choices.values.map { it.lowercase(context.getLocale()) }) {
 			throw DiscordRelayedException(
-				context.translate(
-					"converters.choice.invalidChoice",
-
-					replacements = arrayOf(
+				CoreTranslations.Converters.Choice.invalidChoice
+					.withContext(context)
+					.withOrdinalPlaceholders(
 						arg,
 						choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 					)
-				)
 			)
 		}
 
@@ -64,12 +66,15 @@ public class StringChoiceConverter(
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> {
+		val option = wrapStringOption(arg.displayName, arg.description) {
 			required = true
-
-			this@StringChoiceConverter.choices.forEach { choice(it.key, it.value) }
 		}
+
+		this.choices.forEach { option.choice(it.key, it.value) }
+
+		return option
+	}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false

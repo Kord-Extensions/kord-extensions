@@ -40,6 +40,7 @@ import dev.kordex.core.commands.chat.ChatCommandRegistry
 import dev.kordex.core.components.ComponentRegistry
 import dev.kordex.core.extensions.impl.AboutExtension
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExContext
 import dev.kordex.core.plugins.KordExPlugin
 import dev.kordex.core.plugins.PluginManager
@@ -69,7 +70,7 @@ internal typealias LocaleResolver = suspend (
 ) -> Locale?
 
 internal typealias FailureResponseBuilder =
-	suspend (MessageCreateBuilder).(message: String, type: FailureReason<*>) -> Unit
+	suspend (MessageCreateBuilder).(message: Key, type: FailureReason<*>) -> Unit
 
 /**
  * Builder class used for configuring and creating an [ExtensibleBot].
@@ -104,7 +105,7 @@ public open class ExtensibleBotBuilder {
 	public var failureResponseBuilder: FailureResponseBuilder = { message, _ ->
 		allowedMentions { }
 
-		content = message
+		content = message.translate()
 	}
 
 	/**
@@ -137,7 +138,7 @@ public open class ExtensibleBotBuilder {
 	 * If all the above values are missing, this setting defaults to "standard".
 	 *
 	 * For more information on what data KordEx collects, how to get at it, and how it's stored, please see here:
-	 * TODO: LINK HERE
+	 * https://docs.kordex.dev/data-collection.html
 	 */
 	@OptIn(InternalAPI::class)
 	public var dataCollectionMode: DataCollection = DATA_COLLECTION

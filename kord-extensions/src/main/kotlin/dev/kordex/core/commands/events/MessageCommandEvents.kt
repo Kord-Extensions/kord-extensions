@@ -12,6 +12,7 @@ import dev.kord.core.event.interaction.MessageCommandInteractionCreateEvent
 import dev.kordex.core.commands.application.message.EphemeralMessageCommand
 import dev.kordex.core.commands.application.message.MessageCommand
 import dev.kordex.core.commands.application.message.PublicMessageCommand
+import dev.kordex.core.i18n.types.Key
 
 // region Invocation events
 
@@ -67,14 +68,14 @@ public interface MessageCommandFailedChecksEvent<C : MessageCommand<*, *>> :
 public data class EphemeralMessageCommandFailedChecksEvent(
 	override val command: EphemeralMessageCommand<*>,
 	override val event: MessageCommandInteractionCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : MessageCommandFailedChecksEvent<EphemeralMessageCommand<*>>
 
 /** Event emitted when a public message command's checks fail. **/
 public data class PublicMessageCommandFailedChecksEvent(
 	override val command: PublicMessageCommand<*>,
 	override val event: MessageCommandInteractionCreateEvent,
-	override val reason: String,
+	override val reason: Key,
 ) : MessageCommandFailedChecksEvent<PublicMessageCommand<*>>
 
 /** Basic event emitted when a message command invocation fails with an exception. **/

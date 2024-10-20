@@ -10,6 +10,8 @@ package dev.kordex.core.commands
 
 import dev.kordex.core.commands.converters.Converter
 import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.utils.getKoin
 
 /**
  * Data class representing a single argument.
@@ -19,8 +21,8 @@ import dev.kordex.core.i18n.TranslationsProvider
  * @param converter Argument converter to use for this argument.
  */
 public data class Argument<T : Any?>(
-	val displayName: String,
-	val description: String,
+	val displayName: Key,
+	val description: Key,
 	val converter: Converter<T, *, *, *>,
 ) {
 	init {
@@ -28,9 +30,5 @@ public data class Argument<T : Any?>(
 	}
 }
 
-internal fun Argument<*>.getDefaultTranslatedDisplayName(provider: TranslationsProvider, command: Command): String =
-	provider.translate(
-		key = displayName,
-		bundleName = command.resolvedBundle ?: converter.bundle,
-		locale = provider.defaultLocale
-	)
+internal fun Argument<*>.getDefaultTranslatedDisplayName(): String =
+	displayName.translateLocale(getKoin().get<TranslationsProvider>().defaultLocale)

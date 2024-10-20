@@ -16,17 +16,20 @@ import dev.kord.core.entity.User
 import dev.kord.core.entity.interaction.MemberOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.UserBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.chat.ChatCommandContext
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.users
 import dev.kordex.parser.StringParser
 import kotlinx.coroutines.flow.firstOrNull
@@ -62,8 +65,7 @@ public class MemberConverter(
 	private var requireSameGuild: Boolean = true,
 	override var validator: Validator<Member> = null,
 ) : SingleConverter<Member>() {
-	override val signatureTypeString: String = "converters.member.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Member.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val guild = context.getGuild()
@@ -109,27 +111,31 @@ public class MemberConverter(
 
 		parsed = findMember(arg, context)
 			?: throw DiscordRelayedException(
-				context.translate("converters.member.error.missing", replacements = arrayOf(arg))
+				CoreTranslations.Converters.Member.Error.missing
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			)
 
 		return true
 	}
 
 	private suspend fun findMember(arg: String, context: CommandContext): Member? {
-		val user: User? = if (arg.startsWith("<@") && arg.endsWith(">")) { // It's a mention
+		val user: User? = if (arg.startsWith("<@") && arg.endsWith(">")) { // Mention
 			val id: String = arg.substring(2, arg.length - 1).replace("!", "")
 
 			try {
 				kord.getUser(Snowflake(id))
 			} catch (e: NumberFormatException) {
 				throw DiscordRelayedException(
-					context.translate("converters.member.error.invalid", replacements = arrayOf(id))
+					CoreTranslations.Converters.Member.Error.invalid
+						.withContext(context)
+						.withOrdinalPlaceholders(id)
 				)
 			}
 		} else {
 			try { // Try for a user ID first
 				kord.getUser(Snowflake(arg))
-			} catch (e: NumberFormatException) { // It's not an ID, let's try the tag
+			} catch (e: NumberFormatException) { // Not an ID, let's try the tag
 				if (!arg.contains("#")) {
 					null
 				} else {
@@ -160,8 +166,10 @@ public class MemberConverter(
 		)
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		UserBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<UserBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = if (context.eventObj is AutoCompleteInteractionCreateEvent) {
@@ -183,7 +191,9 @@ public class MemberConverter(
 
 		if (requiredGuildId != null && optionValue.guildId != requiredGuildId) {
 			throw DiscordRelayedException(
-				context.translate("converters.member.error.invalid", replacements = arrayOf(optionValue.username))
+				CoreTranslations.Converters.Member.Error.invalid
+					.withContext(context)
+					.withOrdinalPlaceholders(optionValue.tag)
 			)
 		}
 

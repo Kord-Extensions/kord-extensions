@@ -9,9 +9,11 @@
 package dev.kordex.core.commands.converters.builders
 
 import dev.kordex.core.DiscordRelayedException
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
-import java.util.*
 
 /**
  * Class representing the context for an argument validator. This allows the storage of validation steps and a message
@@ -25,15 +27,9 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	/**
 	 * Translation key to use for the error response message, if not the default.
 	 *
-	 * The string pointed to by this variable must accept one replacement value, which is the error message itself.
-	 *
-	 * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
-	 * the replacement functionality of the translations system.
+	 * The string pointed to by this variable must accept one ordinal placeholder, the error message itself.
 	 */
-	public var errorResponseKey: String = "checks.responseTemplate"
-
-	/** Translation bundle used by [translate] by default and the error response translation, if not the default. **/
-	public var defaultBundle: String? = context.command.resolvedBundle
+	public var errorResponseKey: Key = CoreTranslations.Checks.responseTemplate
 
 	/** Human-readable message for the user, if any. **/
 	public var message: String? = null
@@ -47,8 +43,18 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	}
 
 	/** Mark this validator as having failed, optionally providing a message for the user. **/
-	public fun fail(message: String? = null) {
+	@NotTranslated
+	public fun fail(message: String) {
 		this.message = message
+		this.passed = false
+	}
+
+	/** Mark this validator as having failed, optionally providing a message for the user. **/
+	public suspend fun fail(message: Key? = null) {
+		this.message = message
+			?.withLocale(context.getLocale())
+			?.translate()
+
 		this.passed = false
 	}
 
@@ -57,7 +63,23 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	 *
 	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
 	 */
-	public fun failIf(value: Boolean, message: String? = null): Boolean {
+	@NotTranslated
+	public fun failIf(value: Boolean, message: String): Boolean {
+		if (value) {
+			fail(message)
+
+			return true
+		}
+
+		return false
+	}
+
+	/**
+	 * If [value] is `true`, mark this validator as having failed, optionally providing a message for the user.
+	 *
+	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
+	 */
+	public suspend fun failIf(value: Boolean, message: Key? = null): Boolean {
 		if (value) {
 			fail(message)
 
@@ -72,7 +94,16 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	 *
 	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
 	 */
-	public suspend fun failIf(message: String? = null, callback: suspend () -> Boolean): Boolean =
+	@NotTranslated
+	public suspend fun failIf(message: String, callback: suspend () -> Boolean): Boolean =
+		failIf(callback(), message)
+
+	/**
+	 * If [callback] returns `true`, mark this validator as having failed, optionally providing a message for the user.
+	 *
+	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
+	 */
+	public suspend fun failIf(message: Key? = null, callback: suspend () -> Boolean): Boolean =
 		failIf(callback(), message)
 
 	/**
@@ -80,7 +111,16 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	 *
 	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
 	 */
-	public fun failIfNot(value: Boolean, message: String? = null): Boolean =
+	@NotTranslated
+	public fun failIfNot(value: Boolean, message: String): Boolean =
+		failIf(!value, message)
+
+	/**
+	 * If [value] is `false`, mark this validator as having failed, optionally providing a message for the user.
+	 *
+	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
+	 */
+	public suspend fun failIfNot(value: Boolean, message: Key? = null): Boolean =
 		failIf(!value, message)
 
 	/**
@@ -88,7 +128,16 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	 *
 	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
 	 */
-	public suspend fun failIfNot(message: String? = null, callback: suspend () -> Boolean): Boolean =
+	@NotTranslated
+	public suspend fun failIfNot(message: String, callback: suspend () -> Boolean): Boolean =
+		failIfNot(callback(), message)
+
+	/**
+	 * If [callback] returns `false`, mark this validator as having failed, optionally providing a message for the user.
+	 *
+	 * Returns `true` if the validator was marked as having failed, `false` otherwise.
+	 */
+	public suspend fun failIfNot(message: Key? = null, callback: suspend () -> Boolean): Boolean =
 		failIfNot(callback(), message)
 
 	/**
@@ -148,36 +197,6 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 		return null
 	}
 
-	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
-		bundle: String? = defaultBundle,
-		replacements: Array<Any?> = arrayOf(),
-	): String =
-		context.translate(key, bundleName = bundle, replacements = replacements)
-
-	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
-		replacements: Array<Any?> = arrayOf(),
-	): String =
-		context.translate(key, bundleName = defaultBundle, replacements = replacements)
-
-	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
-		replacements: Map<String, Any?>,
-	): String =
-		context.translate(key, bundleName = defaultBundle, replacements = replacements)
-
-	/** Quick access to translate strings using this validator context's locale. **/
-	public suspend fun translate(
-		key: String,
-		bundle: String?,
-		replacements: Map<String, Any?>,
-	): String =
-		context.translate(key, bundleName = bundle, replacements = replacements)
-
 	/**
 	 * If this validator has failed, throw a [DiscordRelayedException] with the translated message, if any.
 	 */
@@ -186,7 +205,7 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 		if (passed.not()) {
 			if (message != null) {
 				throw DiscordRelayedException(
-					getTranslatedMessage()!!
+					getMessageKey()!!
 				)
 			} else {
 				error("Validation failed.")
@@ -196,8 +215,14 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 
 	/** Get the translated validator failure message, if the validator has failed and a message was set. **/
 	public suspend fun getTranslatedMessage(): String? =
+		getMessageKey()?.translate()
+
+	/** Get a [Key] representing the validator failure message, if the validator has failed and a message was set. **/
+	public suspend fun getMessageKey(): Key? =
 		if (passed.not() && message != null) {
-			translate(errorResponseKey, defaultBundle, replacements = arrayOf(message))
+			errorResponseKey
+				.withLocale(context.getLocale())
+				.withOrdinalPlaceholders(message)
 		} else {
 			null
 		}

@@ -10,15 +10,17 @@ package dev.kordex.core.commands.converters.impl
 
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.core.entity.interaction.StringOptionValue
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kord.rest.builder.interaction.StringChoiceBuilder
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.CoalescingConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.parser.StringParser
 
 /**
@@ -45,9 +47,8 @@ public class RegexCoalescingConverter(
 	shouldThrow: Boolean = false,
 	override var validator: Validator<Regex> = null,
 ) : CoalescingConverter<Regex>(shouldThrow) {
-	override val signatureTypeString: String = "converters.regex.signatureType.plural"
+	override val signatureType: Key = CoreTranslations.Converters.Regex.SignatureType.plural
 	override val showTypeInSignature: Boolean = false
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: List<String>?): Int {
 		val args: String = named?.joinToString(" ") ?: parser?.consumeRemaining() ?: return 0
@@ -57,8 +58,10 @@ public class RegexCoalescingConverter(
 		return args.length
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		StringChoiceBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<StringChoiceBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? StringOptionValue)?.value ?: return false

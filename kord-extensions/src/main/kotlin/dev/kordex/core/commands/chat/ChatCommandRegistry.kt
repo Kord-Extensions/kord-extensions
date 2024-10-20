@@ -15,6 +15,7 @@ import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.extensions.Extension
+import dev.kordex.core.i18n.SupportedLocales
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.utils.getLocale
 import dev.kordex.parser.StringParser
@@ -62,30 +63,38 @@ public open class ChatCommandRegistry : KordExKoinComponent {
 	@Throws(CommandRegistrationException::class)
 	public open fun add(command: ChatCommand<out Arguments>) {
 		val existingCommand = commands.any { it.name == command.name }
-		val existingAlias: String? = commands.flatMap {
-			it.aliases.toList()
-		}.firstOrNull { command.aliases.contains(it) }
 
 		if (existingCommand) {
 			throw CommandRegistrationException(
 				command.name,
-				"Chat command with this name already registered in '${command.extension.name}' extension."
-			)
-		}
-
-		if (existingAlias != null) {
-			throw CommandRegistrationException(
-				command.name,
-				"Chat command with alias '$existingAlias' already registered in '${command.extension.name}' " +
-					"extension."
+				"Chat command registered using duplicate name: ${command.name}"
 			)
 		}
 
 		if (commands.contains(command)) {
 			throw CommandRegistrationException(
 				command.name,
-				"Chat command already registered in '${command.extension.name}' extension."
+				"Chat command registered twice: ${command.name}"
 			)
+		}
+
+		val commandAliases = SupportedLocales.ALL_LOCALES_SET.flatMap {
+			command.getTranslatedAliases(it)
+		}
+
+		val existingAliases = commands.flatMap { c ->
+			SupportedLocales.ALL_LOCALES_SET.flatMap {
+				c.getTranslatedAliases(it)
+			}
+		}
+
+		val matchingAliases = commandAliases.intersect(existingAliases)
+
+		if (matchingAliases.isNotEmpty()) {
+			logger.warn {
+				"Chat command named using ${command.name} provides aliases used by other " +
+					"commands: ${matchingAliases.joinToString()}"
+			}
 		}
 
 		commands.add(command)

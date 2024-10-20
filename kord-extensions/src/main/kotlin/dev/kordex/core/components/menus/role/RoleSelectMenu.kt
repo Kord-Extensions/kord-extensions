@@ -38,7 +38,7 @@ public interface RoleSelectMenu {
 
 			this.allowedValues = selectMenu.minimumChoices..selectMenu.maximumChoices!!
 			this.disabled = selectMenu.disabled
-			this.placeholder = selectMenu.placeholder
+			this.placeholder = selectMenu.placeholder?.translate()
 		}
 	}
 }

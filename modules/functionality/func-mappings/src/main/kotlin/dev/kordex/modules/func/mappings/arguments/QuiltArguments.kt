@@ -9,6 +9,7 @@
 package dev.kordex.modules.func.mappings.arguments
 
 import dev.kordex.core.commands.converters.impl.defaultingBoolean
+import dev.kordex.modules.func.mappings.i18n.generated.MappingsTranslations
 import me.shedaniel.linkie.namespaces.QuiltMappingsNamespace
 
 /**
@@ -17,8 +18,8 @@ import me.shedaniel.linkie.namespaces.QuiltMappingsNamespace
 @Suppress("UndocumentedPublicProperty")
 class QuiltArguments : MappingArguments(QuiltMappingsNamespace), IntermediaryMappable {
 	override val mapDescriptors by defaultingBoolean {
-		name = "map-descriptor"
-		description = "Whether to map field/method descriptors to named instead of hashed"
+		name = MappingsTranslations.Argument.MapDescriptor.name
+		description = MappingsTranslations.Argument.MapDescriptor.description
 		defaultValue = true
 	}
 }

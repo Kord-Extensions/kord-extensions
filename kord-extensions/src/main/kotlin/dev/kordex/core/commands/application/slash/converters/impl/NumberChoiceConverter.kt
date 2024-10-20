@@ -11,14 +11,18 @@ package dev.kordex.core.commands.application.slash.converters.impl
 import dev.kord.core.entity.interaction.IntegerOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.IntegerOptionBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.application.slash.converters.ChoiceConverter
 import dev.kordex.core.commands.converters.Validator
+import dev.kordex.core.commands.wrapIntegerOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.core.utils.getIgnoringCase
 import dev.kordex.parser.StringParser
 
@@ -37,10 +41,10 @@ private const val DEFAULT_RADIX = 10
 )
 public class NumberChoiceConverter(
 	private val radix: Int = DEFAULT_RADIX,
-	choices: Map<String, Long>,
+	choices: Map<Key, Long>,
 	override var validator: Validator<Long> = null,
 ) : ChoiceConverter<Long>(choices) {
-	override val signatureTypeString: String = "converters.number.signatureType"
+	override val signatureType: Key = CoreTranslations.Converters.Number.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean {
 		val arg: String = named ?: parser?.parseNext()?.data ?: return false
@@ -57,37 +61,42 @@ public class NumberChoiceConverter(
 
 			if (result !in choices.values) {
 				throw DiscordRelayedException(
-					context.translate(
-						"converters.choice.invalidChoice",
-
-						replacements = arrayOf(
+					CoreTranslations.Converters.Choice.invalidChoice
+						.withContext(context)
+						.withOrdinalPlaceholders(
 							arg,
 							choices.entries.joinToString { "**${it.key}** -> `${it.value}`" }
 						)
-					)
 				)
 			}
 
 			this.parsed = result
-		} catch (e: NumberFormatException) {
-			val errorString = if (radix == DEFAULT_RADIX) {
-				context.translate("converters.number.error.invalid.defaultBase", replacements = arrayOf(arg))
+		} catch (_: NumberFormatException) {
+			val errorKey = if (radix == DEFAULT_RADIX) {
+				CoreTranslations.Converters.Number.Error.Invalid.defaultBase
+					.withContext(context)
+					.withOrdinalPlaceholders(arg)
 			} else {
-				context.translate("converters.number.error.invalid.otherBase", replacements = arrayOf(arg, radix))
+				CoreTranslations.Converters.Number.Error.Invalid.otherBase
+					.withContext(context)
+					.withOrdinalPlaceholders(arg, radix)
 			}
 
-			throw DiscordRelayedException(errorString)
+			throw DiscordRelayedException(errorKey)
 		}
 
 		return true
 	}
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		IntegerOptionBuilder(arg.displayName, arg.description).apply {
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<IntegerOptionBuilder> {
+		val option = wrapIntegerOption(arg.displayName, arg.description) {
 			required = true
-
-			this@NumberChoiceConverter.choices.forEach { choice(it.key, it.value) }
 		}
+
+		this.choices.forEach { option.choice(it.key, it.value) }
+
+		return option
+	}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? IntegerOptionValue)?.value ?: return false

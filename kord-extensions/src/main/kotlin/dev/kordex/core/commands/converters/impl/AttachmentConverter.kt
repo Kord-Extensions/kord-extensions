@@ -12,15 +12,18 @@ import dev.kord.core.entity.Attachment
 import dev.kord.core.entity.interaction.AttachmentOptionValue
 import dev.kord.core.entity.interaction.OptionValue
 import dev.kord.rest.builder.interaction.AttachmentBuilder
-import dev.kord.rest.builder.interaction.OptionsBuilder
 import dev.kordex.core.DiscordRelayedException
 import dev.kordex.core.annotations.converters.Converter
 import dev.kordex.core.annotations.converters.ConverterType
 import dev.kordex.core.commands.Argument
 import dev.kordex.core.commands.CommandContext
+import dev.kordex.core.commands.OptionWrapper
 import dev.kordex.core.commands.converters.SingleConverter
 import dev.kordex.core.commands.converters.Validator
-import dev.kordex.core.i18n.DEFAULT_KORDEX_BUNDLE
+import dev.kordex.core.commands.wrapOption
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.types.Key
+import dev.kordex.core.i18n.withContext
 import dev.kordex.parser.StringParser
 
 /**
@@ -36,14 +39,18 @@ import dev.kordex.parser.StringParser
 public class AttachmentConverter(
 	override var validator: Validator<Attachment> = null,
 ) : SingleConverter<Attachment>() {
-	override val signatureTypeString: String = "converters.attachment.signatureType"
-	override val bundle: String = DEFAULT_KORDEX_BUNDLE
+	override val signatureType: Key = CoreTranslations.Converters.Attachment.signatureType
 
 	override suspend fun parse(parser: StringParser?, context: CommandContext, named: String?): Boolean =
-		throw DiscordRelayedException(context.translate("converters.attachment.error.slashCommandsOnly"))
+		throw DiscordRelayedException(
+			CoreTranslations.Converters.Attachment.Error.slashCommandsOnly
+				.withContext(context)
+		)
 
-	override suspend fun toSlashOption(arg: Argument<*>): OptionsBuilder =
-		AttachmentBuilder(arg.displayName, arg.description).apply { required = true }
+	override suspend fun toSlashOption(arg: Argument<*>): OptionWrapper<AttachmentBuilder> =
+		wrapOption(arg.displayName, arg.description) {
+			required = true
+		}
 
 	override suspend fun parseOption(context: CommandContext, option: OptionValue<*>): Boolean {
 		val optionValue = (option as? AttachmentOptionValue)?.resolvedObject ?: return false

@@ -8,20 +8,17 @@
 
 package dev.kordex.modules.dev.java.time
 
-import dev.kordex.core.i18n.TranslationsProvider
+import dev.kordex.core.i18n.generated.CoreTranslations
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.parsers.DurationParserException
 import dev.kordex.core.parsers.InvalidTimeUnitException
 import dev.kordex.core.utils.splitOn
-import org.koin.core.component.inject
 import java.util.*
 
 /**
  * Object in charge of parsing strings into [ChronoContainer]s, using translated locale-aware units.
  */
 public object J8DurationParser : KordExKoinComponent {
-	private val translations: TranslationsProvider by inject()
-
 	/** Check whether the given character is a valid duration unit character. **/
 	public fun charValid(char: Char, locale: Locale): Boolean =
 		char.isDigit() ||
@@ -58,7 +55,10 @@ public object J8DurationParser : KordExKoinComponent {
 		}
 
 		if (values.size != units.size) {
-			throw DurationParserException(translations.translate("converters.duration.error.badUnitPairs", locale))
+			throw DurationParserException(
+				CoreTranslations.Converters.Duration.Error.badUnitPairs
+					.withLocale(locale)
+			)
 		}
 
 		while (units.isNotEmpty()) {
