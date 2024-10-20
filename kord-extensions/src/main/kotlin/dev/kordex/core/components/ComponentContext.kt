@@ -23,7 +23,6 @@ import dev.kordex.core.builders.ExtensibleBotBuilder
 import dev.kordex.core.checks.channelFor
 import dev.kordex.core.checks.guildFor
 import dev.kordex.core.checks.userFor
-import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import dev.kordex.core.sentry.SentryContext
 import dev.kordex.core.sentry.captures.SentryBreadcrumbCapture
@@ -130,30 +129,6 @@ public abstract class ComponentContext<E : ComponentInteractionCreateEvent>(
 
 		return resolvedLocale!!
 	}
-
-	/**
-	 * Given a translation key, return the translation for the locale provided by the bot's configured
-	 * locale resolvers.
-	 */
-	public override suspend fun translate(
-		key: Key,
-		replacements: Array<Any?>,
-	): String =
-		key
-			.withLocale(getLocale())
-			.translateArray(replacements)
-
-	/**
-	 * Given a translation key, return the translation for the locale provided by the bot's configured
-	 * locale resolvers.
-	 */
-	public override suspend fun translate(
-		key: Key,
-		replacements: Map<String, Any?>,
-	): String =
-		key
-			.withLocale(getLocale())
-			.translateNamed(replacements)
 
 	/**
 	 * @param capture breadcrumb data will be modified to add the component context information

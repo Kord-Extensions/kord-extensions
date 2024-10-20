@@ -10,6 +10,7 @@ package dev.kordex.core.components.forms.widgets
 
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.rest.builder.component.ActionRowBuilder
+import dev.kordex.core.i18n.EMPTY_VALUE_STRING
 import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -96,6 +97,13 @@ public abstract class TextInputWidget<T : TextInputWidget<T>> : Widget<String?>(
 			initialValue
 				?.withLocale(locale)
 				?.translate()
+				?.let {
+					if (it == EMPTY_VALUE_STRING) {
+						null
+					} else {
+						it
+					}
+				}
 		} else {
 			initialValue?.key
 		}

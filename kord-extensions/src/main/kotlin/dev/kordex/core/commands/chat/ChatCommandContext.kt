@@ -132,12 +132,12 @@ public open class ChatCommandContext<T : Arguments>(
 	 */
 	public suspend fun Message.respondTranslated(
 		key: Key,
-		replacements: Array<Any?> = arrayOf(),
+		placeholders: Array<Any?> = arrayOf(),
 		useReply: Boolean = true,
 	): Message = respond(
 		key
 			.withLocale(getLocale())
-			.translateArray(replacements),
+			.translateArray(placeholders),
 
 		useReply
 	)
@@ -147,12 +147,12 @@ public open class ChatCommandContext<T : Arguments>(
 	 */
 	public suspend fun Message.respondTranslated(
 		key: Key,
-		replacements: Map<String, Any?>,
+		placeholders: Map<String, Any?>,
 		useReply: Boolean = true,
 	): Message = respond(
 		key
 			.withLocale(getLocale())
-			.translateNamed(replacements),
+			.translateNamed(placeholders),
 
 		useReply
 	)

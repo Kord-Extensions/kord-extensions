@@ -29,11 +29,6 @@ public class Section(public val name: Key, public val description: Key) : KordEx
 		this.builder = builder
 	}
 
-	public fun translate(key: Key, locale: Locale, replacements: Array<Any?> = arrayOf()): String =
-		key
-			.withLocale(locale)
-			.translateArray(replacements)
-
 	public fun validate() {
 		if (!::builder.isInitialized) {
 			error("No builder provided - use the `message` DSL function to add one.")

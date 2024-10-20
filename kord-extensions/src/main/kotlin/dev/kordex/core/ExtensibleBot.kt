@@ -404,7 +404,6 @@ public open class ExtensibleBot(
 	 * @param builder Builder function (or extension constructor) that takes an [ExtensibleBot] instance and
 	 * returns an [Extension].
 	 */
-	@Throws(InvalidExtensionException::class)
 	public open suspend fun addExtension(builder: () -> Extension) {
 		val extensionObj = builder.invoke()
 
@@ -439,7 +438,6 @@ public open class ExtensibleBot(
 	 *
 	 * @param extension The name of the [Extension] to unload.
 	 */
-	@Throws(InvalidExtensionException::class)
 	public open suspend fun loadExtension(extension: String) {
 		val extensionObj = extensions[extension] ?: return
 

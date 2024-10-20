@@ -9,9 +9,13 @@
 package dev.kordex.core.builders
 
 import dev.kordex.core.annotations.BotBuilderDSL
+import dev.kordex.core.annotations.NotTranslated
 import dev.kordex.core.builders.about.Copyright
 import dev.kordex.core.builders.about.CopyrightType
 import dev.kordex.core.builders.about.Section
+import dev.kordex.core.i18n.generated.CoreTranslations
+import dev.kordex.core.i18n.toKey
+import dev.kordex.core.i18n.types.Key
 import dev.kordex.core.koin.KordExKoinComponent
 
 /**
@@ -24,7 +28,7 @@ public class AboutBuilder : KordExKoinComponent {
 
 	public var ephemeral: Boolean = true
 
-	public val sections: MutableMap<String, Section> = mutableMapOf()
+	public val sections: MutableMap<Key, Section> = mutableMapOf()
 
 	init {
 		copyright("Kotlin", "Apache-2.0", CopyrightType.Tool, "https://kotlinlang.org")
@@ -83,11 +87,34 @@ public class AboutBuilder : KordExKoinComponent {
 	}
 
 	public suspend fun general(builder: suspend Section.() -> Unit): Unit =
-		section("extensions.about.general.commandName", "extensions.about.general.commandDescription") {
+		section(
+			CoreTranslations.Extensions.About.General.commandName,
+			CoreTranslations.Extensions.About.General.commandDescription
+		) {
 			builder()
 		}
 
-	public suspend fun section(name: String, description: String, builder: suspend Section.() -> Unit) {
+	public suspend fun section(name: Key, description: Key, builder: suspend Section.() -> Unit) {
+		val section = Section(name, description)
+
+		builder(section)
+
+		if (
+			name.bundle == CoreTranslations.bundle &&
+			name.key == CoreTranslations.Extensions.About.Copyright.commandName.key
+		) {
+			error("You may not replace the copyright section.")
+		}
+
+		sections[name] = section
+	}
+
+	@NotTranslated
+	public suspend fun section(
+		name: String,
+		description: String,
+		builder: suspend Section.() -> Unit
+	) {
 		val section = Section(name, description)
 
 		builder(section)
@@ -96,6 +123,6 @@ public class AboutBuilder : KordExKoinComponent {
 			error("You may not replace the copyright section.")
 		}
 
-		sections[name] = section
+		sections[name.toKey()] = section
 	}
 }

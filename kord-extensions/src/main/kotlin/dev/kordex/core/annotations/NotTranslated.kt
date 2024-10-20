@@ -10,8 +10,8 @@ package dev.kordex.core.annotations
 
 @RequiresOptIn(
 	level = RequiresOptIn.Level.WARNING,
-	message = "A String provided here will not be translated. " +
-		"If you intended to translate it, please switch to using a Key object."
+	message = "A String or Strings provided here will not be translated. " +
+		"If you intended to translate, please switch to using Key objects."
 )
 @Target(
 	AnnotationTarget.CLASS,

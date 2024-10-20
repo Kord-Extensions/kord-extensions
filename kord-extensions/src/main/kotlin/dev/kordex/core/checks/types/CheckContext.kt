@@ -203,26 +203,6 @@ public open class CheckContext<out T : Event>(
 		return null
 	}
 
-	/** Quick access to translate strings using this check context's [locale]. **/
-	public fun translate(
-		key: Key,
-
-		replacements: Array<Any?> = arrayOf(),
-	): String =
-		key
-			.withLocale(locale)
-			.translateArray(replacements)
-
-	/** Quick access to translate strings using this check context's [locale]. **/
-	public fun translate(
-		key: Key,
-
-		replacements: Map<String, Any?>,
-	): String =
-		key
-			.withLocale(locale)
-			.translateNamed(replacements)
-
 	/**
 	 * If this check has failed and a message is set, throw a [DiscordRelayedException] with the translated message.
 	 */

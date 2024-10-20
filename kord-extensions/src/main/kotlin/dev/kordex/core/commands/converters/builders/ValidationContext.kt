@@ -27,10 +27,7 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 	/**
 	 * Translation key to use for the error response message, if not the default.
 	 *
-	 * The string pointed to by this variable must accept one replacement value, which is the error message itself.
-	 *
-	 * **Note:** This *must* be a translation key. A bare string may not work, as the error response function uses
-	 * the replacement functionality of the translations system.
+	 * The string pointed to by this variable must accept one ordinal placeholder, the error message itself.
 	 */
 	public var errorResponseKey: Key = CoreTranslations.Checks.responseTemplate
 
@@ -199,20 +196,6 @@ public class ValidationContext<out T>(public val value: T, public val context: C
 
 		return null
 	}
-
-	/** Quick access to translate strings using this validator context's locale. **/
-	public fun translate(
-		key: Key,
-		replacements: Array<Any?> = arrayOf(),
-	): String =
-		key.translateArray(replacements)
-
-	/** Quick access to translate strings using this validator context's locale. **/
-	public fun translate(
-		key: Key,
-		replacements: Map<String, Any?>,
-	): String =
-		key.translateNamed(replacements)
 
 	/**
 	 * If this validator has failed, throw a [DiscordRelayedException] with the translated message, if any.

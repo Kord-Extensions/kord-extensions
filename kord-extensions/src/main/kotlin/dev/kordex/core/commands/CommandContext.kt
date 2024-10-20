@@ -87,26 +87,4 @@ public abstract class CommandContext(
 
 		return resolvedLocale!!
 	}
-
-	public override suspend fun translate(
-		key: Key,
-		replacements: Array<Any?>,
-	): String {
-		val locale = getLocale()
-
-		return key
-			.withLocale(locale)
-			.translateArray(replacements)
-	}
-
-	public override suspend fun translate(
-		key: Key,
-		replacements: Map<String, Any?>,
-	): String {
-		val locale = getLocale()
-
-		return key
-			.withLocale(locale)
-			.translateNamed(replacements)
-	}
 }

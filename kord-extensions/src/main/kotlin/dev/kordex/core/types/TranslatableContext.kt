@@ -8,7 +8,6 @@
 
 package dev.kordex.core.types
 
-import dev.kordex.core.i18n.types.Key
 import java.util.*
 
 /**
@@ -23,22 +22,4 @@ public interface TranslatableContext {
 
 	/** Resolve the locale for this context, storing it in [resolvedLocale]. **/
 	public suspend fun getLocale(): Locale
-
-	/**
-	 * Given a translation key, return the translation for the locale provided by the bot's configured
-	 * locale resolvers.
-	 */
-	public suspend fun translate(
-		key: Key,
-		replacements: Array<Any?> = arrayOf(),
-	): String
-
-	/**
-	 * Given a translation key, return the translation for the locale provided by the bot's configured
-	 * locale resolvers.
-	 */
-	public suspend fun translate(
-		key: Key,
-		replacements: Map<String, Any?>,
-	): String
 }
