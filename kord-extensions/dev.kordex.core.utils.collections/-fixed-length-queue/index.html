@@ -1,0 +1,528 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>FixedLengthQueue</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kord-extensions:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="kord-extensions::dev.kordex.core.utils.collections/FixedLengthQueue///PointingToDeclaration//1057207631">
+  <div class="breadcrumbs"><a href="../../index.html">kord-extensions</a><span class="delimiter">/</span><a href="../index.html">dev.kordex.core.utils.collections</a><span class="delimiter">/</span><span class="current">FixedLengthQueue</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Fixed</span><wbr><span>Length</span><wbr><span><span>Queue</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span><span class="token punctuation">(</span><span>with<span class="token operator"> = </span><a href="../../dev.kordex.core.utils.collections.serializers/-fixed-length-queue-serializer/index.html">FixedLengthQueueSerializer::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="index.html">FixedLengthQueue</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>maxSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span> : <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Queue.html">Queue</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt; </span></div><p class="paragraph">Fixed-length FIFO Queue implementation based on a MutableList.</p><p class="paragraph">Transparently adds data to the list in reverse (the queue's head is the end of the list), copying and reversing the list when retrieved via <a href="get-all.html">getAll</a>.</p><p class="paragraph">If you need to be able to tell the difference between a null value and a missing value, consider using Kord's <span data-unresolved-link="dev.kord.common.entity.optional/Optional///PointingToDeclaration/">dev.kord.common.entity.optional.Optional</span> as the element type.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>max</span><wbr><span><span>Size</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Maximum number of elements in this queue.</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="338380934%2FConstructors%2F1057207631" anchor-label="FixedLengthQueue" id="338380934%2FConstructors%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-fixed-length-queue.html"><span>Fixed</span><wbr><span>Length</span><wbr><span><span>Queue</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="338380934%2FConstructors%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">maxSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-895615370%2FProperties%2F1057207631" anchor-label="maxSize" id="-895615370%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-size.html"><span>max</span><wbr><span><span>Size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-895615370%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="max-size.html">maxSize</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1699961086%2FProperties%2F1057207631" anchor-label="size" id="1699961086%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="size.html"><span><span>size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1699961086%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="size.html">size</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1417756956%2FFunctions%2F1057207631" anchor-label="add" id="-1417756956%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add.html"><span><span>add</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1417756956%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="add.html"><span class="token function">add</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">element<span class="token operator">: </span><a href="index.html">E</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-827154449%2FFunctions%2F1057207631" anchor-label="addAll" id="-827154449%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-all.html"><span>add</span><wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-827154449%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="add-all.html"><span class="token function">addAll</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1800712238%2FFunctions%2F1057207631" anchor-label="clear" id="1800712238%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="clear.html"><span><span>clear</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1800712238%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="clear.html"><span class="token function">clear</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="861325918%2FFunctions%2F1057207631" anchor-label="contains" id="861325918%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="contains.html"><span><span>contains</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="861325918%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="contains.html"><span class="token function">contains</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">element<span class="token operator">: </span><a href="index.html">E</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1273803543%2FFunctions%2F1057207631" anchor-label="containsAll" id="-1273803543%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="contains-all.html"><span>contains</span><wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1273803543%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="contains-all.html"><span class="token function">containsAll</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1024723679%2FFunctions%2F1057207631" anchor-label="element" id="1024723679%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="element.html"><span><span>element</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1024723679%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="element.html"><span class="token function">element</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1532301601%2FFunctions%2F1057207631" anchor-label="forEach" id="1532301601%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1532301601%2FFunctions%2F1057207631"><span>for</span><wbr><span><span>Each</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1532301601%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1532301601%2FFunctions%2F1057207631"><span class="token function">forEach</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html">Consumer</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1373056315%2FFunctions%2F1057207631" anchor-label="get" id="-1373056315%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get.html"><span><span>get</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1373056315%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get.html"><span class="token function">get</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve the last element.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1740850860%2FFunctions%2F1057207631" anchor-label="getAll" id="-1740850860%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-all.html"><span>get</span><wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1740850860%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-all.html"><span class="token function">getAll</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Returns a list of all elements in this queue, in pushed order (newest to oldest).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1434958117%2FFunctions%2F1057207631" anchor-label="getFirst" id="1434958117%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-first.html"><span>get</span><wbr><span><span>First</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1434958117%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-first.html"><span class="token function">getFirst</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Retrieve the first element.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1799527048%2FFunctions%2F1057207631" anchor-label="isEmpty" id="-1799527048%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-empty.html"><span>is</span><wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1799527048%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-empty.html"><span class="token function">isEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-566184911%2FFunctions%2F1057207631" anchor-label="iterator" id="-566184911%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="iterator.html"><span><span>iterator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-566184911%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="iterator.html"><span class="token function">iterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-iterator/index.html">MutableIterator</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1272392929%2FFunctions%2F1057207631" anchor-label="offer" id="-1272392929%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="offer.html"><span><span>offer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1272392929%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="offer.html"><span class="token function">offer</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">element<span class="token operator">: </span><a href="index.html">E</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1592339412%2FFunctions%2F1057207631" anchor-label="parallelStream" id="-1592339412%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1592339412%2FFunctions%2F1057207631"><span>parallel</span><wbr><span><span>Stream</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1592339412%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1592339412%2FFunctions%2F1057207631"><span class="token function">parallelStream</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2106663140%2FFunctions%2F1057207631" anchor-label="peek" id="2106663140%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="peek.html"><span><span>peek</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2106663140%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="peek.html"><span class="token function">peek</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2026648320%2FFunctions%2F1057207631" anchor-label="poll" id="2026648320%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="poll.html"><span><span>poll</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2026648320%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="poll.html"><span class="token function">poll</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1531408426%2FFunctions%2F1057207631" anchor-label="pop" id="1531408426%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="pop.html"><span><span>pop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1531408426%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="pop.html"><span class="token function">pop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Remove the last element and return it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1067666720%2FFunctions%2F1057207631" anchor-label="popFirst" id="-1067666720%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="pop-first.html"><span>pop</span><wbr><span><span>First</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1067666720%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="pop-first.html"><span class="token function">popFirst</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Remove the first element and return it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1167272615%2FFunctions%2F1057207631" anchor-label="push" id="-1167272615%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="push.html"><span><span>push</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1167272615%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="push.html"><span class="token function">push</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">element<span class="token operator">: </span><a href="index.html">E</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Add an element to the head of the queue, replacing the element at the tail if <a href="max-size.html">maxSize</a> has been reached.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1849620%2FFunctions%2F1057207631" anchor-label="remove" id="1849620%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove.html"><span><span>remove</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1849620%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="remove.html"><span class="token function">remove</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">E</a><span class="token operator">?</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="remove.html"><span class="token function">remove</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">element<span class="token operator">: </span><a href="index.html">E</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-803179890%2FFunctions%2F1057207631" anchor-label="removeAll" id="-803179890%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove-all.html"><span>remove</span><wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-803179890%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="remove-all.html"><span class="token function">removeAll</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1655623621%2FFunctions%2F1057207631" anchor-label="removeIf" id="1655623621%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1655623621%2FFunctions%2F1057207631"><span>remove</span><wbr><span><span>If</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1655623621%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#1655623621%2FFunctions%2F1057207631"><span class="token function">removeIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Predicate.html">Predicate</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="index.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-242461745%2FFunctions%2F1057207631" anchor-label="retainAll" id="-242461745%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="retain-all.html"><span>retain</span><wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-242461745%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="retain-all.html"><span class="token function">retainAll</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">elements<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-collection/index.html">Collection</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1956926474%2FFunctions%2F1057207631" anchor-label="spliterator" id="1956926474%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1956926474%2FFunctions%2F1057207631"><span><span>spliterator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1956926474%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="index.html#1956926474%2FFunctions%2F1057207631"><span class="token function">spliterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html">Spliterator</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="135225651%2FFunctions%2F1057207631" anchor-label="stream" id="135225651%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#135225651%2FFunctions%2F1057207631"><span><span>stream</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="135225651%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#135225651%2FFunctions%2F1057207631"><span class="token function">stream</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html">Stream</a><span class="token operator">&lt;</span><a href="index.html">E</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1215154575%2FFunctions%2F1057207631" anchor-label="toArray" id="-1215154575%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1215154575%2FFunctions%2F1057207631"><span>to</span><wbr><span><span>Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1215154575%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="index.html#-1215154575%2FFunctions%2F1057207631">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="index.html#-1215154575%2FFunctions%2F1057207631"><span class="token function"><strike>toArray</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/IntFunction.html">IntFunction</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="index.html#-1215154575%2FFunctions%2F1057207631">T</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html">Array</a><span class="token operator">&lt;</span><a href="index.html#-1215154575%2FFunctions%2F1057207631">T</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

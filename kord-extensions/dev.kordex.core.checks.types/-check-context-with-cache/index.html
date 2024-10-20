@@ -1,0 +1,1098 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CheckContextWithCache</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kord-extensions:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="kord-extensions::dev.kordex.core.checks.types/CheckContextWithCache///PointingToDeclaration//1057207631">
+  <div class="breadcrumbs"><a href="../../index.html">kord-extensions</a><span class="delimiter">/</span><a href="../index.html">dev.kordex.core.checks.types</a><span class="delimiter">/</span><span class="current">CheckContextWithCache</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Check</span><wbr><span>Context</span><wbr><span>With</span><wbr><span><span>Cache</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">CheckContextWithCache</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="index.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="index.html">T</a><span class="token punctuation">, </span></span><span class="parameter ">locale<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>cache<span class="token operator">: </span><a href="../../dev.kordex.core.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">&gt; </span></div><p class="paragraph">A check context that provides a cache map, specifically meant for use in event, component and command contexts that provide a cache map for the lifecycle of the handler.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1215935257%2FConstructors%2F1057207631" anchor-label="CheckContextWithCache" id="-1215935257%2FConstructors%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-check-context-with-cache.html"><span>Check</span><wbr><span>Context</span><wbr><span>With</span><wbr><span><span>Cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1215935257%2FConstructors%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="index.html">T</a><span class="token punctuation">, </span></span><span class="parameter ">locale<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../dev.kordex.core.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="323390379%2FProperties%2F1057207631" anchor-label="cache" id="323390379%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cache.html"><span><span>cache</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="323390379%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="cache.html">cache</a><span class="token operator">: </span><a href="../../dev.kordex.core.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Cache map, where you can store data you retrieve as part of your checks for use in later checks, or your action block.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1271864907%2FProperties%2F1057207631" anchor-label="errorResponseKey" id="-1271864907%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/error-response-key.html"><span>error</span><wbr><span>Response</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1271864907%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-check-context/error-response-key.html">errorResponseKey</a><span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a></div><div class="brief "><p class="paragraph">Translation key to use for the error response message, if not the default.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="771962549%2FProperties%2F1057207631" anchor-label="event" id="771962549%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/event.html"><span><span>event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="771962549%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../-check-context/event.html">event</a><span class="token operator">: </span><a href="index.html">T</a></div><div class="brief "><p class="paragraph">Event of type <a href="../-check-context/index.html">T</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="196826257%2FProperties%2F1057207631" anchor-label="locale" id="196826257%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/locale.html"><span><span>locale</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="196826257%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../-check-context/locale.html">locale</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a></div><div class="brief "><p class="paragraph">Locale for the current check context</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1917837672%2FProperties%2F1057207631" anchor-label="message" id="1917837672%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/message.html"><span><span>message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1917837672%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-check-context/message.html">message</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Human-readable message for the user, if any.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1183651643%2FProperties%2F1057207631" anchor-label="passed" id="1183651643%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/passed.html"><span><span>passed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1183651643%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../-check-context/passed.html">passed</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether this check has passed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-131452102%2FFunctions%2F1057207631" anchor-label="anyGuild" id="-131452102%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/any-guild.html"><span>any</span><wbr><span><span>Guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-131452102%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/any-guild.html"><span class="token function">anyGuild</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-873500867%2FFunctions%2F1057207631" anchor-label="channelAbove" id="-873500867%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-above.html"><span>channel</span><wbr><span><span>Above</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-873500867%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-above.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-above.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-above.html"><span class="token function">channelAbove</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/channel-above.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/GuildChannelBehavior///PointingToDeclaration/">GuildChannelBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is above the given channel in the channel list.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1327382737%2FFunctions%2F1057207631" anchor-label="channelBelow" id="1327382737%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-below.html"><span>channel</span><wbr><span><span>Below</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1327382737%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-below.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-below.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-below.html"><span class="token function">channelBelow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/channel-below.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/GuildChannelBehavior///PointingToDeclaration/">GuildChannelBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is below the given channel in the channel list.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1740940239%2FFunctions%2F1057207631" anchor-label="channelHigherThan" id="1740940239%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-higher-than.html"><span>channel</span><wbr><span>Higher</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1740940239%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-higher-than.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-higher-than.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-higher-than.html"><span class="token function">channelHigherThan</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is above the given channel in the channel list.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-933612806%2FFunctions%2F1057207631" anchor-label="channelIsNsfw" id="-933612806%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-is-nsfw.html"><span>channel</span><wbr><span>Is</span><wbr><span><span>Nsfw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-933612806%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-is-nsfw.html"><span class="token function">channelIsNsfw</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is marked as NSFW.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="836334055%2FFunctions%2F1057207631" anchor-label="channelLowerThan" id="836334055%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-lower-than.html"><span>channel</span><wbr><span>Lower</span><wbr><span><span>Than</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="836334055%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-lower-than.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/channel-lower-than.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-lower-than.html"><span class="token function">channelLowerThan</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is below the given channel in the channel list.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-740057068%2FFunctions%2F1057207631" anchor-label="channelOrGuildIsNsfw" id="-740057068%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-or-guild-is-nsfw.html"><span>channel</span><wbr><span>Or</span><wbr><span>Guild</span><wbr><span>Is</span><wbr><span><span>Nsfw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-740057068%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-or-guild-is-nsfw.html"><span class="token function">channelOrGuildIsNsfw</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is marked as NSFW, or is in an NSFW guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1012526296%2FFunctions%2F1057207631" anchor-label="channelType" id="-1012526296%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/channel-type.html"><span>channel</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1012526296%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/channel-type.html"><span class="token function">channelType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>channelTypes<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/ChannelType///PointingToDeclaration/">ChannelType</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is of a given set of types.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1734174786%2FFunctions%2F1057207631" anchor-label="fail" id="-1734174786%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/fail.html"><span><span>fail</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1734174786%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/fail.html"><span class="token function">fail</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/fail.html"><span class="token function">fail</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Mark this check as having failed, optionally providing a message for the user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1690055492%2FFunctions%2F1057207631" anchor-label="failIf" id="1690055492%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/fail-if.html"><span>fail</span><wbr><span><span>If</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1690055492%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/fail-if.html"><span class="token function">failIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/fail-if.html"><span class="token function">failIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/fail-if.html">callback</a> returns <code class="lang-kotlin">true</code>, mark this check as having failed, optionally providing a message for the user.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/fail-if.html"><span class="token function">failIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/fail-if.html"><span class="token function">failIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/fail-if.html">value</a> is <code class="lang-kotlin">true</code>, mark this check as having failed, optionally providing a message for the user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1576735600%2FFunctions%2F1057207631" anchor-label="failIfNot" id="1576735600%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/fail-if-not.html"><span>fail</span><wbr><span>If</span><wbr><span><span>Not</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1576735600%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/fail-if-not.html"><span class="token function">failIfNot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/fail-if-not.html"><span class="token function">failIfNot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/fail-if-not.html">callback</a> returns <code class="lang-kotlin">false</code>, mark this check as having failed, optionally providing a message for the user.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/fail-if-not.html"><span class="token function">failIfNot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/fail-if-not.html"><span class="token function">failIfNot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/fail-if-not.html">value</a> is <code class="lang-kotlin">false</code>, mark this check as having failed, optionally providing a message for the user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2020770011%2FFunctions%2F1057207631" anchor-label="getKoin" id="-2020770011%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.koin/-kord-ex-koin-component/get-koin.html"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2020770011%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../dev.kordex.core.koin/-kord-ex-koin-component/get-koin.html"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div><div class="brief "><p class="paragraph">Get the associated Koin instance.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="666717441%2FFunctions%2F1057207631" anchor-label="getMessageKey" id="666717441%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/get-message-key.html"><span>get</span><wbr><span>Message</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="666717441%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/get-message-key.html"><span class="token function">getMessageKey</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get a pre-translation <a href="../../dev.kordex.core.i18n.types/-key/index.html">Key</a> representing the current check failure message, if the check has failed, and a message was set.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1426357232%2FFunctions%2F1057207631" anchor-label="getTranslatedMessage" id="1426357232%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/get-translated-message.html"><span>get</span><wbr><span>Translated</span><wbr><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1426357232%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/get-translated-message.html"><span class="token function">getTranslatedMessage</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the translated check failure message, if the check has failed and a message was set.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1967764496%2FFunctions%2F1057207631" anchor-label="guildNsfwLevelHigher" id="-1967764496%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/guild-nsfw-level-higher.html"><span>guild</span><wbr><span>Nsfw</span><wbr><span>Level</span><wbr><span><span>Higher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1967764496%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/guild-nsfw-level-higher.html"><span class="token function">guildNsfwLevelHigher</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">level<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/NsfwLevel///PointingToDeclaration/">NsfwLevel</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild with a NSFW level higher than the provided one..</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-182396977%2FFunctions%2F1057207631" anchor-label="guildNsfwLevelHigherOrEqual" id="-182396977%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/guild-nsfw-level-higher-or-equal.html"><span>guild</span><wbr><span>Nsfw</span><wbr><span>Level</span><wbr><span>Higher</span><wbr><span>Or</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-182396977%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/guild-nsfw-level-higher-or-equal.html"><span class="token function">guildNsfwLevelHigherOrEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">level<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/NsfwLevel///PointingToDeclaration/">NsfwLevel</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild with a NSFW level higher than or equal to the provided one..</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="72953712%2FFunctions%2F1057207631" anchor-label="guildNsfwLevelLower" id="72953712%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/guild-nsfw-level-lower.html"><span>guild</span><wbr><span>Nsfw</span><wbr><span>Level</span><wbr><span><span>Lower</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="72953712%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/guild-nsfw-level-lower.html"><span class="token function">guildNsfwLevelLower</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">level<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/NsfwLevel///PointingToDeclaration/">NsfwLevel</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild with a NSFW level lower than the provided one..</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1553925199%2FFunctions%2F1057207631" anchor-label="guildNsfwLevelLowerOrEqual" id="1553925199%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/guild-nsfw-level-lower-or-equal.html"><span>guild</span><wbr><span>Nsfw</span><wbr><span>Level</span><wbr><span>Lower</span><wbr><span>Or</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1553925199%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/guild-nsfw-level-lower-or-equal.html"><span class="token function">guildNsfwLevelLowerOrEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">level<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/NsfwLevel///PointingToDeclaration/">NsfwLevel</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild with a NSFW level lower than or equal to the provided one..</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="429796513%2FFunctions%2F1057207631" anchor-label="hasGuildNsfwLevel" id="429796513%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/has-guild-nsfw-level.html"><span>has</span><wbr><span>Guild</span><wbr><span>Nsfw</span><wbr><span><span>Level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="429796513%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/has-guild-nsfw-level.html"><span class="token function">hasGuildNsfwLevel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">level<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/NsfwLevel///PointingToDeclaration/">NsfwLevel</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild with the given NSFW level.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1191171912%2FFunctions%2F1057207631" anchor-label="hasPermission" id="-1191171912%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/has-permission.html"><span>has</span><wbr><span><span>Permission</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1191171912%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/has-permission.html"><span class="token function">hasPermission</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">perm<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for has a given permission, or the Administrator permission.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1624483322%2FFunctions%2F1057207631" anchor-label="hasPermissions" id="1624483322%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/has-permissions.html"><span>has</span><wbr><span><span>Permissions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1624483322%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/has-permissions.html"><span class="token function">hasPermissions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">perms<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permissions///PointingToDeclaration/">Permissions</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for has the given permissions set, or the Administrator permission.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="145784748%2FFunctions%2F1057207631" anchor-label="hasRole" id="145784748%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/has-role.html"><span>has</span><wbr><span><span>Role</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="145784748%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/has-role.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/has-role.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/has-role.html"><span class="token function">hasRole</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/has-role.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/has-role.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/has-role.html"><span class="token function">hasRole</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/has-role.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for has a given role.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1880455509%2FFunctions%2F1057207631" anchor-label="inCategory" id="-1880455509%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/in-category.html"><span>in</span><wbr><span><span>Category</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1880455509%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-category.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-category.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-category.html"><span class="token function">inCategory</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-category.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-category.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-category.html"><span class="token function">inCategory</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/in-category.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/CategoryBehavior///PointingToDeclaration/">CategoryBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired within a given channel category.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2059055890%2FFunctions%2F1057207631" anchor-label="inChannel" id="2059055890%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/in-channel.html"><span>in</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2059055890%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-channel.html"><span class="token function">inChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-channel.html"><span class="token function">inChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/in-channel.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/ChannelBehavior///PointingToDeclaration/">ChannelBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired within a given channel.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1172844173%2FFunctions%2F1057207631" anchor-label="inGuild" id="1172844173%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/in-guild.html"><span>in</span><wbr><span><span>Guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1172844173%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-guild.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-guild.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-guild.html"><span class="token function">inGuild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-guild.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-guild.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-guild.html"><span class="token function">inGuild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/in-guild.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/GuildBehavior///PointingToDeclaration/">GuildBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the guild an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is in a specific guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2000177854%2FFunctions%2F1057207631" anchor-label="inTopChannel" id="-2000177854%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/in-top-channel.html"><span>in</span><wbr><span>Top</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2000177854%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-top-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-top-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-top-channel.html"><span class="token function">inTopChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-top-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/in-top-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/in-top-channel.html"><span class="token function">inTopChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/in-top-channel.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/ChannelBehavior///PointingToDeclaration/">ChannelBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired within a given channel. If the event fired within a thread, it checks the thread's parent channel instead.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="75397504%2FFunctions%2F1057207631" anchor-label="isBot" id="75397504%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-bot.html"><span>is</span><wbr><span><span>Bot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="75397504%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-bot.html"><span class="token function">isBot</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting the user for an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> is a bot. Will fail if the event doesn't concern a user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1967682065%2FFunctions%2F1057207631" anchor-label="isBotAdmin" id="-1967682065%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-bot-admin.html"><span>is</span><wbr><span>Bot</span><wbr><span><span>Admin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1967682065%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-bot-admin.html"><span class="token function">isBotAdmin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">For bots owned by a team, check asserting the user for an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> is one of the bot's admins.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1679508213%2FFunctions%2F1057207631" anchor-label="isBotOwner" id="-1679508213%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-bot-owner.html"><span>is</span><wbr><span>Bot</span><wbr><span><span>Owner</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1679508213%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-bot-owner.html"><span class="token function">isBotOwner</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">For bots with single owners, check asserting the user for an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> is the bot's owner.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1575357576%2FFunctions%2F1057207631" anchor-label="isInThread" id="1575357576%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-in-thread.html"><span>is</span><wbr><span>In</span><wbr><span><span>Thread</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1575357576%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-in-thread.html"><span class="token function">isInThread</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the event was triggered within a thread.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1402173251%2FFunctions%2F1057207631" anchor-label="isNotBot" id="1402173251%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-not-bot.html"><span>is</span><wbr><span>Not</span><wbr><span><span>Bot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1402173251%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-not-bot.html"><span class="token function">isNotBot</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting the user for an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> is <strong>not</strong> a bot. Will pass if the event doesn't concern a user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1896238580%2FFunctions%2F1057207631" anchor-label="isNotBotAdmin" id="-1896238580%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-not-bot-admin.html"><span>is</span><wbr><span>Not</span><wbr><span>Bot</span><wbr><span><span>Admin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1896238580%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-not-bot-admin.html"><span class="token function">isNotBotAdmin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">For bots owned by a team, check asserting the user for an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> is not one of the bot's admins.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1608064728%2FFunctions%2F1057207631" anchor-label="isNotBotOwner" id="-1608064728%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-not-bot-owner.html"><span>is</span><wbr><span>Not</span><wbr><span>Bot</span><wbr><span><span>Owner</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1608064728%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-not-bot-owner.html"><span class="token function">isNotBotOwner</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">For bots with single owners, check asserting the user for an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> is not the bot's owner.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1646801061%2FFunctions%2F1057207631" anchor-label="isNotInThread" id="1646801061%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/is-not-in-thread.html"><span>is</span><wbr><span>Not</span><wbr><span>In</span><wbr><span><span>Thread</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1646801061%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/is-not-in-thread.html"><span class="token function">isNotInThread</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the event was <strong>not</strong> triggered within a thread, including events that don't concern any specific channel.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1884866731%2FFunctions%2F1057207631" anchor-label="noGuild" id="1884866731%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/no-guild.html"><span>no</span><wbr><span><span>Guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1884866731%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/no-guild.html"><span class="token function">noGuild</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was <strong>not</strong> fired within a guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-629759023%2FFunctions%2F1057207631" anchor-label="notChannelIsNsfw" id="-629759023%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-channel-is-nsfw.html"><span>not</span><wbr><span>Channel</span><wbr><span>Is</span><wbr><span><span>Nsfw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-629759023%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-channel-is-nsfw.html"><span class="token function">notChannelIsNsfw</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is not marked as NSFW.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="738582365%2FFunctions%2F1057207631" anchor-label="notChannelOrGuildIsNsfw" id="738582365%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-channel-or-guild-is-nsfw.html"><span>not</span><wbr><span>Channel</span><wbr><span>Or</span><wbr><span>Guild</span><wbr><span>Is</span><wbr><span><span>Nsfw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="738582365%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-channel-or-guild-is-nsfw.html"><span class="token function">notChannelOrGuildIsNsfw</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is not marked as NSFW, and is not in an NSFW guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1626037313%2FFunctions%2F1057207631" anchor-label="notChannelType" id="-1626037313%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-channel-type.html"><span>not</span><wbr><span>Channel</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1626037313%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-channel-type.html"><span class="token function">notChannelType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>channelTypes<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/ChannelType///PointingToDeclaration/">ChannelType</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the channel an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired in is <strong>not</strong> of a given set of types.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1010122232%2FFunctions%2F1057207631" anchor-label="notHasGuildNsfwLevel" id="1010122232%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-has-guild-nsfw-level.html"><span>not</span><wbr><span>Has</span><wbr><span>Guild</span><wbr><span>Nsfw</span><wbr><span><span>Level</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1010122232%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-has-guild-nsfw-level.html"><span class="token function">notHasGuildNsfwLevel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">level<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/NsfwLevel///PointingToDeclaration/">NsfwLevel</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> was fired within a guild without the given NSFW level.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1780519231%2FFunctions%2F1057207631" anchor-label="notHasPermission" id="-1780519231%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-has-permission.html"><span>not</span><wbr><span>Has</span><wbr><span><span>Permission</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1780519231%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-has-permission.html"><span class="token function">notHasPermission</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">perm<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for <strong>does not have</strong> a given permission <strong>or</strong> the Administrator permission.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2097574461%2FFunctions%2F1057207631" anchor-label="notHasPermissions" id="-2097574461%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-has-permissions.html"><span>not</span><wbr><span>Has</span><wbr><span><span>Permissions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2097574461%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-has-permissions.html"><span class="token function">notHasPermissions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">perms<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permissions///PointingToDeclaration/">Permissions</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for <strong>does not have</strong> the given permissions set <strong>or</strong> the Administrator permission.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2001351640%2FFunctions%2F1057207631" anchor-label="notHasRole" id="2001351640%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-has-role.html"><span>not</span><wbr><span>Has</span><wbr><span><span>Role</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2001351640%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-has-role.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-has-role.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-has-role.html"><span class="token function">notHasRole</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-has-role.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-has-role.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-has-role.html"><span class="token function">notHasRole</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/not-has-role.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for <strong>does not have</strong> a given role.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1710773813%2FFunctions%2F1057207631" anchor-label="notInCategory" id="-1710773813%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-in-category.html"><span>not</span><wbr><span>In</span><wbr><span><span>Category</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1710773813%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-category.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-category.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-category.html"><span class="token function">notInCategory</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-category.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-category.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-category.html"><span class="token function">notInCategory</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/not-in-category.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/CategoryBehavior///PointingToDeclaration/">CategoryBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> did <strong>not</strong> fire within a given channel category.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="385761346%2FFunctions%2F1057207631" anchor-label="notInChannel" id="385761346%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-in-channel.html"><span>not</span><wbr><span>In</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="385761346%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-channel.html"><span class="token function">notInChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-channel.html"><span class="token function">notInChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/not-in-channel.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/ChannelBehavior///PointingToDeclaration/">ChannelBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> did <strong>not</strong> fire within a given channel.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1800560547%2FFunctions%2F1057207631" anchor-label="notInGuild" id="-1800560547%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-in-guild.html"><span>not</span><wbr><span>In</span><wbr><span><span>Guild</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1800560547%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-guild.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-guild.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-guild.html"><span class="token function">notInGuild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-guild.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-guild.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-guild.html"><span class="token function">notInGuild</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/not-in-guild.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/GuildBehavior///PointingToDeclaration/">GuildBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the guild an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for <strong>is not</strong> in a specific guild.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2104906114%2FFunctions%2F1057207631" anchor-label="notInTopChannel" id="2104906114%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/not-in-top-channel.html"><span>not</span><wbr><span>In</span><wbr><span>Top</span><wbr><span><span>Channel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2104906114%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html"><span class="token function">notInTopChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html"><span class="token function">notInTopChannel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/not-in-top-channel.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior.channel/ChannelBehavior///PointingToDeclaration/">ChannelBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> did <strong>not</strong> fire within a given channel. If the event fired within a thread, it checks the thread's parent channel instead.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="775155536%2FFunctions%2F1057207631" anchor-label="or" id="775155536%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/or.html"><span><span>or</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="775155536%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/or.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/or.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/or.html"><span class="token function">or</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><a href="../-check/index.html">Check</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/or.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Convenience function allowing you to pass this check context, if the checks provided in the body pass – even if the check context is failing.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1006260678%2FFunctions%2F1057207631" anchor-label="pass" id="-1006260678%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/pass.html"><span><span>pass</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1006260678%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/pass.html"><span class="token function">pass</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Mark this check as having passed successfully.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1451015778%2FFunctions%2F1057207631" anchor-label="passIf" id="-1451015778%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/pass-if.html"><span>pass</span><wbr><span><span>If</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1451015778%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/pass-if.html"><span class="token function">passIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/pass-if.html">value</a> is <code class="lang-kotlin">true</code>, mark this check as having passed.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/pass-if.html"><span class="token function">passIf</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/pass-if.html">callback</a> returns <code class="lang-kotlin">true</code>, mark this check as having passed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="919674724%2FFunctions%2F1057207631" anchor-label="passIfNot" id="919674724%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/pass-if-not.html"><span>pass</span><wbr><span>If</span><wbr><span><span>Not</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="919674724%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/pass-if-not.html"><span class="token function">passIfNot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/pass-if-not.html">value</a> is <code class="lang-kotlin">true</code>, mark this check as having passed.</p></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../-check-context/pass-if-not.html"><span class="token function">passIfNot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">callback<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">If <a href="../-check-context/pass-if-not.html">callback</a> returns <code class="lang-kotlin">true</code>, mark this check as having passed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1374037988%2FFunctions%2F1057207631" anchor-label="silence" id="-1374037988%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/silence.html"><span><span>silence</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1374037988%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/silence.html"><span class="token function">silence</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Silence the current check by removing any message it may have set.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1898362422%2FFunctions%2F1057207631" anchor-label="throwIfFailedWithMessage" id="-1898362422%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/throw-if-failed-with-message.html"><span>throw</span><wbr><span>If</span><wbr><span>Failed</span><wbr><span>With</span><wbr><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1898362422%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-check-context/throw-if-failed-with-message.html"><span class="token function">throwIfFailedWithMessage</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">If this check has failed and a message is set, throw a <a href="../../dev.kordex.core/-discord-relayed-exception/index.html">DiscordRelayedException</a> with the translated message.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1807574808%2FFunctions%2F1057207631" anchor-label="topRoleEqual" id="1807574808%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/top-role-equal.html"><span>top</span><wbr><span>Role</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1807574808%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-equal.html"><span class="token function">topRoleEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-equal.html"><span class="token function">topRoleEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/top-role-equal.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the top role for the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is equal to a given role.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="691177984%2FFunctions%2F1057207631" anchor-label="topRoleHigher" id="691177984%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/top-role-higher.html"><span>top</span><wbr><span>Role</span><wbr><span><span>Higher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="691177984%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-higher.html"><span class="token function">topRoleHigher</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-higher.html"><span class="token function">topRoleHigher</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/top-role-higher.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the top role for the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is higher than a given role.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="922266712%2FFunctions%2F1057207631" anchor-label="topRoleHigherOrEqual" id="922266712%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html"><span>top</span><wbr><span>Role</span><wbr><span>Higher</span><wbr><span>Or</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="922266712%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html"><span class="token function">topRoleHigherOrEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html"><span class="token function">topRoleHigherOrEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/top-role-higher-or-equal.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the top role for the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is higher than or equal to a given</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1155781512%2FFunctions%2F1057207631" anchor-label="topRoleLower" id="-1155781512%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/top-role-lower.html"><span>top</span><wbr><span>Role</span><wbr><span><span>Lower</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1155781512%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-lower.html"><span class="token function">topRoleLower</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-lower.html"><span class="token function">topRoleLower</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/top-role-lower.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the top role for the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is lower than a given role.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1865745474%2FFunctions%2F1057207631" anchor-label="topRoleLowerOrEqual" id="1865745474%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html"><span>top</span><wbr><span>Role</span><wbr><span>Lower</span><wbr><span>Or</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1865745474%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html"><span class="token function">topRoleLowerOrEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html"><span class="token function">topRoleLowerOrEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/top-role-lower-or-equal.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the top role for the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is lower than or equal to a given</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-412907100%2FFunctions%2F1057207631" anchor-label="topRoleNotEqual" id="-412907100%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.core.checks/top-role-not-equal.html"><span>top</span><wbr><span>Role</span><wbr><span>Not</span><wbr><span><span>Equal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-412907100%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html"><span class="token function">topRoleNotEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Snowflake///PointingToDeclaration/">Snowflake</span></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html">T</a><span class="token operator"> : </span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt; </span><a href="../-check-context/index.html">CheckContext</a><span class="token operator">&lt;</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html"><span class="token function">topRoleNotEqual</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../dev.kordex.core.checks/top-role-not-equal.html">T</a><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span data-unresolved-link="dev.kord.core.behavior/RoleBehavior///PointingToDeclaration/">RoleBehavior</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Check asserting that the top role for the user an <span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span> fired for is <strong>not</strong> equal to a given role.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-793583648%2FFunctions%2F1057207631" anchor-label="whenFalse" id="-793583648%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/when-false.html"><span>when</span><wbr><span><span>False</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-793583648%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../-check-context/when-false.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">.</span><a href="../-check-context/when-false.html"><span class="token function">whenFalse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="../-check-context/when-false.html">T</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-check-context/when-false.html">T</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Call the given block if the Boolean receiver is <code class="lang-kotlin">false</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1905310173%2FFunctions%2F1057207631" anchor-label="whenTrue" id="-1905310173%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-check-context/when-true.html"><span>when</span><wbr><span><span>True</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1905310173%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../-check-context/when-true.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">.</span><a href="../-check-context/when-true.html"><span class="token function">whenTrue</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="../-check-context/when-true.html">T</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-check-context/when-true.html">T</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Call the given block if the Boolean receiver is <code class="lang-kotlin">true</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

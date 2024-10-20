@@ -1,0 +1,527 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>dev.kordex.core</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kord-extensions:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="kord-extensions::dev.kordex.core////PointingToDeclaration//1057207631">
+  <div class="breadcrumbs"><a href="../index.html">kord-extensions</a><span class="delimiter">/</span><span class="current">dev.kordex.core</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button><button class="section-tab" data-togglable="PROPERTY,EXTENSION_PROPERTY">Properties</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1789733775%2FClasslikes%2F1057207631" anchor-label="ArgumentParsingException" id="-1789733775%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-argument-parsing-exception/index.html"><span>Argument</span><wbr><span>Parsing</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1789733775%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-argument-parsing-exception/index.html">ArgumentParsingException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>argument<span class="token operator">: </span><a href="../dev.kordex.core.commands/-argument/index.html">Argument</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>arguments<span class="token operator">: </span><a href="../dev.kordex.core.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parser<span class="token operator">: </span><a href="../../token-parser/dev.kordex.parser/-string-parser/index.html">StringParser</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-discord-relayed-exception/index.html">DiscordRelayedException</a></div><div class="brief "><p class="paragraph">Thrown when something happens during argument parsing.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2103599966%2FClasslikes%2F1057207631" anchor-label="CommandRegistrationException" id="-2103599966%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-command-registration-exception/index.html"><span>Command</span><wbr><span>Registration</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2103599966%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-command-registration-exception/index.html">CommandRegistrationException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Thrown when an attempt to register a <a href="../dev.kordex.core.commands.chat/-chat-command/index.html">ChatCommand</a> fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1858348394%2FClasslikes%2F1057207631" anchor-label="DiscordRelayedException" id="1858348394%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-discord-relayed-exception/index.html"><span>Discord</span><wbr><span>Relayed</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1858348394%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-discord-relayed-exception/index.html">DiscordRelayedException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Thrown when something exceptional happens that the actioning user on Discord needs to be aware of.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="305420079%2FClasslikes%2F1057207631" anchor-label="EventHandlerRegistrationException" id="305420079%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-event-handler-registration-exception/index.html"><span>Event</span><wbr><span>Handler</span><wbr><span>Registration</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="305420079%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-event-handler-registration-exception/index.html">EventHandlerRegistrationException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Thrown when an attempt to register a <a href="../dev.kordex.core.events/-event-handler/index.html">EventHandler</a> fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-149061303%2FClasslikes%2F1057207631" anchor-label="ExtensibleBot" id="-149061303%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-extensible-bot/index.html"><span>Extensible</span><wbr><span><span>Bot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-149061303%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-extensible-bot/index.html">ExtensibleBot</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>settings<span class="token operator">: </span><a href="../dev.kordex.core.builders/-extensible-bot-builder/index.html">ExtensibleBotBuilder</a><span class="token punctuation">, </span></span><span class="parameter ">token<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="../dev.kordex.core.koin/-kord-ex-koin-component/index.html">KordExKoinComponent</a>, <a href="../dev.kordex.core.types/-lockable/index.html">Lockable</a></div><div class="brief "><p class="paragraph">An extensible bot, wrapping a Kord instance.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-938587950%2FClasslikes%2F1057207631" anchor-label="InvalidArgumentException" id="-938587950%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-invalid-argument-exception/index.html"><span>Invalid</span><wbr><span>Argument</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-938587950%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-invalid-argument-exception/index.html">InvalidArgumentException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>builder<span class="token operator">: </span><a href="../dev.kordex.core.commands.converters.builders/-converter-builder/index.html">ConverterBuilder</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Exception thrown when a converter builder hasn't been set up properly.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="995453594%2FClasslikes%2F1057207631" anchor-label="InvalidCommandException" id="995453594%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-invalid-command-exception/index.html"><span>Invalid</span><wbr><span>Command</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="995453594%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-invalid-command-exception/index.html">InvalidCommandException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Thrown when a command could not be validated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-692531419%2FClasslikes%2F1057207631" anchor-label="InvalidEventHandlerException" id="-692531419%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-invalid-event-handler-exception/index.html"><span>Invalid</span><wbr><span>Event</span><wbr><span>Handler</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-692531419%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-invalid-event-handler-exception/index.html">InvalidEventHandlerException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Thrown when an <a href="../dev.kordex.core.events/-event-handler/index.html">EventHandler</a> could not be validated.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="321639246%2FClasslikes%2F1057207631" anchor-label="InvalidExtensionException" id="321639246%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-invalid-extension-exception/index.html"><span>Invalid</span><wbr><span>Extension</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="321639246%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-invalid-extension-exception/index.html">InvalidExtensionException</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>clazz<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html">KClass</a><span class="token operator">&lt;</span><span class="token keyword">out </span><a href="../dev.kordex.core.extensions/-extension/index.html">Extension</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-kord-ex-exception/index.html">KordExException</a></div><div class="brief "><p class="paragraph">Thrown when an attempt to load an <a href="../dev.kordex.core.extensions/-extension/index.html">Extension</a> fails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1493432849%2FClasslikes%2F1057207631" anchor-label="KordExException" id="-1493432849%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-kord-ex-exception/index.html"><span>Kord</span><wbr><span>Ex</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1493432849%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-kord-ex-exception/index.html">KordExException</a> : <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Exception.html">Exception</a></div><div class="brief "><p class="paragraph">A base class for all custom exceptions in our bot framework.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1657235612%2FProperties%2F1057207631" anchor-label="COLLECTION_STATE_LOCATION" id="-1657235612%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-c-o-l-l-e-c-t-i-o-n_-s-t-a-t-e_-l-o-c-a-t-i-o-n.html"><span><span>COLLECTION_STATE_LOCATION</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1657235612%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-c-o-l-l-e-c-t-i-o-n_-s-t-a-t-e_-l-o-c-a-t-i-o-n.html">COLLECTION_STATE_LOCATION</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Location of the data collection state file.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-99236555%2FProperties%2F1057207631" anchor-label="DATA_COLLECTION" id="-99236555%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-a-t-a_-c-o-l-l-e-c-t-i-o-n.html"><span><span>DATA_COLLECTION</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-99236555%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-a-t-a_-c-o-l-l-e-c-t-i-o-n.html">DATA_COLLECTION</a><span class="token operator">: </span><span data-unresolved-link="dev.kordex.data.api/DataCollection///PointingToDeclaration/">DataCollection</span></div><div class="brief "><p class="paragraph">Data collection setting, defaulting to Standard if not set.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="535136747%2FProperties%2F1057207631" anchor-label="DATA_COLLECTION_UUID" id="535136747%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-a-t-a_-c-o-l-l-e-c-t-i-o-n_-u-u-i-d.html"><span><span>DATA_COLLECTION_UUID</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="535136747%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-a-t-a_-c-o-l-l-e-c-t-i-o-n_-u-u-i-d.html">DATA_COLLECTION_UUID</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/UUID.html">UUID</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Data collection UUID, if you need to specify one instead of having the storage system take care of it.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1197475493%2FProperties%2F1057207631" anchor-label="DEV_MODE" id="1197475493%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-v_-m-o-d-e.html"><span><span>DEV_MODE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1197475493%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-e-v_-m-o-d-e.html">DEV_MODE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Dev-mode configuration based on properties and env vars.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1575633276%2FProperties%2F1057207631" anchor-label="DISCORD_BLACK" id="1575633276%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-b-l-a-c-k.html"><span><span>DISCORD_BLACK</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1575633276%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-b-l-a-c-k.html">DISCORD_BLACK</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new black colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1419714361%2FProperties%2F1057207631" anchor-label="DISCORD_BLURPLE" id="1419714361%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-b-l-u-r-p-l-e.html"><span><span>DISCORD_BLURPLE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1419714361%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-b-l-u-r-p-l-e.html">DISCORD_BLURPLE</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new blurple colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1486437852%2FProperties%2F1057207631" anchor-label="DISCORD_FUCHSIA" id="-1486437852%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-f-u-c-h-s-i-a.html"><span><span>DISCORD_FUCHSIA</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1486437852%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-f-u-c-h-s-i-a.html">DISCORD_FUCHSIA</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new fuchsia colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1801769224%2FProperties%2F1057207631" anchor-label="DISCORD_GREEN" id="-1801769224%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-g-r-e-e-n.html"><span><span>DISCORD_GREEN</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1801769224%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-g-r-e-e-n.html">DISCORD_GREEN</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new green colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="292592810%2FProperties%2F1057207631" anchor-label="DISCORD_RED" id="292592810%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-r-e-d.html"><span><span>DISCORD_RED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="292592810%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-r-e-d.html">DISCORD_RED</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new red colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="279390354%2FProperties%2F1057207631" anchor-label="DISCORD_WHITE" id="279390354%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-w-h-i-t-e.html"><span><span>DISCORD_WHITE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="279390354%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-w-h-i-t-e.html">DISCORD_WHITE</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new white colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2010013493%2FProperties%2F1057207631" anchor-label="DISCORD_YELLOW" id="-2010013493%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-i-s-c-o-r-d_-y-e-l-l-o-w.html"><span><span>DISCORD_YELLOW</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2010013493%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-d-i-s-c-o-r-d_-y-e-l-l-o-w.html">DISCORD_YELLOW</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common/Color///PointingToDeclaration/">Color</span></div><div class="brief "><p class="paragraph">Colour representing Discord's new yellow colour.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1134639613%2FProperties%2F1057207631" anchor-label="KORD_VERSION" id="-1134639613%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d_-v-e-r-s-i-o-n.html"><span><span>KORD_VERSION</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1134639613%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-k-o-r-d_-v-e-r-s-i-o-n.html">KORD_VERSION</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Current Kord version.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-827245053%2FProperties%2F1057207631" anchor-label="KORDEX_GIT_BRANCH" id="-827245053%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d-e-x_-g-i-t_-b-r-a-n-c-h.html"><span><span>KORDEX_GIT_BRANCH</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-827245053%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-k-o-r-d-e-x_-g-i-t_-b-r-a-n-c-h.html">KORDEX_GIT_BRANCH</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Git branch used to build this KordEx release.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-398206441%2FProperties%2F1057207631" anchor-label="KORDEX_GIT_HASH" id="-398206441%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d-e-x_-g-i-t_-h-a-s-h.html"><span><span>KORDEX_GIT_HASH</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-398206441%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-k-o-r-d-e-x_-g-i-t_-h-a-s-h.html">KORDEX_GIT_HASH</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Hash corresponding with the Git commit used to build this KordEx release.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="702381089%2FProperties%2F1057207631" anchor-label="KORDEX_MODULES" id="702381089%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d-e-x_-m-o-d-u-l-e-s.html"><span><span>KORDEX_MODULES</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="702381089%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-k-o-r-d-e-x_-m-o-d-u-l-e-s.html">KORDEX_MODULES</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Configured first-party KordEx modules.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="985822192%2FProperties%2F1057207631" anchor-label="KORDEX_VERSION" id="985822192%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d-e-x_-v-e-r-s-i-o-n.html"><span><span>KORDEX_VERSION</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="985822192%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-k-o-r-d-e-x_-v-e-r-s-i-o-n.html">KORDEX_VERSION</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Current Kord Extensions version.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1290636089%2FProperties%2F1057207631" anchor-label="kordexBuildProps" id="-1290636089%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="kordex-build-props.html"><span>kordex</span><wbr><span>Build</span><wbr><span><span>Props</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1290636089%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="kordex-build-props.html">kordexBuildProps</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html">Properties</a></div><div class="brief "><p class="paragraph">Convenient access to the properties stored within <code class="lang-kotlin">kordex-build.properties</code> in your bot's resources.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-774781343%2FProperties%2F1057207631" anchor-label="kordexProps" id="-774781343%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="kordex-props.html"><span>kordex</span><wbr><span><span>Props</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-774781343%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="kordex-props.html">kordexProps</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html">Properties</a></div><div class="brief "><p class="paragraph">Convenient access to the properties stored within <code class="lang-kotlin">kordex.properties</code> in your bot's resources.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1122666557%2FFunctions%2F1057207631" anchor-label="ExtensibleBot" id="1122666557%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-extensible-bot.html"><span>Extensible</span><wbr><span><span>Bot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1122666557%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="-extensible-bot.html"><span class="token function">ExtensibleBot</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">token<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span class="token keyword">suspend </span><a href="../dev.kordex.core.builders/-extensible-bot-builder/index.html">ExtensibleBotBuilder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-extensible-bot/index.html">ExtensibleBot</a></div><div class="brief "><p class="paragraph">DSL function for creating a bot instance. This is the Kord Extensions entrypoint.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

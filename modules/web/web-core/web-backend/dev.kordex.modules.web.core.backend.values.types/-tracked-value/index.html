@@ -1,0 +1,228 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>TrackedValue</title>
+<link href="../../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="web-backend::dev.kordex.modules.web.core.backend.values.types/TrackedValue///PointingToDeclaration//-39164746">
+  <div class="breadcrumbs"><a href="../../index.html">web-backend</a><span class="delimiter">/</span><a href="../index.html">dev.kordex.modules.web.core.backend.values.types</a><span class="delimiter">/</span><span class="current">TrackedValue</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Tracked</span><wbr><span><span>Value</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlinx.serialization/Serializable///PointingToDeclaration/"><span class="token annotation builtin">Serializable</span></span><span class="token punctuation">(</span><span>with<span class="token operator"> = </span><a href="../../dev.kordex.modules.web.core.backend.values.serializers/-tracked-value-serializer/index.html">TrackedValueSerializer::class</a></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">class </span><a href="index.html">TrackedValue</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>identifier<span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.types/-identifier/index.html">Identifier</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>maxValues<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">48</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>precision<span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.values/-value-interval/index.html">ValueInterval</a><span class="token operator"> = </span>ValueInterval.HalfHour<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="../-value/index.html">Value</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">?</span><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../dev.kordex.modules.web.core.backend.values/-timed-container/index.html">TimedContainer</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span><a href="index.html">T</a><span class="token operator">&gt; </span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-356676830%2FConstructors%2F-39164746" anchor-label="TrackedValue" id="-356676830%2FConstructors%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-tracked-value.html"><span>Tracked</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-356676830%2FConstructors%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">identifier<span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.types/-identifier/index.html">Identifier</a><span class="token punctuation">, </span></span><span class="parameter ">maxValues<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">48</span><span class="token punctuation">, </span></span><span class="parameter ">precision<span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.values/-value-interval/index.html">ValueInterval</a><span class="token operator"> = </span>ValueInterval.HalfHour<span class="token punctuation">, </span></span><span class="parameter ">serializer<span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-833674318%2FProperties%2F-39164746" anchor-label="identifier" id="-833674318%2FProperties%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="identifier.html"><span><span>identifier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-833674318%2FProperties%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="identifier.html">identifier</a><span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.types/-identifier/index.html">Identifier</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="576324249%2FProperties%2F-39164746" anchor-label="maxValues" id="576324249%2FProperties%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-values.html"><span>max</span><wbr><span><span>Values</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="576324249%2FProperties%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="max-values.html">maxValues</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">48</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="972981441%2FProperties%2F-39164746" anchor-label="precision" id="972981441%2FProperties%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="precision.html"><span><span>precision</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="972981441%2FProperties%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="precision.html">precision</a><span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.values/-value-interval/index.html">ValueInterval</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1183186199%2FProperties%2F-39164746" anchor-label="serializer" id="-1183186199%2FProperties%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="serializer.html"><span><span>serializer</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1183186199%2FProperties%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="serializer.html">serializer</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.serialization/KSerializer///PointingToDeclaration/">KSerializer</span><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2075677209%2FProperties%2F-39164746" anchor-label="writable" id="2075677209%2FProperties%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-value/writable.html"><span><span>writable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2075677209%2FProperties%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="../-value/writable.html">writable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="761831909%2FFunctions%2F-39164746" anchor-label="read" id="761831909%2FFunctions%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="read.html"><span><span>read</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="761831909%2FFunctions%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="read.html"><span class="token function">read</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../dev.kordex.modules.web.core.backend.values/-timed-container/index.html">TimedContainer</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">?</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-786309866%2FFunctions%2F-39164746" anchor-label="write" id="-786309866%2FFunctions%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="write.html"><span><span>write</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-786309866%2FFunctions%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="write.html"><span class="token function">write</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="index.html">T</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="144914673%2FFunctions%2F-39164746" anchor-label="writeTimed" id="144914673%2FFunctions%2F-39164746" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:web:web-core:web-backend:dokkaHtmlPartial/main" data-filterable-set=":modules:web:web-core:web-backend:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="write-timed.html"><span>write</span><wbr><span><span>Timed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="144914673%2FFunctions%2F-39164746"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:web:web-core:web-backend:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="write-timed.html"><span class="token function">writeTimed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">value<span class="token operator">: </span><a href="../../dev.kordex.modules.web.core.backend.values/-timed-container/index.html">TimedContainer</a><span class="token operator">&lt;</span><a href="index.html">T</a><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,258 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ExtPhishingBuilder</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":modules:functionality:func-phishing:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="func-phishing::dev.kordex.modules.func.phishing/ExtPhishingBuilder///PointingToDeclaration//-1043970857">
+  <div class="breadcrumbs"><a href="../../index.html">func-phishing</a><span class="delimiter">/</span><a href="../index.html">dev.kordex.modules.func.phishing</a><span class="delimiter">/</span><span class="current">ExtPhishingBuilder</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Ext</span><wbr><span>Phishing</span><wbr><span><span>Builder</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ExtPhishingBuilder</a></div><p class="paragraph">Builder used to configure the phishing extension.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1025930570%2FConstructors%2F-1043970857" anchor-label="ExtPhishingBuilder" id="1025930570%2FConstructors%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-ext-phishing-builder.html"><span>Ext</span><wbr><span>Phishing</span><wbr><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1025930570%2FConstructors%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1673905790%2FProperties%2F-1043970857" anchor-label="badDomains" id="1673905790%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="bad-domains.html"><span>bad</span><wbr><span><span>Domains</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1673905790%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="bad-domains.html">badDomains</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Set of bad domains, used as well as the usual unsafe domains.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1399075337%2FProperties%2F-1043970857" anchor-label="detectionAction" id="-1399075337%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="detection-action.html"><span>detection</span><wbr><span><span>Action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1399075337%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="detection-action.html">detectionAction</a><span class="token operator">: </span><a href="../-detection-action/index.html">DetectionAction</a></div><div class="brief "><p class="paragraph">What to do when a message creation/edit contains an unsafe domain.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="808186142%2FProperties%2F-1043970857" anchor-label="logChannelName" id="808186142%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="log-channel-name.html"><span>log</span><wbr><span>Channel</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="808186142%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="log-channel-name.html">logChannelName</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">The name of the logs channel to use for detection messages, if not "logs".</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-658365580%2FProperties%2F-1043970857" anchor-label="notifyUser" id="-658365580%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="notify-user.html"><span>notify</span><wbr><span><span>User</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-658365580%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="notify-user.html">notifyUser</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Whether to DM users when their messages contain unsafe domains, with the action taken.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-778082505%2FProperties%2F-1043970857" anchor-label="requiredCommandPermission" id="-778082505%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="required-command-permission.html"><span>required</span><wbr><span>Command</span><wbr><span><span>Permission</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-778082505%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="required-command-permission.html">requiredCommandPermission</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">If you want to require a permission for the check commands, supply it here. Alternatively, supply <code class="lang-kotlin">null</code> and everyone will be given access to them.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-977168328%2FProperties%2F-1043970857" anchor-label="updateDelay" id="-977168328%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="update-delay.html"><span>update</span><wbr><span><span>Delay</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-977168328%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="update-delay.html">updateDelay</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-duration/index.html">Duration</a></div><div class="brief "><p class="paragraph">Delay between domain update checks, 5 minutes at minimum.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-952689328%2FProperties%2F-1043970857" anchor-label="urlRegex" id="-952689328%2FProperties%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="url-regex.html"><span>url</span><wbr><span><span>Regex</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-952689328%2FProperties%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="url-regex.html">urlRegex</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.text/-regex/index.html">Regex</a></div><div class="brief "><p class="paragraph">Regular expression used to extract domains from messages.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="792319547%2FFunctions%2F-1043970857" anchor-label="badDomain" id="792319547%2FFunctions%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="bad-domain.html"><span>bad</span><wbr><span><span>Domain</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="792319547%2FFunctions%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="bad-domain.html"><span class="token function">badDomain</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">domain<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Register a bad domain.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="132791772%2FFunctions%2F-1043970857" anchor-label="check" id="132791772%2FFunctions%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="check.html"><span><span>check</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="132791772%2FFunctions%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="check.html"><span class="token function">check</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>checkList<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.checks.types/-check-with-cache/index.html">CheckWithCache</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Register checks, which must pass in order for an event handler to run, and for messages to be processed.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="check.html"><span class="token function">check</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">check<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.checks.types/-check-with-cache/index.html">CheckWithCache</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.core.event/Event///PointingToDeclaration/">Event</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Register a check, which must pass in order for an event handler to run, and for messages to be processed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1633585241%2FFunctions%2F-1043970857" anchor-label="regex" id="1633585241%2FFunctions%2F-1043970857" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:functionality:func-phishing:dokkaHtmlPartial/main" data-filterable-set=":modules:functionality:func-phishing:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="regex.html"><span><span>regex</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1633585241%2FFunctions%2F-1043970857"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:functionality:func-phishing:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="regex.html"><span class="token function">regex</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">pattern<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Convenience function for supplying a case-insensitive <a href="url-regex.html">urlRegex</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

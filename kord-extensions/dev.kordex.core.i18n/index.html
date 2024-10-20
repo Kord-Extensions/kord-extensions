@@ -1,0 +1,302 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>dev.kordex.core.i18n</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kord-extensions:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="kord-extensions::dev.kordex.core.i18n////PointingToDeclaration//1057207631">
+  <div class="breadcrumbs"><a href="../index.html">kord-extensions</a><span class="delimiter">/</span><span class="current">dev.kordex.core.i18n</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button><button class="section-tab" data-togglable="PROPERTY,EXTENSION_PROPERTY">Properties</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1905016561%2FClasslikes%2F1057207631" anchor-label="ResourceBundleTranslations" id="1905016561%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-resource-bundle-translations/index.html"><span>Resource</span><wbr><span>Bundle</span><wbr><span><span>Translations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1905016561%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-resource-bundle-translations/index.html">ResourceBundleTranslations</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>defaultLocaleBuilder<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a></span></span><span class="token punctuation">)</span> : <a href="-translations-provider/index.html">TranslationsProvider</a></div><div class="brief "><p class="paragraph">Translation provider backed by Java's <a href="https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html">ResourceBundle</a>s. This makes use of <code class="lang-kotlin">.properties</code> files that are standard across the Java ecosystem.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1640567032%2FClasslikes%2F1057207631" anchor-label="SupportedLocales" id="1640567032%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-supported-locales/index.html"><span>Supported</span><wbr><span><span>Locales</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1640567032%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-supported-locales/index.html">SupportedLocales</a></div><div class="brief "><p class="paragraph">List of supported locales. These are locales with <strong>merged</strong> translations.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="499595728%2FClasslikes%2F1057207631" anchor-label="TranslationsProvider" id="499595728%2FClasslikes%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-translations-provider/index.html"><span>Translations</span><wbr><span><span>Provider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="499595728%2FClasslikes%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-translations-provider/index.html">TranslationsProvider</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>defaultLocaleBuilder<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a></span></span><span class="token punctuation">)</span> : <a href="../dev.kordex.core.koin/-kord-ex-koin-component/index.html">KordExKoinComponent</a></div><div class="brief "><p class="paragraph">Translation provider interface, in charge of taking string keys and returning translated strings.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1962355858%2FProperties%2F1057207631" anchor-label="DEFAULT_BUNDLE_SUFFIX" id="-1962355858%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-d-e-f-a-u-l-t_-b-u-n-d-l-e_-s-u-f-f-i-x.html"><span><span>DEFAULT_BUNDLE_SUFFIX</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1962355858%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-d-e-f-a-u-l-t_-b-u-n-d-l-e_-s-u-f-f-i-x.html">DEFAULT_BUNDLE_SUFFIX</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Default bundle name suffix.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1546750833%2FProperties%2F1057207631" anchor-label="EMPTY_KEY" id="1546750833%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-m-p-t-y_-k-e-y.html"><span><span>EMPTY_KEY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1546750833%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-e-m-p-t-y_-k-e-y.html">EMPTY_KEY</a><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1953680939%2FProperties%2F1057207631" anchor-label="EMPTY_VALUE_STRING" id="1953680939%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-e-m-p-t-y_-v-a-l-u-e_-s-t-r-i-n-g.html"><span><span>EMPTY_VALUE_STRING</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1953680939%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-e-m-p-t-y_-v-a-l-u-e_-s-t-r-i-n-g.html">EMPTY_VALUE_STRING</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">String used to denote an empty translation value - <code class="lang-kotlin">∅∅∅</code> (<code class="lang-kotlin">\u2205\u2205\u2205</code>).</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1870187974%2FProperties%2F1057207631" anchor-label="KORDEX_BUNDLE" id="1870187974%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d-e-x_-b-u-n-d-l-e.html"><span><span>KORDEX_BUNDLE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1870187974%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="-k-o-r-d-e-x_-b-u-n-d-l-e.html">KORDEX_BUNDLE</a><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-bundle/index.html">Bundle</a></div><div class="brief "><p class="paragraph">Default KordEx translation bundle.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1898871283%2FProperties%2F1057207631" anchor-label="KORDEX_KEY" id="1898871283%2FProperties%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-k-o-r-d-e-x_-k-e-y.html"><span><span>KORDEX_KEY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1898871283%2FProperties%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">const </span><span class="token keyword">val </span><a href="-k-o-r-d-e-x_-k-e-y.html">KORDEX_KEY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">KordEx translation key.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="EXTENSION_FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1005289427%2FFunctions%2F1057207631" anchor-label="capitalize" id="-1005289427%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capitalize.html"><span><span>capitalize</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1005289427%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">.</span><a href="capitalize.html"><span class="token function">capitalize</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="213954302%2FFunctions%2F1057207631" anchor-label="capitalizeWords" id="213954302%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="capitalize-words.html"><span>capitalize</span><wbr><span><span>Words</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="213954302%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">.</span><a href="capitalize-words.html"><span class="token function">capitalizeWords</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="336469674%2FFunctions%2F1057207631" anchor-label="lowercase" id="336469674%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="lowercase.html"><span><span>lowercase</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="336469674%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">.</span><a href="lowercase.html"><span class="token function">lowercase</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="627491250%2FFunctions%2F1057207631" anchor-label="toKey" id="627491250%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-key.html"><span>to</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="627491250%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="to-key.html"><span class="token function">toKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bundle<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-bundle/index.html">Bundle</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="to-key.html"><span class="token function">toKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">locale<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="to-key.html"><span class="token function">toKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bundle<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="to-key.html"><span class="token function">toKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bundle<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">locale<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">.</span><a href="to-key.html"><span class="token function">toKey</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">bundle<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-bundle/index.html">Bundle</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">locale<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html">Locale</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">presetPlaceholderPosition<span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-placeholder-position/index.html">PlaceholderPosition</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">translateNestedKeys<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1800517737%2FFunctions%2F1057207631" anchor-label="uppercase" id="1800517737%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="uppercase.html"><span><span>uppercase</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1800517737%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">.</span><a href="uppercase.html"><span class="token function">uppercase</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-94058550%2FFunctions%2F1057207631" anchor-label="withContext" id="-94058550%2FFunctions%2F1057207631" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":kord-extensions:dokkaHtmlPartial/main" data-filterable-set=":kord-extensions:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="with-context.html"><span>with</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-94058550%2FFunctions%2F1057207631"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kord-extensions:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">.</span><a href="with-context.html"><span class="token function">withContext</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../dev.kordex.core.types/-translatable-context/index.html">TranslatableContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

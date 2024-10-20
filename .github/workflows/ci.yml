@@ -1,0 +1,66 @@
+name: CI (PRs/branches)
+
+on:
+  push:
+    branches-ignore:
+      - "gh-pages"
+      - "root"
+
+  pull_request:
+  merge_group:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Set up Gradle properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-XX:MaxMetaspaceSize=5G" >> ~/.gradle/gradle.properties
+
+      - name: Gradle (Setup)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Gradle (Build)
+        run: "./gradlew checkLicenses build"
+
+        env:
+          TOKEN: "${{ secrets.TOKEN }}"
+
+      - name: Upload artifact (Core JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Core)
+          path: kord-extensions/build/libs/*.jar
+
+      - name: Upload artifact (Annotation JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Annotation)
+          path: annotations/**/build/libs/*.jar
+
+      - name: Upload artifact (Module JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Modules)
+          path: modules/**/build/libs/*.jar
+
+      - name: Upload artifact (Parser JARs)
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: JARs (Parser)
+          path: token-parser/build/libs/*.jar

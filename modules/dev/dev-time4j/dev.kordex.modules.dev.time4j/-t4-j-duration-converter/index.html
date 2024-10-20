@@ -1,0 +1,483 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>T4JDurationConverter</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":modules:dev:dev-time4j:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="dev-time4j::dev.kordex.modules.dev.time4j/T4JDurationConverter///PointingToDeclaration//-858040363">
+  <div class="breadcrumbs"><a href="../../index.html">dev-time4j</a><span class="delimiter">/</span><a href="../index.html">dev.kordex.modules.dev.time4j</a><span class="delimiter">/</span><span class="current">T4JDurationConverter</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>T4JDuration</span><wbr><span><span>Converter</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">T4JDurationConverter</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>longHelp<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>validator<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-validator/index.html">Validator</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-single-converter/index.html">SingleConverter</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><p class="paragraph">Argument converter for Time4J <span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span> arguments.</p><p class="paragraph">For a coalescing version of this converter, see <a href="../-t4-j-duration-coalescing-converter/index.html">T4JDurationCoalescingConverter</a>.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>long</span><wbr><span><span>Help</span></span></u></div></span></div><div><div class="title"><p class="paragraph">Whether to send the user a long help message with specific information on how to specify durations.</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>t4j</span><wbr><span><span>Duration</span></span></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>t4j</span><wbr><span>Duration</span><wbr><span><span>List</span></span></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>parse</span><wbr><span><span>T4JDuration</span></span></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1182323550%2FConstructors%2F-858040363" anchor-label="T4JDurationConverter" id="1182323550%2FConstructors%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-t4-j-duration-converter.html"><span>T4JDuration</span><wbr><span><span>Converter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1182323550%2FConstructors%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">longHelp<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span><span class="token punctuation">, </span></span><span class="parameter ">validator<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-validator/index.html">Validator</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="146327179%2FProperties%2F-858040363" anchor-label="argumentObj" id="146327179%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#146327179%2FProperties%2F-858040363"><span>argument</span><wbr><span><span>Obj</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="146327179%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="index.html#146327179%2FProperties%2F-858040363">argumentObj</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-argument/index.html">Argument</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1907909214%2FProperties%2F-858040363" anchor-label="bot" id="1907909214%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1907909214%2FProperties%2F-858040363"><span><span>bot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1907909214%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#1907909214%2FProperties%2F-858040363">bot</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core/-extensible-bot/index.html">ExtensibleBot</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1720923470%2FProperties%2F-858040363" anchor-label="builder" id="-1720923470%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1720923470%2FProperties%2F-858040363"><span><span>builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1720923470%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="index.html#-1720923470%2FProperties%2F-858040363">builder</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters.builders/-converter-builder/index.html">ConverterBuilder</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-602997469%2FProperties%2F-858040363" anchor-label="errorType" id="-602997469%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-602997469%2FProperties%2F-858040363"><span>error</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-602997469%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#-602997469%2FProperties%2F-858040363">errorType</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="136321119%2FProperties%2F-858040363" anchor-label="kord" id="136321119%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#136321119%2FProperties%2F-858040363"><span><span>kord</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="136321119%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html#136321119%2FProperties%2F-858040363">kord</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core/Kord///PointingToDeclaration/">Kord</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1862027085%2FProperties%2F-858040363" anchor-label="longHelp" id="-1862027085%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="long-help.html"><span>long</span><wbr><span><span>Help</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1862027085%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="long-help.html">longHelp</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="821068956%2FProperties%2F-858040363" anchor-label="parsed" id="821068956%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#821068956%2FProperties%2F-858040363"><span><span>parsed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="821068956%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">lateinit override </span><span class="token keyword">var </span><a href="index.html#821068956%2FProperties%2F-858040363">parsed</a><span class="token operator">: </span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-524498331%2FProperties%2F-858040363" anchor-label="parseSuccess" id="-524498331%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-524498331%2FProperties%2F-858040363"><span>parse</span><wbr><span><span>Success</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-524498331%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="index.html#-524498331%2FProperties%2F-858040363">parseSuccess</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-592070840%2FProperties%2F-858040363" anchor-label="required" id="-592070840%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-592070840%2FProperties%2F-858040363"><span><span>required</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-592070840%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="index.html#-592070840%2FProperties%2F-858040363">required</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="699983113%2FProperties%2F-858040363" anchor-label="showTypeInSignature" id="699983113%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#699983113%2FProperties%2F-858040363"><span>show</span><wbr><span>Type</span><wbr><span>In</span><wbr><span><span>Signature</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="699983113%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="index.html#699983113%2FProperties%2F-858040363">showTypeInSignature</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="654345624%2FProperties%2F-858040363" anchor-label="signatureType" id="654345624%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="signature-type.html"><span>signature</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="654345624%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="signature-type.html">signatureType</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1085407448%2FProperties%2F-858040363" anchor-label="validator" id="1085407448%2FProperties%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="validator.html"><span><span>validator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1085407448%2FProperties%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="validator.html">validator</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-validator/index.html">Validator</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1989628472%2FFunctions%2F-858040363" anchor-label="getErrorKey" id="1989628472%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1989628472%2FFunctions%2F-858040363"><span>get</span><wbr><span>Error</span><wbr><span><span>Key</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1989628472%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#1989628472%2FFunctions%2F-858040363"><span class="token function">getErrorKey</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="949122825%2FFunctions%2F-858040363" anchor-label="getErrorString" id="949122825%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#949122825%2FFunctions%2F-858040363"><span>get</span><wbr><span>Error</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="949122825%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#949122825%2FFunctions%2F-858040363"><span class="token function">getErrorString</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-command-context/index.html">CommandContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2020770011%2FFunctions%2F-858040363" anchor-label="getKoin" id="-2020770011%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-t4-j-time-unit-cache/index.html#-2020770011%2FFunctions%2F-858040363"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2020770011%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../-t4-j-time-unit-cache/index.html#-2020770011%2FFunctions%2F-858040363"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1803167714%2FFunctions%2F-858040363" anchor-label="getValue" id="-1803167714%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1803167714%2FFunctions%2F-858040363"><span>get</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1803167714%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="index.html#-1803167714%2FFunctions%2F-858040363"><span class="token function">getValue</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">thisRef<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-arguments/index.html">Arguments</a><span class="token punctuation">, </span></span><span class="parameter ">property<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-property/index.html">KProperty</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1838298158%2FFunctions%2F-858040363" anchor-label="handleError" id="1838298158%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1838298158%2FFunctions%2F-858040363"><span>handle</span><wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1838298158%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#1838298158%2FFunctions%2F-858040363"><span class="token function">handleError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">t<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-command-context/index.html">CommandContext</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2023013725%2FFunctions%2F-858040363" anchor-label="parse" id="-2023013725%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="parse.html"><span><span>parse</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2023013725%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="parse.html"><span class="token function">parse</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">parser<span class="token operator">: </span><a href="../../../../../token-parser/dev.kordex.parser/-string-parser/index.html">StringParser</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">context<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-command-context/index.html">CommandContext</a><span class="token punctuation">, </span></span><span class="parameter ">named<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1418848083%2FFunctions%2F-858040363" anchor-label="parseOption" id="1418848083%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="parse-option.html"><span>parse</span><wbr><span><span>Option</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1418848083%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="parse-option.html"><span class="token function">parseOption</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-command-context/index.html">CommandContext</a><span class="token punctuation">, </span></span><span class="parameter ">option<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.entity.interaction/OptionValue///PointingToDeclaration/">OptionValue</span><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1907805956%2FFunctions%2F-858040363" anchor-label="toDefaulting" id="-1907805956%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1907805956%2FFunctions%2F-858040363"><span>to</span><wbr><span><span>Defaulting</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1907805956%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1907805956%2FFunctions%2F-858040363"><span class="token function">toDefaulting</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">defaultValue<span class="token operator">: </span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">outputError<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">signatureType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">showTypeInSignature<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">errorType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">nestedValidator<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-validator/index.html">Validator</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-defaulting-converter/index.html">DefaultingConverter</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="85730071%2FFunctions%2F-858040363" anchor-label="toList" id="85730071%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#85730071%2FFunctions%2F-858040363"><span>to</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="85730071%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#85730071%2FFunctions%2F-858040363"><span class="token function">toList</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">required<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">signatureType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">showTypeInSignature<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">errorType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">nestedValidator<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-validator/index.html">Validator</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-list-converter/index.html">ListConverter</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="782328638%2FFunctions%2F-858040363" anchor-label="toOptional" id="782328638%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#782328638%2FFunctions%2F-858040363"><span>to</span><wbr><span><span>Optional</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="782328638%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#782328638%2FFunctions%2F-858040363"><span class="token function">toOptional</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">signatureType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">showTypeInSignature<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">errorType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">outputError<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">nestedValidator<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-validator/index.html">Validator</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-optional-converter/index.html">OptionalConverter</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1216919739%2FFunctions%2F-858040363" anchor-label="toSlashOption" id="-1216919739%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="to-slash-option.html"><span>to</span><wbr><span>Slash</span><wbr><span><span>Option</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1216919739%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="to-slash-option.html"><span class="token function">toSlashOption</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">arg<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-argument/index.html">Argument</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-option-wrapper/index.html">OptionWrapper</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.rest.builder.interaction/StringChoiceBuilder///PointingToDeclaration/">StringChoiceBuilder</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1579827428%2FFunctions%2F-858040363" anchor-label="validate" id="-1579827428%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1579827428%2FFunctions%2F-858040363"><span><span>validate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1579827428%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#-1579827428%2FFunctions%2F-858040363"><span class="token function">validate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands/-command-context/index.html">CommandContext</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1709377062%2FFunctions%2F-858040363" anchor-label="withBuilder" id="-1709377062%2FFunctions%2F-858040363" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-time4j:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-time4j:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1709377062%2FFunctions%2F-858040363"><span>with</span><wbr><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1709377062%2FFunctions%2F-858040363"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-time4j:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-1709377062%2FFunctions%2F-858040363"><span class="token function">withBuilder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters.builders/-converter-builder/index.html">ConverterBuilder</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.converters/-single-converter/index.html">SingleConverter</a><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/Duration///PointingToDeclaration/">Duration</span><span class="token operator">&lt;</span><span data-unresolved-link="net.time4j/IsoUnit///PointingToDeclaration/">IsoUnit</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

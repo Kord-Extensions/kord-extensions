@@ -1,0 +1,768 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>UnsafeStringSelectMenu</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../index.html">
+                            kord-extensions
+                    </a>            </div>
+            <div class="library-version">2.3.0-SNAPSHOT
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">jvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="dev-unsafe::dev.kordex.modules.dev.unsafe.components.menus.string/UnsafeStringSelectMenu///PointingToDeclaration//-1986890030">
+  <div class="breadcrumbs"><a href="../../index.html">dev-unsafe</a><span class="delimiter">/</span><a href="../index.html">dev.kordex.modules.dev.unsafe.components.menus.string</a><span class="delimiter">/</span><span class="current">UnsafeStringSelectMenu</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Unsafe</span><wbr><span>String</span><wbr><span>Select</span><wbr><span><span>Menu</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">UnsafeStringSelectMenu</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator"> : </span><a href="../../dev.kordex.modules.dev.unsafe.components.forms/-unsafe-modal-form/index.html">UnsafeModalForm</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutTask<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.utils.scheduling/-task/index.html">Task</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="index.html">M</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/index.html">UnsafeSelectMenu</a><span class="token operator">&lt;</span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">, </span><a href="index.html">M</a><span class="token operator">&gt; </span>, <a href="../../../../../kord-extensions/dev.kordex.core.components.menus.string/-string-select-menu/index.html">StringSelectMenu</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-293083933%2FConstructors%2F-1986890030" anchor-label="UnsafeStringSelectMenu" id="-293083933%2FConstructors%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-unsafe-string-select-menu.html"><span>Unsafe</span><wbr><span>String</span><wbr><span>Select</span><wbr><span><span>Menu</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-293083933%2FConstructors%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeoutTask<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.utils.scheduling/-task/index.html">Task</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">modal<span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="index.html">M</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1637717969%2FProperties%2F-1986890030" anchor-label="body" id="-1637717969%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1637717969%2FProperties%2F-1986890030"><span><span>body</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1637717969%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">lateinit </span><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1637717969%2FProperties%2F-1986890030">body</a><span class="token operator">: </span><span class="token keyword">suspend </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><a href="index.html">M</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-167912962%2FProperties%2F-1986890030" anchor-label="bot" id="-167912962%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-167912962%2FProperties%2F-1986890030"><span><span>bot</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-167912962%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-167912962%2FProperties%2F-1986890030">bot</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core/-extensible-bot/index.html">ExtensibleBot</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="333203811%2FProperties%2F-1986890030" anchor-label="checkList" id="333203811%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#333203811%2FProperties%2F-1986890030"><span>check</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="333203811%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#333203811%2FProperties%2F-1986890030">checkList</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><a href="../../../../../kord-extensions/dev.kordex.core.checks.types/-check-with-cache/index.html">CheckWithCache</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-225735345%2FProperties%2F-1986890030" anchor-label="componentRegistry" id="-225735345%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-225735345%2FProperties%2F-1986890030"><span>component</span><wbr><span><span>Registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-225735345%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-225735345%2FProperties%2F-1986890030">componentRegistry</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.components/-component-registry/index.html">ComponentRegistry</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2044122239%2FProperties%2F-1986890030" anchor-label="deferredAck" id="2044122239%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#2044122239%2FProperties%2F-1986890030"><span>deferred</span><wbr><span><span>Ack</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2044122239%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#2044122239%2FProperties%2F-1986890030">deferredAck</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1447032573%2FProperties%2F-1986890030" anchor-label="disabled" id="1447032573%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1447032573%2FProperties%2F-1986890030"><span><span>disabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1447032573%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1447032573%2FProperties%2F-1986890030">disabled</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1374496667%2FProperties%2F-1986890030" anchor-label="id" id="1374496667%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1374496667%2FProperties%2F-1986890030"><span><span>id</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1374496667%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1374496667%2FProperties%2F-1986890030">id</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="925582927%2FProperties%2F-1986890030" anchor-label="initialResponse" id="925582927%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/initial-response.html"><span>initial</span><wbr><span><span>Response</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="925582927%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/initial-response.html">initialResponse</a><span class="token operator">: </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-initial-interaction-select-menu-response/index.html">InitialInteractionSelectMenuResponse</a></div><div class="brief "><p class="paragraph">Initial response type. Change this to decide what happens when this menu's action is executed.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="210343103%2FProperties%2F-1986890030" anchor-label="kord" id="210343103%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#210343103%2FProperties%2F-1986890030"><span><span>kord</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="210343103%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#210343103%2FProperties%2F-1986890030">kord</a><span class="token operator">: </span><span data-unresolved-link="dev.kord.core/Kord///PointingToDeclaration/">Kord</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-298635150%2FProperties%2F-1986890030" anchor-label="locking" id="-298635150%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-298635150%2FProperties%2F-1986890030"><span><span>locking</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-298635150%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-298635150%2FProperties%2F-1986890030">locking</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1856812921%2FProperties%2F-1986890030" anchor-label="maximumChoices" id="-1856812921%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1856812921%2FProperties%2F-1986890030"><span>maximum</span><wbr><span><span>Choices</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1856812921%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1856812921%2FProperties%2F-1986890030">maximumChoices</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-681973131%2FProperties%2F-1986890030" anchor-label="minimumChoices" id="-681973131%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-681973131%2FProperties%2F-1986890030"><span>minimum</span><wbr><span><span>Choices</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-681973131%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-681973131%2FProperties%2F-1986890030">minimumChoices</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1269480005%2FProperties%2F-1986890030" anchor-label="modal" id="1269480005%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="modal.html"><span><span>modal</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1269480005%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="modal.html">modal</a><span class="token operator">: </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="index.html">M</a><span class="token operator">?</span><span class="token operator"> = </span>null</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="646596042%2FProperties%2F-1986890030" anchor-label="mutex" id="646596042%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#646596042%2FProperties%2F-1986890030"><span><span>mutex</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="646596042%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#646596042%2FProperties%2F-1986890030">mutex</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.sync/Mutex///PointingToDeclaration/">Mutex</span><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-440730060%2FProperties%2F-1986890030" anchor-label="options" id="-440730060%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="options.html"><span><span>options</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-440730060%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="options.html">options</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html">MutableList</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.rest.builder.component/SelectOptionBuilder///PointingToDeclaration/">SelectOptionBuilder</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-925822482%2FProperties%2F-1986890030" anchor-label="placeholder" id="-925822482%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-925822482%2FProperties%2F-1986890030"><span><span>placeholder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-925822482%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">var </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-925822482%2FProperties%2F-1986890030">placeholder</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-535534344%2FProperties%2F-1986890030" anchor-label="registry" id="-535534344%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-535534344%2FProperties%2F-1986890030"><span><span>registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-535534344%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-535534344%2FProperties%2F-1986890030">registry</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.commands.application/-application-command-registry/index.html">ApplicationCommandRegistry</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1041318853%2FProperties%2F-1986890030" anchor-label="requiredPerms" id="1041318853%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1041318853%2FProperties%2F-1986890030"><span>required</span><wbr><span><span>Perms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1041318853%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1041318853%2FProperties%2F-1986890030">requiredPerms</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1778676330%2FProperties%2F-1986890030" anchor-label="sentry" id="-1778676330%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1778676330%2FProperties%2F-1986890030"><span><span>sentry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1778676330%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1778676330%2FProperties%2F-1986890030">sentry</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.sentry/-sentry-adapter/index.html">SentryAdapter</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1315903534%2FProperties%2F-1986890030" anchor-label="settings" id="-1315903534%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1315903534%2FProperties%2F-1986890030"><span><span>settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1315903534%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1315903534%2FProperties%2F-1986890030">settings</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.builders/-extensible-bot-builder/index.html">ExtensibleBotBuilder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-813232733%2FProperties%2F-1986890030" anchor-label="timeoutTask" id="-813232733%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-813232733%2FProperties%2F-1986890030"><span>timeout</span><wbr><span><span>Task</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-813232733%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-813232733%2FProperties%2F-1986890030">timeoutTask</a><span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.utils.scheduling/-task/index.html">Task</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1688238945%2FProperties%2F-1986890030" anchor-label="unitWidth" id="-1688238945%2FProperties%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1688238945%2FProperties%2F-1986890030"><span>unit</span><wbr><span><span>Width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1688238945%2FProperties%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1688238945%2FProperties%2F-1986890030">unitWidth</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1378505403%2FFunctions%2F-1986890030" anchor-label="action" id="1378505403%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1378505403%2FFunctions%2F-1986890030"><span><span>action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1378505403%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html#1378505403%2FFunctions%2F-1986890030"><span class="token function">action</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">action<span class="token operator">: </span><span class="token keyword">suspend </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><a href="index.html">M</a><span class="token operator">?</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="330865998%2FFunctions%2F-1986890030" anchor-label="apply" id="330865998%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="apply.html"><span><span>apply</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="330865998%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="apply.html"><span class="token function">apply</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">builder<span class="token operator">: </span><span data-unresolved-link="dev.kord.rest.builder.component/ActionRowBuilder///PointingToDeclaration/">ActionRowBuilder</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="368315000%2FFunctions%2F-1986890030" anchor-label="applyStringSelectMenu" id="368315000%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#368315000%2FFunctions%2F-1986890030"><span>apply</span><wbr><span>String</span><wbr><span>Select</span><wbr><span><span>Menu</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="368315000%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#368315000%2FFunctions%2F-1986890030"><span class="token function">applyStringSelectMenu</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">selectMenu<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.components.menus/-select-menu/index.html">SelectMenu</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">builder<span class="token operator">: </span><span data-unresolved-link="dev.kord.rest.builder.component/ActionRowBuilder///PointingToDeclaration/">ActionRowBuilder</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2017443649%2FFunctions%2F-1986890030" anchor-label="call" id="2017443649%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/call.html"><span><span>call</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2017443649%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/call.html"><span class="token function">call</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="944153232%2FFunctions%2F-1986890030" anchor-label="check" id="944153232%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-2034895240%2FFunctions%2F-1986890030"><span><span>check</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="944153232%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-2034895240%2FFunctions%2F-1986890030"><span class="token function">check</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>checks<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><a href="../../../../../kord-extensions/dev.kordex.core.checks.types/-check-context-with-cache/index.html">CheckContextWithCache</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1446116092%2FFunctions%2F-1986890030"><span class="token function">check</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">check<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.checks.types/-check-with-cache/index.html">CheckWithCache</a><span class="token operator">&lt;</span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1324907433%2FFunctions%2F-1986890030" anchor-label="checkBotPerms" id="1324907433%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1324907433%2FFunctions%2F-1986890030"><span>check</span><wbr><span>Bot</span><wbr><span><span>Perms</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1324907433%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#1324907433%2FFunctions%2F-1986890030"><span class="token function">checkBotPerms</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="693192177%2FFunctions%2F-1986890030" anchor-label="createContext" id="693192177%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="create-context.html"><span>create</span><wbr><span><span>Context</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="693192177%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="create-context.html"><span class="token function">createContext</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">interactionResponse<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.behavior.interaction.response/MessageInteractionResponseBehavior///PointingToDeclaration/">MessageInteractionResponseBehavior</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Function to create the context of the select menu.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1097214951%2FFunctions%2F-1986890030" anchor-label="disable" id="-1097214951%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1097214951%2FFunctions%2F-1986890030"><span><span>disable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1097214951%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1097214951%2FFunctions%2F-1986890030"><span class="token function">disable</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1194979114%2FFunctions%2F-1986890030" anchor-label="enable" id="-1194979114%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1194979114%2FFunctions%2F-1986890030"><span><span>enable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1194979114%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1194979114%2FFunctions%2F-1986890030"><span class="token function">enable</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="620466650%2FFunctions%2F-1986890030" anchor-label="firstSentryBreadcrumb" id="620466650%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#620466650%2FFunctions%2F-1986890030"><span>first</span><wbr><span>Sentry</span><wbr><span><span>Breadcrumb</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="620466650%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#620466650%2FFunctions%2F-1986890030"><span class="token function">firstSentryBreadcrumb</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">component<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.components.menus/-select-menu/index.html">SelectMenu</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2020770011%2FFunctions%2F-1986890030" anchor-label="getKoin" id="-2020770011%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.converters/-union-converter/index.html#-2020770011%2FFunctions%2F-1986890030"><span>get</span><wbr><span><span>Koin</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2020770011%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.converters/-union-converter/index.html#-2020770011%2FFunctions%2F-1986890030"><span class="token function">getKoin</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.koin.core/Koin///PointingToDeclaration/">Koin</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-13775046%2FFunctions%2F-1986890030" anchor-label="handleError" id="-13775046%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-13775046%2FFunctions%2F-1986890030"><span>handle</span><wbr><span><span>Error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-13775046%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#-13775046%2FFunctions%2F-1986890030"><span class="token function">handleError</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">t<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a><span class="token punctuation">, </span></span><span class="parameter ">button<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.components.menus/-select-menu/index.html">SelectMenu</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token punctuation">, </span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1368613025%2FFunctions%2F-1986890030" anchor-label="lock" id="1368613025%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1368613025%2FFunctions%2F-1986890030"><span><span>lock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1368613025%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1368613025%2FFunctions%2F-1986890030"><span class="token function">lock</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1981645587%2FFunctions%2F-1986890030" anchor-label="option" id="1981645587%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#1981645587%2FFunctions%2F-1986890030"><span><span>option</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1981645587%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="index.html#1981645587%2FFunctions%2F-1986890030"><span class="token function">option</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">label<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><a href="../../../../../kord-extensions/dev.kordex.core.components.menus.string/-string-select-option/index.html">StringSelectOption</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1733240485%2FFunctions%2F-1986890030" anchor-label="requireBotPermissions" id="1733240485%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1733240485%2FFunctions%2F-1986890030"><span>require</span><wbr><span>Bot</span><wbr><span><span>Permissions</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1733240485%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1733240485%2FFunctions%2F-1986890030"><span class="token function">requireBotPermissions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>perms<span class="token operator">: </span><span data-unresolved-link="dev.kord.common.entity/Permission///PointingToDeclaration/">Permission</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1037017055%2FFunctions%2F-1986890030" anchor-label="respondText" id="-1037017055%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-1037017055%2FFunctions%2F-1986890030"><span>respond</span><wbr><span><span>Text</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1037017055%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend override </span><span class="token keyword">fun </span><a href="index.html#-1037017055%2FFunctions%2F-1986890030"><span class="token function">respondText</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="../-unsafe-string-select-menu-context/index.html">UnsafeStringSelectMenuContext</a><span class="token operator">&lt;</span><a href="index.html">M</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">message<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.i18n.types/-key/index.html">Key</a><span class="token punctuation">, </span></span><span class="parameter ">failureType<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.types/-failure-reason/index.html">FailureReason</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1400029570%2FFunctions%2F-1986890030" anchor-label="runChecks" id="-1400029570%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1400029570%2FFunctions%2F-1986890030"><span>run</span><wbr><span><span>Checks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1400029570%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-1400029570%2FFunctions%2F-1986890030"><span class="token function">runChecks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-574402047%2FFunctions%2F-1986890030" anchor-label="runStandardChecks" id="-574402047%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-574402047%2FFunctions%2F-1986890030"><span>run</span><wbr><span>Standard</span><wbr><span><span>Checks</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-574402047%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#-574402047%2FFunctions%2F-1986890030"><span class="token function">runStandardChecks</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><span data-unresolved-link="dev.kord.core.event.interaction/SelectMenuInteractionCreateEvent///PointingToDeclaration/">SelectMenuInteractionCreateEvent</span><span class="token punctuation">, </span></span><span class="parameter ">cache<span class="token operator">: </span><a href="../../../../../kord-extensions/dev.kordex.core.utils/-mutable-string-keyed-map/index.html">MutableStringKeyedMap</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="878474472%2FFunctions%2F-1986890030" anchor-label="unlock" id="878474472%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#878474472%2FFunctions%2F-1986890030"><span><span>unlock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="878474472%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#878474472%2FFunctions%2F-1986890030"><span class="token function">unlock</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-86605648%2FFunctions%2F-1986890030" anchor-label="validate" id="-86605648%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/validate.html"><span><span>validate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-86605648%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus/-unsafe-select-menu/validate.html"><span class="token function">validate</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-753943191%2FFunctions%2F-1986890030" anchor-label="validateOptions" id="-753943191%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="index.html#-753943191%2FFunctions%2F-1986890030"><span>validate</span><wbr><span><span>Options</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-753943191%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="index.html#-753943191%2FFunctions%2F-1986890030"><span class="token function">validateOptions</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1795424277%2FFunctions%2F-1986890030" anchor-label="withLock" id="1795424277%2FFunctions%2F-1986890030" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"></a>
+          <div class="table-row" data-filterable-current=":modules:dev:dev-unsafe:dokkaHtmlPartial/main" data-filterable-set=":modules:dev:dev-unsafe:dokkaHtmlPartial/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1795424277%2FFunctions%2F-1986890030"><span>with</span><wbr><span><span>Lock</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1795424277%2FFunctions%2F-1986890030"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":modules:dev:dev-unsafe:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">suspend </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1795424277%2FFunctions%2F-1986890030">T</a><span class="token operator">&gt; </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1795424277%2FFunctions%2F-1986890030"><span class="token function">withLock</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">body<span class="token operator">: </span><span class="token keyword">suspend </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="../../dev.kordex.modules.dev.unsafe.components.menus.user/-unsafe-user-select-menu/index.html#1795424277%2FFunctions%2F-1986890030">T</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
